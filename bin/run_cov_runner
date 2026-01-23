@@ -1,0 +1,6 @@
+#!/bin/bash
+sysctl -w fs.file-max=2097152
+mount -o remount,size=64G /dev/shm
+ulimit -c 0
+get_cp
+COV_RUNNER=1 main.py

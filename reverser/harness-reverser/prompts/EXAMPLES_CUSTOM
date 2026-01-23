@@ -1,0 +1,146 @@
+
+<harness-example-3>
+int harness(uint8_t *blob, uint32_t blob_size) {
+    if (blob == NULL) {
+        printf("Error: No blob is given\n");
+        return -1;
+    }
+
+    if (blob_size > 0x80000) {
+        printf("Error: Too many data\n");
+        return -1;
+    }
+
+    if (blob_size < 0x4) {
+        printf("Error: Data not enough to check magic header\n");
+        return -1;
+    }
+
+    if (blob[0] == 0x89 && blob[1] == 0x50 && blob[2] == 0x4E && blob[3] == 0x47) {
+        // `process_png` is just a conceptual function to represent the processing of png bytes
+        process_png(blob, blob_size);
+    } else {
+        // `process_other` is just a conceptual function to represent the processing of non-png bytes
+        process_other(blob, blob_size);
+    }
+
+    return 0;
+}
+</harness-example-3>
+
+<chain-of-thought-example-3>
+First, the blob size should be equal or under 0x80000 bytes and should be equal or above 0x4 bytes.
+The first 4 bytes of the blob decides how the blob is structured and should be processed.
+(IMPORTANT) Thus, we SHOULD make a new `union` record to represent the different structures, WHENEVER we meet a branches like if-else or switch-case statements.
+If the first 4 bytes is [0x89, 0x50, 0x4E, 0x47], the blob will be processed using `process_png` function. Else, the blob will be processed using `process_other` function.
+Thus, we should make a union record containing two variant: `PngData` and `OtherData`.
+For `PngData`, PNG is a known format by CustomGen as it is defined under the schema's `CustomKind`.
+Thus, we should make `PngData` as a union record containing two variant: `PngCustom`, `PngStruct`.
+`PngCustom` record should contain a `{"custom": "png"}`-typed field.
+`PngStruct` record should contain a `bytes`-typed field specific `possible_values` and another `bytes`-typed field representing remaining blob bytes.
+For `OtherData`, there is no extra information under current context, so it should contain a `bytes`-typed field representing blob bytes.
+</chain-of-thought-example-3>
+
+<testlang-example-3>
+{
+    "mode": "Bytes",
+    "default_endian": "little",
+    "records": [
+      {
+        "name": "INPUT",
+        "kind": "struct",
+        "byte_size": {"start": 0x4, "end": 0x80000},
+        "fields": [
+          {
+            "name": "data",
+            "kind": "record",
+            "items": {
+                "kind": "record",
+                "name": "BlobDataUnion"
+            },
+          },
+        ]
+      },
+      {
+        "name": "BlobDataUnion",
+        "kind": "union",
+        "fields": [
+          {
+            "name": "if_png",
+            "kind": "record",
+            "items": {
+              "kind": "record",
+              "name": "PngData"
+            }
+          },
+          {
+            "name": "if_other",
+            "kind": "record",
+            "items": {
+              "kind": "record",
+              "name": "OtherData"
+            }
+          }
+        ]
+      },
+      {
+        "name": "PngData",
+        "kind": "union",
+        "fields": [
+          {
+            "name": "png_custom",
+            "kind": "record",
+            "items": {
+              "kind": "record",
+              "name": "PngCustom"
+            }
+          },
+          {
+            "name": "png_struct",
+            "kind": "record",
+            "items": {
+              "kind": "record",
+              "name": "PngStruct"
+            }
+          }
+        ]
+      },
+      {
+        "name": "PngCustom",
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "png_custom",
+            "kind": {"custom": "png"}
+          }
+        ]
+      },
+      {
+        "name": "PngStruct",
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "header",
+            "kind": "bytes",
+            "byte_size": 4,
+            "possible_values": [[0x89, 0x50, 0x4E, 0x47]]
+          },
+          {
+            "name": "remaining",
+            "kind": "bytes"
+          }
+        ]
+      },
+      {
+        "name": "OtherData",
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "remaining",
+            "kind": "bytes"
+          }
+        ]
+      }
+    ]
+}
+</testlang-example-3>

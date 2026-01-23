@@ -1,0 +1,44 @@
+{
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "device_len",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "device",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "device_len"
+          }
+        },
+        {
+          "name": "open_flags",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "buffer_size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "buffer",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "buffer_size"
+          }
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package customgen;
+
+message CustomGenRequest {
+  string generator_id = 1;
+  uint32 count = 2;
+}
+
+message GenerationResult {
+  uint32 count = 1;
+  repeated bytes output = 2;
+}
+
+message GenerationError {
+  string message = 1;
+}
+
+message CustomGenResponse {
+  oneof result {
+    GenerationResult generated = 1;
+    GenerationError failed = 2;
+  }
+}
+
+service CustomGenService {
+  rpc generate(CustomGenRequest) returns (CustomGenResponse);
+}

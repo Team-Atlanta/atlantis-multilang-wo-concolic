@@ -1,0 +1,93 @@
+#!/bin/bash
+mkdir -p /src/repo
+mkdir -p /out/
+mkdir -p /coverage-out
+TARBALL_DIR=${TARBALL_DIR:-/tarballs}
+LOCAL_TARBALL_DIR="/tarballs"
+mkdir -p $LOCAL_TARBALL_DIR
+wait_for_file() {
+    if [ "$TARBALL_DIR" != "/tarballs" ]; then
+        local filepath="$TARBALL_DIR/$1"
+        while [ ! -e "$filepath" ]; do
+            echo "Waiting for $filepath to be created..."
+            sleep 5
+        done
+    fi
+}
+
+rsync_with_retry() {
+    local source="$1"
+    local destination="$2"
+    if [[ "$source" == "$destination" ]]; then
+        return 0
+    fi
+    while true; do
+        rsync -a "$source" "$destination"
+        if [ $? -eq 0 ]; then
+            break
+        else
+            sleep 5
+        fi
+    done
+}
+
+wait_for_file "DONE"
+
+if [ -z "$CRS_CONFIG" ]; then
+    echo "Skip copying CRS_CONFIG because it's unset"
+else
+    echo "Use $CRS_CONFIG"
+    if [ -e $CRS_CONFIG ]; then
+        rsync_with_retry $CRS_CONFIG "/crs.config"
+    else
+        echo "$CRS_CONFIG does not exists"
+    fi
+fi
+
+rsync_with_retry $TARBALL_DIR/project.tar.gz $LOCAL_TARBALL_DIR/project.tar.gz
+tar --use-compress-program=pigz -xf $LOCAL_TARBALL_DIR/project.tar.gz -C /src/
+mkdir -p /src/.aixcc/
+if [[ -n "${TEST_DELTA_MODE}" ]]; then
+    if [[ -e "/src/.aixcc/ref.diff" ]]; then
+        echo "Test Delta mode: /src/.aixcc/ref.diff"
+        rsync_with_retry "/src/.aixcc/ref.diff" "${TARBALL_DIR}/ref.diff"
+    fi
+else
+    if [[ "$TARBALL_DIR" == "$LOCAL_TARBALL_DIR" ]]; then
+        rm -rf "${TARBALL_DIR}/ref.diff"
+    fi
+fi
+
+if [ -e $TARBALL_DIR/ref.diff ]; then
+    echo "Delta mode: $TARBALL_DIR/ref.diff"
+    rsync_with_retry $TARBALL_DIR/ref.diff /src/
+else
+    echo "Full mode"
+fi
+if [ -e $TARBALL_DIR/aixcc_conf.yaml ]; then
+    rsync_with_retry $TARBALL_DIR/aixcc_conf.yaml /src/.aixcc/config.yaml
+else
+    echo "$TARBALL_DIR/aixcc_conf.yaml does not exist; ok for local test"
+fi
+rm -rf /src/repo
+mkdir -p /src/repo
+rsync_with_retry $TARBALL_DIR/repo.tar.gz $LOCAL_TARBALL_DIR/repo.tar.gz
+tar --use-compress-program=pigz -xf $LOCAL_TARBALL_DIR/repo.tar.gz -C /src/repo
+rsync_with_retry $TARBALL_DIR/fuzzers.tar.gz $LOCAL_TARBALL_DIR/fuzzers.tar.gz
+tar --use-compress-program=pigz -xf $LOCAL_TARBALL_DIR/fuzzers.tar.gz -C /out/
+if [ "$1" != "no_cov_symcc" ]; then
+	wait_for_file "coverage.done"
+    if [ -e $TARBALL_DIR/coverage.tar.gz ]; then 
+        rsync_with_retry $TARBALL_DIR/coverage.tar.gz $LOCAL_TARBALL_DIR/coverage.tar.gz
+        tar --use-compress-program=pigz -xf $LOCAL_TARBALL_DIR/coverage.tar.gz -C /coverage-out/
+    fi
+fi
+
+if [ -e $TARBALL_DIR/compile_commands.json ]; then
+    rsync_with_retry $TARBALL_DIR/compile_commands.json /src/repo/compile_commands.json
+fi
+
+chown -R root:root /src/repo/ /out/ /coverage-out/
+chmod -R a+w /out
+chmod -R a+w /coverage-out
+chmod -R +t /out /src/ /coverage-out /work

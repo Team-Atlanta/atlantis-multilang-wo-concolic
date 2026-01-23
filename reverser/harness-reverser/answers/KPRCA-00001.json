@@ -1,0 +1,113 @@
+{
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_count",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "commands",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "command_count"
+          },
+          "items": {
+            "kind": "record",
+            "name": "Command"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "Command",
+      "kind": "union",
+      "fields": [
+        {
+          "name": "IOCTL_INIT_STDIN_Command",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "IOCTL_INIT_STDIN_TYPE"
+          }
+        },
+        {
+          "name": "IOCTL_GET_STDOUT_Command",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "IOCTL_GET_STDOUT_TYPE"
+          }
+        },
+        {
+          "name": "WORK_WITH_DATA_Command",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "WORK_WITH_DATA_TYPE"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "IOCTL_INIT_STDIN_TYPE",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [64]
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "IOCTL_GET_STDOUT_TYPE",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [65]
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "WORK_WITH_DATA_TYPE",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [80]
+        },
+        {
+          "name": "buf_len",
+          "kind": "int",
+          "byte_size": 8
+        },
+        {
+          "name": "buf",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "buf_len"
+          }
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

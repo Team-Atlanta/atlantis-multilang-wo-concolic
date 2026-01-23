@@ -1,0 +1,808 @@
+{
+  "BITs": [
+    {
+      "harness_name": "pov_harness",
+      "func_location": {
+        "func_name": "InitializeNginx",
+        "file_path": "/src/fuzz/pov_harness.cc",
+        "start_line": 203,
+        "end_line": 203
+      },
+      "key_conditions": [
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 335,
+          "end_line": 335
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 184,
+          "end_line": 184
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 199,
+          "end_line": 199
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 214,
+          "end_line": 214
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 237,
+          "end_line": 237
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 252,
+          "end_line": 252
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 257,
+          "end_line": 257
+        }
+      ],
+      "should_be_taken_lines": [
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 334,
+          "end_line": 334
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 345,
+          "end_line": 345
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 348,
+          "end_line": 348
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 355,
+          "end_line": 355
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 356,
+          "end_line": 356
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 360,
+          "end_line": 360
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 361,
+          "end_line": 361
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 364,
+          "end_line": 364
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 366,
+          "end_line": 366
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 160,
+          "end_line": 160
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 161,
+          "end_line": 161
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 162,
+          "end_line": 162
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 164,
+          "end_line": 164
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 167,
+          "end_line": 167
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 168,
+          "end_line": 168
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 169,
+          "end_line": 169
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 170,
+          "end_line": 170
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 172,
+          "end_line": 172
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 173,
+          "end_line": 173
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 174,
+          "end_line": 174
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 176,
+          "end_line": 176
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 179,
+          "end_line": 179
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 180,
+          "end_line": 180
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 181,
+          "end_line": 181
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 182,
+          "end_line": 182
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 189,
+          "end_line": 189
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 191,
+          "end_line": 191
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 196,
+          "end_line": 196
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 197,
+          "end_line": 197
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 203,
+          "end_line": 203
+        }
+      ],
+      "analysis_message": [
+        {
+          "sink_detection": "The function `InitializeNginx` contains a potential vulnerability related to the handling of environment variables. Specifically, the line `environ[0] = my_argv[0] + 1;` modifies the environment variable array, and then `free(environ[0]);` is called. This operation is risky because it assumes that `environ[0]` points to dynamically allocated memory, which may not be the case. This could lead to undefined behavior if `environ[0]` is not a heap-allocated string, potentially causing a heap-use-after-free error. The sanitizer type that would catch this is `heap-use-after-free`.",
+          "vulnerability_classification": "The code contains a potential heap-use-after-free vulnerability. The function `InitializeNginx` modifies the environment variable `environ[0]` and then frees it. However, it later restores `environ[0]` to its original value, which was freed, potentially leading to a use-after-free condition if the original value is accessed after being freed. This is a classic pattern that can be detected by sanitizers like AddressSanitizer (ASAN).",
+          "sanitizer_type": "heap-use-after-free",
+          "key_conditions_report": "```<file_path>/src/fuzz/pov_harness.cc</file_path>\n<func_prototype_and_func_body>\n1: int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)\n2: {\n3:   static int init = InitializeNginx();\n4:   if(init != 0) {\n5:     fprintf(stdout, \"[ERROR] Init failed\\n\");\n6:     exit(0);\n7:   }\n8: \n9:   //data = (const uint8_t *)\"GET / HTTP/1.1\\r\\nHost: localhost\\r\\nAccept: */*\\r\\n\\r\\n\";\n10:   //size = strlen((const char *)data);\n11: \n12:   // This being here triggers a call to accept. The wrappers will handle the call\n13:   //  and create the first socket.\n14:   ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n15: \n16:   // Create the pipe that will allow nginx to read the data as if it were a socket.\n17:   setup_pipe_data( data, size );\n18: \n19:   // The accept takes a connection, which drops the free connection count to 2. There\n20:   //    could also be a connection to the http auth server which takes up a connection\n21:   //    as well as a connection to the mail proxy. The auth server connection will likely\n22:   //    be disconnected prior to the proxy. Once all these connections are done it means\n23:   //    that there is no additional data in the pipe previously set up so it is time to bail.\n24:   while (ngx_cycle->free_connection_n != 1) {\n25:     ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n26:   }\n27: \n28:   // Clean up the pipes\n29:   close(pipefd[0]);\n30:   close(pipefd[1]);\n31: \n32:   // Make sure that all of the global state variables are reset.\n33:   http_client_fd = -1;\n34: \n35:   return 0;\n36: }\n</func_prototype_and_func_body>\n\n<file_path>/src/fuzz/pov_harness.cc</file_path>\n<func_prototype_and_func_body>\n37: int InitializeNginx(void)\n38: {\n39:   ngx_log_t *log;\n40:   ngx_cycle_t init_cycle;\n41:   ngx_core_conf_t  *ccf;\n42: \n43:   ngx_debug_init();\n44: \n45:   // Just output logs to stderr\n46:   ngx_log.file = &ngx_log_file;\n47:   ngx_log.log_level = NGX_LOG_EMERG;\n48:   ngx_log_file.fd = ngx_stderr;\n49:   log = &ngx_log;\n50: \n51:   ngx_memzero(&init_cycle, sizeof(ngx_cycle_t));\n52:   init_cycle.log = log;\n53:   ngx_cycle = &init_cycle;\n54: \n55:   init_cycle.pool = ngx_create_pool(1024, log);\n56: \n57:   // Set custom argv/argc\n58:   my_argv[0] = arg1;\n59:   my_argv[1] = NULL;\n60:   ngx_argv = ngx_os_argv = my_argv;\n61:   ngx_argc = 0;\n62: \n63:   if (ngx_strerror_init() != NGX_OK) {\n64:     fprintf(stdout, \"[ERROR] !!Failed to ngx_strerror_init\\n\");\n65:     exit(-1);\n66:   }\n67: \n68:   ngx_time_init();\n69: \n70:   ngx_regex_init();\n71:   \n72:   // Weird trick to free a leaking buffer always caught by ASAN\n73:   // We basically let ngx overwrite the environment variable, free the leak and\n74:   // restore the environment as before.\n75:   char *env_before = environ[0];\n76:   environ[0] = my_argv[0] + 1;\n77: \n78:   if (ngx_os_init(log) != NGX_OK) {\n79:     return 1;\n80:   }\n81: \n82:   free(environ[0]);\n83:   environ[0] = env_before;\n84: \n85:   ngx_crc32_table_init();\n86: \n87:   ngx_slab_sizes_init();\n88: \n89:   ngx_preinit_modules();\n90: \n91:   char path[0x100];\n92:   ssize_t len = readlink(\"/proc/self/exe\", path, sizeof(path) - 1);\n93:   if (len == -1) {\n94:     return 1;\n95:   }\n96:   path[len] = '\\0';\n97: \n98:   std::string out_dir = dirname(path);\n99:   std::string log_dir = out_dir + \"/logs\";\n100:   create_directories(log_dir);\n101: \n102:   snprintf(configuration_part2, sizeof(configuration_part2), \"pid %s/nginx.pid;\\n\", log_dir.c_str());\n103: \n104:   printf(\"[INFO] config part2 %s \\n\", configuration_part2);\n105: \n106:   FILE *fptr = fopen(config_file, \"w\");\n107:   fprintf(fptr, \"%s\", configuration_part1);\n108:   fprintf(fptr, \"%s\", configuration_part2);\n109:   fprintf(fptr, \"%s\", configuration_part3);\n110:   fclose(fptr);\n111:   init_cycle.conf_file.len = strlen(config_file);\n112:   init_cycle.conf_file.data = (unsigned char *) config_file;\n113: \n114:   cycle = ngx_init_cycle(&init_cycle);\n115: \n116:   if ( cycle == NULL ) {\n117:     fprintf(stdout, \"[ERROR] init cycle failed probably bad config\\n\");\n118:     exit(-1);\n119:   }\n120:   ngx_os_status(cycle->log);\n121: \n122:   ngx_cycle = cycle;\n123: \n124:   ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);\n125:   \n126:   if (ccf->master && ngx_process == NGX_PROCESS_SINGLE) {\n127:     ngx_process = NGX_PROCESS_MASTER;\n128:   }\n129: \n130: \n131:   if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK) {\n132:     fprintf(stdout, \"[ERROR] !!Failed to ngx_create_pidfile\\n\");\n133:     exit(-1);\n134:   }\n135:   \n136:   if (ngx_log_redirect_stderr(cycle) != NGX_OK) {\n137:     fprintf(stdout, \"[ERROR] !!Failed to ngx_log_redirect_stderr\\n\");\n138:     exit(-1);\n139:   }\n140: \n141:   ngx_event_flags = 1;\n142:   ngx_queue_init(&ngx_posted_accept_events);\n143:   ngx_queue_init(&ngx_posted_next_events);\n144:   ngx_queue_init(&ngx_posted_events);\n145:   ngx_event_timer_init(cycle->log);\n146: \n147:   for (int i = 0; cycle->modules[i]; i++) {\n148:     if (cycle->modules[i]->init_process) {\n149:       if (cycle->modules[i]->init_process(cycle) == NGX_ERROR) {\n150:         //fatal\n151:         exit(2);\n152:       }\n153:     }\n154:   }\n155: \n156:   return 0;\n157: }\n</func_prototype_and_func_body>\n```\nVulnerable line:\n82: free(environ[0]);\nTo analyze the control flow and identify the key conditions and lines that must be executed to reach the vulnerable line 82, we will follow the outlined analysis process.\n\n### Control Flow Analysis\n\n1. **Function Calls and Execution Path:**\n   - The source function is `LLVMFuzzerTestOneInput` starting at line 1.\n   - This function calls `InitializeNginx` at line 3.\n   - The vulnerable line 82 is within the `InitializeNginx` function.\n\n2. **Key Conditional Branches and Exception Handling:**\n   - In `LLVMFuzzerTestOneInput`:\n     - Line 4: `if(init != 0)` checks the return value of `InitializeNginx`. If true, it exits the program, so this condition must be false to proceed.\n   - In `InitializeNginx`:\n     - Line 63: `if (ngx_strerror_init() != NGX_OK)` checks for an error in initialization. If true, it exits the program, so this condition must be false.\n     - Line 78: `if (ngx_os_init(log) != NGX_OK)` checks for an error in OS initialization. If true, it returns 1, which would cause `LLVMFuzzerTestOneInput` to exit, so this condition must be false.\n     - Line 93: `if (len == -1)` checks if `readlink` failed. If true, it returns 1, which would cause `LLVMFuzzerTestOneInput` to exit, so this condition must be false.\n     - Line 116: `if (cycle == NULL)` checks if the cycle initialization failed. If true, it exits the program, so this condition must be false.\n     - Line 126: `if (ccf->master && ngx_process == NGX_PROCESS_SINGLE)` is a condition that changes the process type but does not affect reaching the vulnerable line.\n     - Line 131: `if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK)` checks for an error in creating a pidfile. If true, it exits the program, so this condition must be false.\n     - Line 136: `if (ngx_log_redirect_stderr(cycle) != NGX_OK)` checks for an error in redirecting stderr. If true, it exits the program, so this condition must be false.\n\n3. **Key Conditions and Lines to be Executed:**\n   - The key conditions are those that must be false to reach the vulnerable line.\n   - The lines that must be executed are those that lead to the vulnerable line, including the vulnerable line itself.\n\n### Critical Requirements\n\n- **Key Conditions:**\n  - Line 4: `if(init != 0)`\n  - Line 63: `if (ngx_strerror_init() != NGX_OK)`\n  - Line 78: `if (ngx_os_init(log) != NGX_OK)`\n  - Line 93: `if (len == -1)`\n  - Line 116: `if (cycle == NULL)`\n  - Line 131: `if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK)`\n  - Line 136: `if (ngx_log_redirect_stderr(cycle) != NGX_OK)`\n\n- **Should Be Taken Lines:**\n  - Line 3: `static int init = InitializeNginx();`\n  - Line 14: `ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);`\n  - Line 17: `setup_pipe_data( data, size );`\n  - Line 24: `while (ngx_cycle->free_connection_n != 1) {`\n  - Line 25: `ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);`\n  - Line 29: `close(pipefd[0]);`\n  - Line 30: `close(pipefd[1]);`\n  - Line 33: `http_client_fd = -1;`\n  - Line 35: `return 0;`\n  - Line 39: `ngx_log_t *log;`\n  - Line 40: `ngx_cycle_t init_cycle;`\n  - Line 41: `ngx_core_conf_t  *ccf;`\n  - Line 43: `ngx_debug_init();`\n  - Line 46: `ngx_log.file = &ngx_log_file;`\n  - Line 47: `ngx_log.log_level = NGX_LOG_EMERG;`\n  - Line 48: `ngx_log_file.fd = ngx_stderr;`\n  - Line 49: `log = &ngx_log;`\n  - Line 51: `ngx_memzero(&init_cycle, sizeof(ngx_cycle_t));`\n  - Line 52: `init_cycle.log = log;`\n  - Line 53: `ngx_cycle = &init_cycle;`\n  - Line 55: `init_cycle.pool = ngx_create_pool(1024, log);`\n  - Line 58: `my_argv[0] = arg1;`\n  - Line 59: `my_argv[1] = NULL;`\n  - Line 60: `ngx_argv = ngx_os_argv = my_argv;`\n  - Line 61: `ngx_argc = 0;`\n  - Line 68: `ngx_time_init();`\n  - Line 70: `ngx_regex_init();`\n  - Line 75: `char *env_before = environ[0];`\n  - Line 76: `environ[0] = my_argv[0] + 1;`\n  - Line 82: `free(environ[0]);` (vulnerable line)\n\nThis analysis ensures that all necessary conditions and lines are considered to reach the vulnerable line."
+        }
+      ],
+      "analyzed_functions": [
+        {
+          "func_location": {
+            "func_name": "LLVMFuzzerTestOneInput",
+            "file_path": "/src/fuzz/pov_harness.cc",
+            "start_line": 332,
+            "end_line": 367
+          },
+          "func_body": "int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)\n{\n  static int init = InitializeNginx();\n  if(init != 0) {\n    fprintf(stdout, \"[ERROR] Init failed\\n\");\n    exit(0);\n  }\n\n  //data = (const uint8_t *)\"GET / HTTP/1.1\\r\\nHost: localhost\\r\\nAccept: */*\\r\\n\\r\\n\";\n  //size = strlen((const char *)data);\n\n  // This being here triggers a call to accept. The wrappers will handle the call\n  //  and create the first socket.\n  ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n\n  // Create the pipe that will allow nginx to read the data as if it were a socket.\n  setup_pipe_data( data, size );\n\n  // The accept takes a connection, which drops the free connection count to 2. There\n  //    could also be a connection to the http auth server which takes up a connection\n  //    as well as a connection to the mail proxy. The auth server connection will likely\n  //    be disconnected prior to the proxy. Once all these connections are done it means\n  //    that there is no additional data in the pipe previously set up so it is time to bail.\n  while (ngx_cycle->free_connection_n != 1) {\n    ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n  }\n\n  // Clean up the pipes\n  close(pipefd[0]);\n  close(pipefd[1]);\n\n  // Make sure that all of the global state variables are reset.\n  http_client_fd = -1;\n\n  return 0;\n}"
+        },
+        {
+          "func_location": {
+            "func_name": "InitializeNginx",
+            "file_path": "/src/fuzz/pov_harness.cc",
+            "start_line": 158,
+            "end_line": 278
+          },
+          "func_body": "int InitializeNginx(void)\n{\n  ngx_log_t *log;\n  ngx_cycle_t init_cycle;\n  ngx_core_conf_t  *ccf;\n\n  ngx_debug_init();\n\n  // Just output logs to stderr\n  ngx_log.file = &ngx_log_file;\n  ngx_log.log_level = NGX_LOG_EMERG;\n  ngx_log_file.fd = ngx_stderr;\n  log = &ngx_log;\n\n  ngx_memzero(&init_cycle, sizeof(ngx_cycle_t));\n  init_cycle.log = log;\n  ngx_cycle = &init_cycle;\n\n  init_cycle.pool = ngx_create_pool(1024, log);\n\n  // Set custom argv/argc\n  my_argv[0] = arg1;\n  my_argv[1] = NULL;\n  ngx_argv = ngx_os_argv = my_argv;\n  ngx_argc = 0;\n\n  if (ngx_strerror_init() != NGX_OK) {\n    fprintf(stdout, \"[ERROR] !!Failed to ngx_strerror_init\\n\");\n    exit(-1);\n  }\n\n  ngx_time_init();\n\n  ngx_regex_init();\n  \n  // Weird trick to free a leaking buffer always caught by ASAN\n  // We basically let ngx overwrite the environment variable, free the leak and\n  // restore the environment as before.\n  char *env_before = environ[0];\n  environ[0] = my_argv[0] + 1;\n\n  if (ngx_os_init(log) != NGX_OK) {\n    return 1;\n  }\n\n  free(environ[0]);\n  environ[0] = env_before;\n\n  ngx_crc32_table_init();\n\n  ngx_slab_sizes_init();\n\n  ngx_preinit_modules();\n\n  char path[0x100];\n  ssize_t len = readlink(\"/proc/self/exe\", path, sizeof(path) - 1);\n  if (len == -1) {\n    return 1;\n  }\n  path[len] = '\\0';\n\n  std::string out_dir = dirname(path);\n  std::string log_dir = out_dir + \"/logs\";\n  create_directories(log_dir);\n\n  snprintf(configuration_part2, sizeof(configuration_part2), \"pid %s/nginx.pid;\\n\", log_dir.c_str());\n\n  printf(\"[INFO] config part2 %s \\n\", configuration_part2);\n\n  FILE *fptr = fopen(config_file, \"w\");\n  fprintf(fptr, \"%s\", configuration_part1);\n  fprintf(fptr, \"%s\", configuration_part2);\n  fprintf(fptr, \"%s\", configuration_part3);\n  fclose(fptr);\n  init_cycle.conf_file.len = strlen(config_file);\n  init_cycle.conf_file.data = (unsigned char *) config_file;\n\n  cycle = ngx_init_cycle(&init_cycle);\n\n  if ( cycle == NULL ) {\n    fprintf(stdout, \"[ERROR] init cycle failed probably bad config\\n\");\n    exit(-1);\n  }\n  ngx_os_status(cycle->log);\n\n  ngx_cycle = cycle;\n\n  ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);\n  \n  if (ccf->master && ngx_process == NGX_PROCESS_SINGLE) {\n    ngx_process = NGX_PROCESS_MASTER;\n  }\n\n\n  if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK) {\n    fprintf(stdout, \"[ERROR] !!Failed to ngx_create_pidfile\\n\");\n    exit(-1);\n  }\n  \n  if (ngx_log_redirect_stderr(cycle) != NGX_OK) {\n    fprintf(stdout, \"[ERROR] !!Failed to ngx_log_redirect_stderr\\n\");\n    exit(-1);\n  }\n\n  ngx_event_flags = 1;\n  ngx_queue_init(&ngx_posted_accept_events);\n  ngx_queue_init(&ngx_posted_next_events);\n  ngx_queue_init(&ngx_posted_events);\n  ngx_event_timer_init(cycle->log);\n\n  for (int i = 0; cycle->modules[i]; i++) {\n    if (cycle->modules[i]->init_process) {\n      if (cycle->modules[i]->init_process(cycle) == NGX_ERROR) {\n        //fatal\n        exit(2);\n      }\n    }\n  }\n\n  return 0;\n}"
+        }
+      ]
+    },
+    {
+      "harness_name": "pov_harness",
+      "func_location": {
+        "func_name": "InitializeNginx",
+        "file_path": "/src/fuzz/pov_harness.cc",
+        "start_line": 223,
+        "end_line": 223
+      },
+      "key_conditions": [
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 335,
+          "end_line": 335
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 184,
+          "end_line": 184
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 199,
+          "end_line": 199
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 214,
+          "end_line": 214
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 237,
+          "end_line": 237
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 247,
+          "end_line": 247
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 252,
+          "end_line": 252
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 257,
+          "end_line": 257
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 269,
+          "end_line": 269
+        }
+      ],
+      "should_be_taken_lines": [
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 334,
+          "end_line": 334
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 335,
+          "end_line": 335
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 343,
+          "end_line": 343
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 345,
+          "end_line": 345
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 348,
+          "end_line": 348
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 355,
+          "end_line": 355
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 356,
+          "end_line": 356
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 360,
+          "end_line": 360
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 361,
+          "end_line": 361
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 364,
+          "end_line": 364
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 365,
+          "end_line": 365
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 366,
+          "end_line": 366
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 160,
+          "end_line": 160
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 161,
+          "end_line": 161
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 162,
+          "end_line": 162
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 164,
+          "end_line": 164
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 166,
+          "end_line": 166
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 167,
+          "end_line": 167
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 168,
+          "end_line": 168
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 169,
+          "end_line": 169
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 170,
+          "end_line": 170
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 172,
+          "end_line": 172
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 173,
+          "end_line": 173
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 174,
+          "end_line": 174
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 176,
+          "end_line": 176
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 179,
+          "end_line": 179
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 180,
+          "end_line": 180
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 181,
+          "end_line": 181
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 182,
+          "end_line": 182
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 189,
+          "end_line": 189
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 191,
+          "end_line": 191
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 196,
+          "end_line": 196
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 197,
+          "end_line": 197
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 203,
+          "end_line": 203
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 204,
+          "end_line": 204
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 206,
+          "end_line": 206
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 208,
+          "end_line": 208
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 210,
+          "end_line": 210
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 212,
+          "end_line": 212
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 213,
+          "end_line": 213
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 217,
+          "end_line": 217
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 219,
+          "end_line": 219
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 220,
+          "end_line": 220
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 221,
+          "end_line": 221
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 223,
+          "end_line": 223
+        }
+      ],
+      "analysis_message": [
+        {
+          "sink_detection": "The function `InitializeNginx` contains a potential vulnerability related to the use of the `snprintf` function on line 66. The `snprintf` function is used to format a string into the `configuration_part2` buffer, which could lead to a buffer overflow if the size of the formatted string exceeds the size of `configuration_part2`. However, the size of `configuration_part2` is not provided in the code snippet, making it difficult to determine if a buffer overflow is possible. The `snprintf` function is generally safe if used correctly, as it limits the number of characters written to the buffer, but without knowing the size of `configuration_part2`, we cannot be certain that it is large enough to hold the formatted string. This line is a potential sink point for a buffer overflow vulnerability, which could be detected by a `stack-buffer-overflow` sanitizer if `configuration_part2` is located on the stack and is not large enough to accommodate the formatted string.",
+          "vulnerability_classification": "The code provided is part of a fuzzing harness for testing Nginx. The function `LLVMFuzzerTestOneInput` is the entry point for the fuzzer, which initializes Nginx and processes events and timers. The function `InitializeNginx` is responsible for setting up the Nginx environment, including logging, configuration, and module initialization.\n\nThe potential vulnerability lies in the use of `snprintf` on line 102. The function `snprintf` is used to format a string into the buffer `configuration_part2`. The size of `configuration_part2` is not explicitly defined in the provided code, but it is assumed to be large enough to hold the formatted string. However, if `log_dir` is too long, it could potentially cause a buffer overflow if `configuration_part2` is not sufficiently large.\n\nThe sanitizer type that could detect this issue is a `stack-buffer-overflow`, as `snprintf` writes to a stack-allocated buffer. If the buffer size is not properly managed, it could lead to a stack overflow, which is detectable by AddressSanitizer (ASan).\n\nThe security assumption here is that `configuration_part2` is large enough to hold the formatted string. If this assumption is violated, it could lead to a buffer overflow. The code does not explicitly check the size of `log_dir` against the size of `configuration_part2`, which is a missing security control.\n\nTo exploit this, an attacker would need to control the value of `log_dir` such that it exceeds the buffer size of `configuration_part2`, leading to a stack overflow. This could potentially allow for arbitrary code execution if the overflow is exploited correctly.",
+          "sanitizer_type": "stack-buffer-overflow",
+          "key_conditions_report": "```<file_path>/src/fuzz/pov_harness.cc</file_path>\n<func_prototype_and_func_body>\n1: int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)\n2: {\n3:   static int init = InitializeNginx();\n4:   if(init != 0) {\n5:     fprintf(stdout, \"[ERROR] Init failed\\n\");\n6:     exit(0);\n7:   }\n8: \n9:   //data = (const uint8_t *)\"GET / HTTP/1.1\\r\\nHost: localhost\\r\\nAccept: */*\\r\\n\\r\\n\";\n10:   //size = strlen((const char *)data);\n11: \n12:   // This being here triggers a call to accept. The wrappers will handle the call\n13:   //  and create the first socket.\n14:   ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n15: \n16:   // Create the pipe that will allow nginx to read the data as if it were a socket.\n17:   setup_pipe_data( data, size );\n18: \n19:   // The accept takes a connection, which drops the free connection count to 2. There\n20:   //    could also be a connection to the http auth server which takes up a connection\n21:   //    as well as a connection to the mail proxy. The auth server connection will likely\n22:   //    be disconnected prior to the proxy. Once all these connections are done it means\n23:   //    that there is no additional data in the pipe previously set up so it is time to bail.\n24:   while (ngx_cycle->free_connection_n != 1) {\n25:     ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n26:   }\n27: \n28:   // Clean up the pipes\n29:   close(pipefd[0]);\n30:   close(pipefd[1]);\n31: \n32:   // Make sure that all of the global state variables are reset.\n33:   http_client_fd = -1;\n34: \n35:   return 0;\n36: }\n</func_prototype_and_func_body>\n\n<file_path>/src/fuzz/pov_harness.cc</file_path>\n<func_prototype_and_func_body>\n37: int InitializeNginx(void)\n38: {\n39:   ngx_log_t *log;\n40:   ngx_cycle_t init_cycle;\n41:   ngx_core_conf_t  *ccf;\n42: \n43:   ngx_debug_init();\n44: \n45:   // Just output logs to stderr\n46:   ngx_log.file = &ngx_log_file;\n47:   ngx_log.log_level = NGX_LOG_EMERG;\n48:   ngx_log_file.fd = ngx_stderr;\n49:   log = &ngx_log;\n50: \n51:   ngx_memzero(&init_cycle, sizeof(ngx_cycle_t));\n52:   init_cycle.log = log;\n53:   ngx_cycle = &init_cycle;\n54: \n55:   init_cycle.pool = ngx_create_pool(1024, log);\n56: \n57:   // Set custom argv/argc\n58:   my_argv[0] = arg1;\n59:   my_argv[1] = NULL;\n60:   ngx_argv = ngx_os_argv = my_argv;\n61:   ngx_argc = 0;\n62: \n63:   if (ngx_strerror_init() != NGX_OK) {\n64:     fprintf(stdout, \"[ERROR] !!Failed to ngx_strerror_init\\n\");\n65:     exit(-1);\n66:   }\n67: \n68:   ngx_time_init();\n69: \n70:   ngx_regex_init();\n71:   \n72:   // Weird trick to free a leaking buffer always caught by ASAN\n73:   // We basically let ngx overwrite the environment variable, free the leak and\n74:   // restore the environment as before.\n75:   char *env_before = environ[0];\n76:   environ[0] = my_argv[0] + 1;\n77: \n78:   if (ngx_os_init(log) != NGX_OK) {\n79:     return 1;\n80:   }\n81: \n82:   free(environ[0]);\n83:   environ[0] = env_before;\n84: \n85:   ngx_crc32_table_init();\n86: \n87:   ngx_slab_sizes_init();\n88: \n89:   ngx_preinit_modules();\n90: \n91:   char path[0x100];\n92:   ssize_t len = readlink(\"/proc/self/exe\", path, sizeof(path) - 1);\n93:   if (len == -1) {\n94:     return 1;\n95:   }\n96:   path[len] = '\\0';\n97: \n98:   std::string out_dir = dirname(path);\n99:   std::string log_dir = out_dir + \"/logs\";\n100:   create_directories(log_dir);\n101: \n102:   snprintf(configuration_part2, sizeof(configuration_part2), \"pid %s/nginx.pid;\\n\", log_dir.c_str());\n103: \n104:   printf(\"[INFO] config part2 %s \\n\", configuration_part2);\n105: \n106:   FILE *fptr = fopen(config_file, \"w\");\n107:   fprintf(fptr, \"%s\", configuration_part1);\n108:   fprintf(fptr, \"%s\", configuration_part2);\n109:   fprintf(fptr, \"%s\", configuration_part3);\n110:   fclose(fptr);\n111:   init_cycle.conf_file.len = strlen(config_file);\n112:   init_cycle.conf_file.data = (unsigned char *) config_file;\n113: \n114:   cycle = ngx_init_cycle(&init_cycle);\n115: \n116:   if ( cycle == NULL ) {\n117:     fprintf(stdout, \"[ERROR] init cycle failed probably bad config\\n\");\n118:     exit(-1);\n119:   }\n120:   ngx_os_status(cycle->log);\n121: \n122:   ngx_cycle = cycle;\n123: \n124:   ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);\n125:   \n126:   if (ccf->master && ngx_process == NGX_PROCESS_SINGLE) {\n127:     ngx_process = NGX_PROCESS_MASTER;\n128:   }\n129: \n130: \n131:   if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK) {\n132:     fprintf(stdout, \"[ERROR] !!Failed to ngx_create_pidfile\\n\");\n133:     exit(-1);\n134:   }\n135:   \n136:   if (ngx_log_redirect_stderr(cycle) != NGX_OK) {\n137:     fprintf(stdout, \"[ERROR] !!Failed to ngx_log_redirect_stderr\\n\");\n138:     exit(-1);\n139:   }\n140: \n141:   ngx_event_flags = 1;\n142:   ngx_queue_init(&ngx_posted_accept_events);\n143:   ngx_queue_init(&ngx_posted_next_events);\n144:   ngx_queue_init(&ngx_posted_events);\n145:   ngx_event_timer_init(cycle->log);\n146: \n147:   for (int i = 0; cycle->modules[i]; i++) {\n148:     if (cycle->modules[i]->init_process) {\n149:       if (cycle->modules[i]->init_process(cycle) == NGX_ERROR) {\n150:         //fatal\n151:         exit(2);\n152:       }\n153:     }\n154:   }\n155: \n156:   return 0;\n157: }\n</func_prototype_and_func_body>\n```\nVulnerable line:\n102: snprintf(configuration_part2, sizeof(configuration_part2), \"pid %s/nginx.pid;\\n\", log_dir.c_str());\nTo reach the vulnerable line 102 in the `InitializeNginx` function, we need to analyze the control flow and identify the key conditions and lines that must be executed. Here's the step-by-step analysis:\n\n1. **Function Call Hierarchy:**\n   - The function `LLVMFuzzerTestOneInput` calls `InitializeNginx` at line 3.\n   - The vulnerable line 102 is within the `InitializeNginx` function.\n\n2. **Key Conditional Branches and Exception Handling:**\n   - In `LLVMFuzzerTestOneInput`:\n     - Line 4: `if(init != 0)` checks the return value of `InitializeNginx`. If `init` is not 0, it exits the program. Therefore, `init` must be 0 to proceed.\n   - In `InitializeNginx`:\n     - Line 63: `if (ngx_strerror_init() != NGX_OK)` checks the return value of `ngx_strerror_init`. If it is not `NGX_OK`, the program exits.\n     - Line 78: `if (ngx_os_init(log) != NGX_OK)` checks the return value of `ngx_os_init`. If it is not `NGX_OK`, the function returns 1, which would cause `LLVMFuzzerTestOneInput` to exit.\n     - Line 93: `if (len == -1)` checks the return value of `readlink`. If it is -1, the function returns 1, which would cause `LLVMFuzzerTestOneInput` to exit.\n     - Line 116: `if (cycle == NULL)` checks if `ngx_init_cycle` returns NULL. If it does, the program exits.\n     - Line 126: `if (ccf->master && ngx_process == NGX_PROCESS_SINGLE)` checks the state of `ccf->master` and `ngx_process`.\n     - Line 131: `if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK)` checks the return value of `ngx_create_pidfile`. If it is not `NGX_OK`, the program exits.\n     - Line 136: `if (ngx_log_redirect_stderr(cycle) != NGX_OK)` checks the return value of `ngx_log_redirect_stderr`. If it is not `NGX_OK`, the program exits.\n     - Line 148-151: A loop iterates over `cycle->modules`. If any module's `init_process` returns `NGX_ERROR`, the program exits.\n\n3. **Key Conditions and Lines to be Executed:**\n   - **Key Conditions:**\n     - Line 4: `if(init != 0)` in `LLVMFuzzerTestOneInput`.\n     - Line 63: `if (ngx_strerror_init() != NGX_OK)` in `InitializeNginx`.\n     - Line 78: `if (ngx_os_init(log) != NGX_OK)` in `InitializeNginx`.\n     - Line 93: `if (len == -1)` in `InitializeNginx`.\n     - Line 116: `if (cycle == NULL)` in `InitializeNginx`.\n     - Line 126: `if (ccf->master && ngx_process == NGX_PROCESS_SINGLE)` in `InitializeNginx`.\n     - Line 131: `if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK)` in `InitializeNginx`.\n     - Line 136: `if (ngx_log_redirect_stderr(cycle) != NGX_OK)` in `InitializeNginx`.\n     - Line 148-151: Loop over `cycle->modules` in `InitializeNginx`.\n\n   - **Should Be Taken Lines:**\n     - Lines 3, 12, 14, 17, 24, 25, 29, 30, 33, 34, 35 in `LLVMFuzzerTestOneInput`.\n     - Lines 39-102 in `InitializeNginx`.\n\nBased on the analysis, here are the key conditions and the lines that must be executed:\n\n- **Key Conditions:**\n  - 4, 63, 78, 93, 116, 126, 131, 136, 148\n\n- **Should Be Taken Lines:**\n  - 3, 12, 14, 17, 24, 25, 29, 30, 33, 34, 35, 39, 40, 41, 43, 45, 46, 47, 48, 49, 51, 52, 53, 55, 58, 59, 60, 61, 68, 70, 75, 76, 82, 83, 85, 87, 89, 91, 92, 96, 98, 99, 100, 102"
+        }
+      ],
+      "analyzed_functions": [
+        {
+          "func_location": {
+            "func_name": "LLVMFuzzerTestOneInput",
+            "file_path": "/src/fuzz/pov_harness.cc",
+            "start_line": 332,
+            "end_line": 367
+          },
+          "func_body": "int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)\n{\n  static int init = InitializeNginx();\n  if(init != 0) {\n    fprintf(stdout, \"[ERROR] Init failed\\n\");\n    exit(0);\n  }\n\n  //data = (const uint8_t *)\"GET / HTTP/1.1\\r\\nHost: localhost\\r\\nAccept: */*\\r\\n\\r\\n\";\n  //size = strlen((const char *)data);\n\n  // This being here triggers a call to accept. The wrappers will handle the call\n  //  and create the first socket.\n  ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n\n  // Create the pipe that will allow nginx to read the data as if it were a socket.\n  setup_pipe_data( data, size );\n\n  // The accept takes a connection, which drops the free connection count to 2. There\n  //    could also be a connection to the http auth server which takes up a connection\n  //    as well as a connection to the mail proxy. The auth server connection will likely\n  //    be disconnected prior to the proxy. Once all these connections are done it means\n  //    that there is no additional data in the pipe previously set up so it is time to bail.\n  while (ngx_cycle->free_connection_n != 1) {\n    ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n  }\n\n  // Clean up the pipes\n  close(pipefd[0]);\n  close(pipefd[1]);\n\n  // Make sure that all of the global state variables are reset.\n  http_client_fd = -1;\n\n  return 0;\n}"
+        },
+        {
+          "func_location": {
+            "func_name": "InitializeNginx",
+            "file_path": "/src/fuzz/pov_harness.cc",
+            "start_line": 158,
+            "end_line": 278
+          },
+          "func_body": "int InitializeNginx(void)\n{\n  ngx_log_t *log;\n  ngx_cycle_t init_cycle;\n  ngx_core_conf_t  *ccf;\n\n  ngx_debug_init();\n\n  // Just output logs to stderr\n  ngx_log.file = &ngx_log_file;\n  ngx_log.log_level = NGX_LOG_EMERG;\n  ngx_log_file.fd = ngx_stderr;\n  log = &ngx_log;\n\n  ngx_memzero(&init_cycle, sizeof(ngx_cycle_t));\n  init_cycle.log = log;\n  ngx_cycle = &init_cycle;\n\n  init_cycle.pool = ngx_create_pool(1024, log);\n\n  // Set custom argv/argc\n  my_argv[0] = arg1;\n  my_argv[1] = NULL;\n  ngx_argv = ngx_os_argv = my_argv;\n  ngx_argc = 0;\n\n  if (ngx_strerror_init() != NGX_OK) {\n    fprintf(stdout, \"[ERROR] !!Failed to ngx_strerror_init\\n\");\n    exit(-1);\n  }\n\n  ngx_time_init();\n\n  ngx_regex_init();\n  \n  // Weird trick to free a leaking buffer always caught by ASAN\n  // We basically let ngx overwrite the environment variable, free the leak and\n  // restore the environment as before.\n  char *env_before = environ[0];\n  environ[0] = my_argv[0] + 1;\n\n  if (ngx_os_init(log) != NGX_OK) {\n    return 1;\n  }\n\n  free(environ[0]);\n  environ[0] = env_before;\n\n  ngx_crc32_table_init();\n\n  ngx_slab_sizes_init();\n\n  ngx_preinit_modules();\n\n  char path[0x100];\n  ssize_t len = readlink(\"/proc/self/exe\", path, sizeof(path) - 1);\n  if (len == -1) {\n    return 1;\n  }\n  path[len] = '\\0';\n\n  std::string out_dir = dirname(path);\n  std::string log_dir = out_dir + \"/logs\";\n  create_directories(log_dir);\n\n  snprintf(configuration_part2, sizeof(configuration_part2), \"pid %s/nginx.pid;\\n\", log_dir.c_str());\n\n  printf(\"[INFO] config part2 %s \\n\", configuration_part2);\n\n  FILE *fptr = fopen(config_file, \"w\");\n  fprintf(fptr, \"%s\", configuration_part1);\n  fprintf(fptr, \"%s\", configuration_part2);\n  fprintf(fptr, \"%s\", configuration_part3);\n  fclose(fptr);\n  init_cycle.conf_file.len = strlen(config_file);\n  init_cycle.conf_file.data = (unsigned char *) config_file;\n\n  cycle = ngx_init_cycle(&init_cycle);\n\n  if ( cycle == NULL ) {\n    fprintf(stdout, \"[ERROR] init cycle failed probably bad config\\n\");\n    exit(-1);\n  }\n  ngx_os_status(cycle->log);\n\n  ngx_cycle = cycle;\n\n  ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);\n  \n  if (ccf->master && ngx_process == NGX_PROCESS_SINGLE) {\n    ngx_process = NGX_PROCESS_MASTER;\n  }\n\n\n  if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK) {\n    fprintf(stdout, \"[ERROR] !!Failed to ngx_create_pidfile\\n\");\n    exit(-1);\n  }\n  \n  if (ngx_log_redirect_stderr(cycle) != NGX_OK) {\n    fprintf(stdout, \"[ERROR] !!Failed to ngx_log_redirect_stderr\\n\");\n    exit(-1);\n  }\n\n  ngx_event_flags = 1;\n  ngx_queue_init(&ngx_posted_accept_events);\n  ngx_queue_init(&ngx_posted_next_events);\n  ngx_queue_init(&ngx_posted_events);\n  ngx_event_timer_init(cycle->log);\n\n  for (int i = 0; cycle->modules[i]; i++) {\n    if (cycle->modules[i]->init_process) {\n      if (cycle->modules[i]->init_process(cycle) == NGX_ERROR) {\n        //fatal\n        exit(2);\n      }\n    }\n  }\n\n  return 0;\n}"
+        }
+      ]
+    },
+    {
+      "harness_name": "pov_harness",
+      "func_location": {
+        "func_name": "ngx_create_pool",
+        "file_path": "/src/repo/src/core/ngx_palloc.c",
+        "start_line": 29,
+        "end_line": 29
+      },
+      "key_conditions": [
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 335,
+          "end_line": 335
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 184,
+          "end_line": 184
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 199,
+          "end_line": 199
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 214,
+          "end_line": 214
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 237,
+          "end_line": 237
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 247,
+          "end_line": 247
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 252,
+          "end_line": 252
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 257,
+          "end_line": 257
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 270,
+          "end_line": 270
+        },
+        {
+          "func_name": "ngx_create_pool",
+          "file_path": "/src/repo/src/core/ngx_palloc.c",
+          "start_line": 24,
+          "end_line": 24
+        }
+      ],
+      "should_be_taken_lines": [
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 334,
+          "end_line": 334
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 345,
+          "end_line": 345
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 348,
+          "end_line": 348
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 355,
+          "end_line": 355
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 356,
+          "end_line": 356
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 360,
+          "end_line": 360
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 361,
+          "end_line": 361
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 364,
+          "end_line": 364
+        },
+        {
+          "func_name": "LLVMFuzzerTestOneInput",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 366,
+          "end_line": 366
+        },
+        {
+          "func_name": "InitializeNginx",
+          "file_path": "/src/fuzz/pov_harness.cc",
+          "start_line": 176,
+          "end_line": 176
+        },
+        {
+          "func_name": "ngx_create_pool",
+          "file_path": "/src/repo/src/core/ngx_palloc.c",
+          "start_line": 29,
+          "end_line": 29
+        }
+      ],
+      "analysis_message": [
+        {
+          "sink_detection": "The function `ngx_create_pool` is responsible for creating a memory pool of a specified size. The function takes two parameters: `size` and `log`. The `size` parameter could potentially be attacker-controlled if it is derived from user input. The function uses `ngx_memalign` to allocate memory, and then initializes various fields of the `ngx_pool_t` structure.\n\nThe potential sink point in this function is the use of the `size` parameter in the calculation of `p->d.end` on line 12. This line calculates the end of the memory pool by adding the `size` to the pointer `p`. If `size` is too small, it could lead to a buffer overflow when the pool is used, as the `end` pointer would not correctly represent the end of the allocated memory.\n\nHowever, the function does not perform any explicit security checks or validations on the `size` parameter before using it in these calculations. The function assumes that `size` is a valid and safe value, which could be a security risk if `size` is not properly validated before being passed to this function.\n\nThe sanitizer type that could detect such an issue is `heap-buffer-overflow`, as it would catch any out-of-bounds access resulting from an incorrect `end` pointer calculation.",
+          "vulnerability_classification": "The code provided involves the initialization and operation of an Nginx server within a fuzzing harness. The function `LLVMFuzzerTestOneInput` is the entry point for the fuzzer, which initializes Nginx and processes events and timers. The function `InitializeNginx` sets up the Nginx environment, including memory pool creation via `ngx_create_pool`.\n\nThe potential vulnerability lies in the `ngx_create_pool` function, specifically at the line `p->d.end = (u_char *) p + size;`. This line sets the end of the memory pool to be `size` bytes from the start of the pool. If `size` is smaller than `sizeof(ngx_pool_t)`, this could lead to a situation where `p->d.end` is set before `p->d.last`, potentially causing a heap buffer overflow when the pool is used.\n\nThe code assumes that the `size` parameter passed to `ngx_create_pool` is always large enough to accommodate `sizeof(ngx_pool_t)`. If this assumption is violated, it could lead to a heap buffer overflow, which is detectable by sanitizers like AddressSanitizer (ASAN).",
+          "sanitizer_type": "heap-buffer-overflow",
+          "key_conditions_report": "```<file_path>/src/fuzz/pov_harness.cc</file_path>\n<func_prototype_and_func_body>\n1: int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)\n2: {\n3:   static int init = InitializeNginx();\n4:   if(init != 0) {\n5:     fprintf(stdout, \"[ERROR] Init failed\\n\");\n6:     exit(0);\n7:   }\n8: \n9:   //data = (const uint8_t *)\"GET / HTTP/1.1\\r\\nHost: localhost\\r\\nAccept: */*\\r\\n\\r\\n\";\n10:   //size = strlen((const char *)data);\n11: \n12:   // This being here triggers a call to accept. The wrappers will handle the call\n13:   //  and create the first socket.\n14:   ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n15: \n16:   // Create the pipe that will allow nginx to read the data as if it were a socket.\n17:   setup_pipe_data( data, size );\n18: \n19:   // The accept takes a connection, which drops the free connection count to 2. There\n20:   //    could also be a connection to the http auth server which takes up a connection\n21:   //    as well as a connection to the mail proxy. The auth server connection will likely\n22:   //    be disconnected prior to the proxy. Once all these connections are done it means\n23:   //    that there is no additional data in the pipe previously set up so it is time to bail.\n24:   while (ngx_cycle->free_connection_n != 1) {\n25:     ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n26:   }\n27: \n28:   // Clean up the pipes\n29:   close(pipefd[0]);\n30:   close(pipefd[1]);\n31: \n32:   // Make sure that all of the global state variables are reset.\n33:   http_client_fd = -1;\n34: \n35:   return 0;\n36: }\n</func_prototype_and_func_body>\n\n<file_path>/src/fuzz/pov_harness.cc</file_path>\n<func_prototype_and_func_body>\n37: int InitializeNginx(void)\n38: {\n39:   ngx_log_t *log;\n40:   ngx_cycle_t init_cycle;\n41:   ngx_core_conf_t  *ccf;\n42: \n43:   ngx_debug_init();\n44: \n45:   // Just output logs to stderr\n46:   ngx_log.file = &ngx_log_file;\n47:   ngx_log.log_level = NGX_LOG_EMERG;\n48:   ngx_log_file.fd = ngx_stderr;\n49:   log = &ngx_log;\n50: \n51:   ngx_memzero(&init_cycle, sizeof(ngx_cycle_t));\n52:   init_cycle.log = log;\n53:   ngx_cycle = &init_cycle;\n54: \n55:   init_cycle.pool = ngx_create_pool(1024, log);\n56: \n57:   // Set custom argv/argc\n58:   my_argv[0] = arg1;\n59:   my_argv[1] = NULL;\n60:   ngx_argv = ngx_os_argv = my_argv;\n61:   ngx_argc = 0;\n62: \n63:   if (ngx_strerror_init() != NGX_OK) {\n64:     fprintf(stdout, \"[ERROR] !!Failed to ngx_strerror_init\\n\");\n65:     exit(-1);\n66:   }\n67: \n68:   ngx_time_init();\n69: \n70:   ngx_regex_init();\n71:   \n72:   // Weird trick to free a leaking buffer always caught by ASAN\n73:   // We basically let ngx overwrite the environment variable, free the leak and\n74:   // restore the environment as before.\n75:   char *env_before = environ[0];\n76:   environ[0] = my_argv[0] + 1;\n77: \n78:   if (ngx_os_init(log) != NGX_OK) {\n79:     return 1;\n80:   }\n81: \n82:   free(environ[0]);\n83:   environ[0] = env_before;\n84: \n85:   ngx_crc32_table_init();\n86: \n87:   ngx_slab_sizes_init();\n88: \n89:   ngx_preinit_modules();\n90: \n91:   char path[0x100];\n92:   ssize_t len = readlink(\"/proc/self/exe\", path, sizeof(path) - 1);\n93:   if (len == -1) {\n94:     return 1;\n95:   }\n96:   path[len] = '\\0';\n97: \n98:   std::string out_dir = dirname(path);\n99:   std::string log_dir = out_dir + \"/logs\";\n100:   create_directories(log_dir);\n101: \n102:   snprintf(configuration_part2, sizeof(configuration_part2), \"pid %s/nginx.pid;\\n\", log_dir.c_str());\n103: \n104:   printf(\"[INFO] config part2 %s \\n\", configuration_part2);\n105: \n106:   FILE *fptr = fopen(config_file, \"w\");\n107:   fprintf(fptr, \"%s\", configuration_part1);\n108:   fprintf(fptr, \"%s\", configuration_part2);\n109:   fprintf(fptr, \"%s\", configuration_part3);\n110:   fclose(fptr);\n111:   init_cycle.conf_file.len = strlen(config_file);\n112:   init_cycle.conf_file.data = (unsigned char *) config_file;\n113: \n114:   cycle = ngx_init_cycle(&init_cycle);\n115: \n116:   if ( cycle == NULL ) {\n117:     fprintf(stdout, \"[ERROR] init cycle failed probably bad config\\n\");\n118:     exit(-1);\n119:   }\n120:   ngx_os_status(cycle->log);\n121: \n122:   ngx_cycle = cycle;\n123: \n124:   ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);\n125:   \n126:   if (ccf->master && ngx_process == NGX_PROCESS_SINGLE) {\n127:     ngx_process = NGX_PROCESS_MASTER;\n128:   }\n129: \n130: \n131:   if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK) {\n132:     fprintf(stdout, \"[ERROR] !!Failed to ngx_create_pidfile\\n\");\n133:     exit(-1);\n134:   }\n135:   \n136:   if (ngx_log_redirect_stderr(cycle) != NGX_OK) {\n137:     fprintf(stdout, \"[ERROR] !!Failed to ngx_log_redirect_stderr\\n\");\n138:     exit(-1);\n139:   }\n140: \n141:   ngx_event_flags = 1;\n142:   ngx_queue_init(&ngx_posted_accept_events);\n143:   ngx_queue_init(&ngx_posted_next_events);\n144:   ngx_queue_init(&ngx_posted_events);\n145:   ngx_event_timer_init(cycle->log);\n146: \n147:   for (int i = 0; cycle->modules[i]; i++) {\n148:     if (cycle->modules[i]->init_process) {\n149:       if (cycle->modules[i]->init_process(cycle) == NGX_ERROR) {\n150:         //fatal\n151:         exit(2);\n152:       }\n153:     }\n154:   }\n155: \n156:   return 0;\n157: }\n</func_prototype_and_func_body>\n\n<file_path>/src/repo/src/core/ngx_palloc.c</file_path>\n<func_prototype_and_func_body>\n158: ngx_pool_t *\n159: ngx_create_pool(size_t size, ngx_log_t *log)\n160: {\n161:     ngx_pool_t  *p;\n162: \n163:     p = ngx_memalign(NGX_POOL_ALIGNMENT, size, log);\n164:     if (p == NULL) {\n165:         return NULL;\n166:     }\n167: \n168:     p->d.last = (u_char *) p + sizeof(ngx_pool_t);\n169:     p->d.end = (u_char *) p + size;\n170:     p->d.next = NULL;\n171:     p->d.failed = 0;\n172: \n173:     size = size - sizeof(ngx_pool_t);\n174:     p->max = (size < NGX_MAX_ALLOC_FROM_POOL) ? size : NGX_MAX_ALLOC_FROM_POOL;\n175: \n176:     p->current = p;\n177:     p->chain = NULL;\n178:     p->large = NULL;\n179:     p->cleanup = NULL;\n180:     p->log = log;\n181: \n182:     return p;\n183: }\n</func_prototype_and_func_body>\n```\nVulnerable line:\n169: p->d.end = (u_char *) p + size;\nTo analyze the control flow and identify the key conditions and lines that must be executed to reach the vulnerable line, we will follow the outlined analysis process.\n\n### Control Flow Analysis\n\n1. **Source Function**: The source function is `LLVMFuzzerTestOneInput` starting at line 1.\n\n2. **Function Calls**:\n   - `InitializeNginx()` is called at line 3.\n   - `ngx_create_pool()` is called at line 55 within `InitializeNginx`.\n\n3. **Vulnerable Function**: The vulnerable line is within `ngx_create_pool` at line 169.\n\n4. **Key Conditional Branches**:\n   - In `LLVMFuzzerTestOneInput`:\n     - Line 4: `if(init != 0)` checks if the initialization was successful.\n   - In `InitializeNginx`:\n     - Line 63: `if (ngx_strerror_init() != NGX_OK)`\n     - Line 78: `if (ngx_os_init(log) != NGX_OK)`\n     - Line 93: `if (len == -1)`\n     - Line 116: `if (cycle == NULL)`\n     - Line 126: `if (ccf->master && ngx_process == NGX_PROCESS_SINGLE)`\n     - Line 131: `if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK)`\n     - Line 136: `if (ngx_log_redirect_stderr(cycle) != NGX_OK)`\n     - Line 148: `if (cycle->modules[i]->init_process)`\n     - Line 149: `if (cycle->modules[i]->init_process(cycle) == NGX_ERROR)`\n   - In `ngx_create_pool`:\n     - Line 164: `if (p == NULL)`\n\n5. **Key Conditions to Reach Vulnerable Line**:\n   - The initialization in `LLVMFuzzerTestOneInput` must succeed (`init == 0`).\n   - All conditions in `InitializeNginx` must pass without exiting or returning early.\n   - The memory allocation in `ngx_create_pool` must succeed (`p != NULL`).\n\n### Critical Requirements\n\n- **Key Conditions**:\n  - Line 4: `if(init != 0)`\n  - Line 63: `if (ngx_strerror_init() != NGX_OK)`\n  - Line 78: `if (ngx_os_init(log) != NGX_OK)`\n  - Line 93: `if (len == -1)`\n  - Line 116: `if (cycle == NULL)`\n  - Line 126: `if (ccf->master && ngx_process == NGX_PROCESS_SINGLE)`\n  - Line 131: `if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK)`\n  - Line 136: `if (ngx_log_redirect_stderr(cycle) != NGX_OK)`\n  - Line 148: `if (cycle->modules[i]->init_process)`\n  - Line 149: `if (cycle->modules[i]->init_process(cycle) == NGX_ERROR)`\n  - Line 164: `if (p == NULL)`\n\n- **Should Be Taken Lines**:\n  - Line 3: `static int init = InitializeNginx();`\n  - Line 14: `ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);`\n  - Line 17: `setup_pipe_data( data, size );`\n  - Line 24: `while (ngx_cycle->free_connection_n != 1)`\n  - Line 25: `ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);`\n  - Line 29: `close(pipefd[0]);`\n  - Line 30: `close(pipefd[1]);`\n  - Line 33: `http_client_fd = -1;`\n  - Line 35: `return 0;`\n  - Line 55: `init_cycle.pool = ngx_create_pool(1024, log);`\n  - Line 169: `p->d.end = (u_char *) p + size;` (vulnerable line)\n\nThese line numbers represent the critical path through the code that must be executed to reach the vulnerable line."
+        }
+      ],
+      "analyzed_functions": [
+        {
+          "func_location": {
+            "func_name": "LLVMFuzzerTestOneInput",
+            "file_path": "/src/fuzz/pov_harness.cc",
+            "start_line": 332,
+            "end_line": 367
+          },
+          "func_body": "int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)\n{\n  static int init = InitializeNginx();\n  if(init != 0) {\n    fprintf(stdout, \"[ERROR] Init failed\\n\");\n    exit(0);\n  }\n\n  //data = (const uint8_t *)\"GET / HTTP/1.1\\r\\nHost: localhost\\r\\nAccept: */*\\r\\n\\r\\n\";\n  //size = strlen((const char *)data);\n\n  // This being here triggers a call to accept. The wrappers will handle the call\n  //  and create the first socket.\n  ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n\n  // Create the pipe that will allow nginx to read the data as if it were a socket.\n  setup_pipe_data( data, size );\n\n  // The accept takes a connection, which drops the free connection count to 2. There\n  //    could also be a connection to the http auth server which takes up a connection\n  //    as well as a connection to the mail proxy. The auth server connection will likely\n  //    be disconnected prior to the proxy. Once all these connections are done it means\n  //    that there is no additional data in the pipe previously set up so it is time to bail.\n  while (ngx_cycle->free_connection_n != 1) {\n    ngx_process_events_and_timers((ngx_cycle_t *)ngx_cycle);\n  }\n\n  // Clean up the pipes\n  close(pipefd[0]);\n  close(pipefd[1]);\n\n  // Make sure that all of the global state variables are reset.\n  http_client_fd = -1;\n\n  return 0;\n}"
+        },
+        {
+          "func_location": {
+            "func_name": "InitializeNginx",
+            "file_path": "/src/fuzz/pov_harness.cc",
+            "start_line": 158,
+            "end_line": 278
+          },
+          "func_body": "int InitializeNginx(void)\n{\n  ngx_log_t *log;\n  ngx_cycle_t init_cycle;\n  ngx_core_conf_t  *ccf;\n\n  ngx_debug_init();\n\n  // Just output logs to stderr\n  ngx_log.file = &ngx_log_file;\n  ngx_log.log_level = NGX_LOG_EMERG;\n  ngx_log_file.fd = ngx_stderr;\n  log = &ngx_log;\n\n  ngx_memzero(&init_cycle, sizeof(ngx_cycle_t));\n  init_cycle.log = log;\n  ngx_cycle = &init_cycle;\n\n  init_cycle.pool = ngx_create_pool(1024, log);\n\n  // Set custom argv/argc\n  my_argv[0] = arg1;\n  my_argv[1] = NULL;\n  ngx_argv = ngx_os_argv = my_argv;\n  ngx_argc = 0;\n\n  if (ngx_strerror_init() != NGX_OK) {\n    fprintf(stdout, \"[ERROR] !!Failed to ngx_strerror_init\\n\");\n    exit(-1);\n  }\n\n  ngx_time_init();\n\n  ngx_regex_init();\n  \n  // Weird trick to free a leaking buffer always caught by ASAN\n  // We basically let ngx overwrite the environment variable, free the leak and\n  // restore the environment as before.\n  char *env_before = environ[0];\n  environ[0] = my_argv[0] + 1;\n\n  if (ngx_os_init(log) != NGX_OK) {\n    return 1;\n  }\n\n  free(environ[0]);\n  environ[0] = env_before;\n\n  ngx_crc32_table_init();\n\n  ngx_slab_sizes_init();\n\n  ngx_preinit_modules();\n\n  char path[0x100];\n  ssize_t len = readlink(\"/proc/self/exe\", path, sizeof(path) - 1);\n  if (len == -1) {\n    return 1;\n  }\n  path[len] = '\\0';\n\n  std::string out_dir = dirname(path);\n  std::string log_dir = out_dir + \"/logs\";\n  create_directories(log_dir);\n\n  snprintf(configuration_part2, sizeof(configuration_part2), \"pid %s/nginx.pid;\\n\", log_dir.c_str());\n\n  printf(\"[INFO] config part2 %s \\n\", configuration_part2);\n\n  FILE *fptr = fopen(config_file, \"w\");\n  fprintf(fptr, \"%s\", configuration_part1);\n  fprintf(fptr, \"%s\", configuration_part2);\n  fprintf(fptr, \"%s\", configuration_part3);\n  fclose(fptr);\n  init_cycle.conf_file.len = strlen(config_file);\n  init_cycle.conf_file.data = (unsigned char *) config_file;\n\n  cycle = ngx_init_cycle(&init_cycle);\n\n  if ( cycle == NULL ) {\n    fprintf(stdout, \"[ERROR] init cycle failed probably bad config\\n\");\n    exit(-1);\n  }\n  ngx_os_status(cycle->log);\n\n  ngx_cycle = cycle;\n\n  ccf = (ngx_core_conf_t *) ngx_get_conf(cycle->conf_ctx, ngx_core_module);\n  \n  if (ccf->master && ngx_process == NGX_PROCESS_SINGLE) {\n    ngx_process = NGX_PROCESS_MASTER;\n  }\n\n\n  if (ngx_create_pidfile(&ccf->pid, cycle->log) != NGX_OK) {\n    fprintf(stdout, \"[ERROR] !!Failed to ngx_create_pidfile\\n\");\n    exit(-1);\n  }\n  \n  if (ngx_log_redirect_stderr(cycle) != NGX_OK) {\n    fprintf(stdout, \"[ERROR] !!Failed to ngx_log_redirect_stderr\\n\");\n    exit(-1);\n  }\n\n  ngx_event_flags = 1;\n  ngx_queue_init(&ngx_posted_accept_events);\n  ngx_queue_init(&ngx_posted_next_events);\n  ngx_queue_init(&ngx_posted_events);\n  ngx_event_timer_init(cycle->log);\n\n  for (int i = 0; cycle->modules[i]; i++) {\n    if (cycle->modules[i]->init_process) {\n      if (cycle->modules[i]->init_process(cycle) == NGX_ERROR) {\n        //fatal\n        exit(2);\n      }\n    }\n  }\n\n  return 0;\n}"
+        },
+        {
+          "func_location": {
+            "func_name": "ngx_create_pool",
+            "file_path": "/src/repo/src/core/ngx_palloc.c",
+            "start_line": 18,
+            "end_line": 43
+          },
+          "func_body": "ngx_pool_t *\nngx_create_pool(size_t size, ngx_log_t *log)\n{\n    ngx_pool_t  *p;\n\n    p = ngx_memalign(NGX_POOL_ALIGNMENT, size, log);\n    if (p == NULL) {\n        return NULL;\n    }\n\n    p->d.last = (u_char *) p + sizeof(ngx_pool_t);\n    p->d.end = (u_char *) p + size;\n    p->d.next = NULL;\n    p->d.failed = 0;\n\n    size = size - sizeof(ngx_pool_t);\n    p->max = (size < NGX_MAX_ALLOC_FROM_POOL) ? size : NGX_MAX_ALLOC_FROM_POOL;\n\n    p->current = p;\n    p->chain = NULL;\n    p->large = NULL;\n    p->cleanup = NULL;\n    p->log = log;\n\n    return p;\n}"
+        }
+      ]
+    }
+  ]
+}

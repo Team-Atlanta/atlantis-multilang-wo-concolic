@@ -1,0 +1,36 @@
+#!/usr/bin/bash
+
+set -e
+set -x
+
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <crs_multilang_path> <cp> [-- [mlla_args]]"
+  exit 1
+fi
+
+CRS_MULTILANG_PATH="$1"
+CP="$2"
+MLLA_ARGS=""
+if [ "$3" == "--" ]; then
+  shift 2
+  MLLA_ARGS="$@"
+fi
+
+date=$(date +%m.%d)
+
+# get --harness [harness_name] from MLLA_ARGS
+harness_name=""
+args_array=($MLLA_ARGS)
+for ((i = 0; i < ${#args_array[@]}; i++)); do
+  if [[ "${args_array[$i]}" == "--harness" ]]; then
+    harness_name="${args_array[$((i + 1))]}"
+    break
+  fi
+done
+
+cwd=$(pwd)
+pushd "$CRS_MULTILANG_PATH"
+TEST_TIMEOUT=1800 LITELLM_KEY=$LLM_KEY ./run.py run --target $CP --config $cwd/ci.config --start-other-services --mlla \
+  $cwd $MLLA_ARGS --enable-telemetry --project-name $date-$harness_name-generator  --ci --agent generator | tee \
+  $cwd/.ci-stdout
+popd

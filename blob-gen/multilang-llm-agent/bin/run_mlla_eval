@@ -1,0 +1,129 @@
+#!/usr/bin/bash
+
+set -e
+set -x
+
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <crs_multilang_path> <cp> [-- [mlla_args]]"
+  exit 1
+fi
+
+CRS_MULTILANG_PATH="$1"
+CP="$2"
+MLLA_ARGS=""
+if [ "$3" == "--" ]; then
+  shift 2
+  MLLA_ARGS="$@"
+fi
+
+date=$(date +%m.%d)
+
+# get --harness [harness_name] from MLLA_ARGS
+harness_name=""
+args_array=($MLLA_ARGS)
+for ((i = 0; i < ${#args_array[@]}; i++)); do
+  if [[ "${args_array[$i]}" == "--harness" ]]; then
+    harness_name="${args_array[$((i + 1))]}"
+    break
+  fi
+done
+
+PRETTY_CP_NAME=$(echo $CP | sed 's/\//_/g')
+MLLA_PATH=$(pwd)
+
+# Set LSP_SERVER_URL only if not already set
+if [ -z "${LSP_SERVER_URL+x}" ]; then
+    # Get port mapping from docker ps with retry loop
+    MAX_RETRIES=5
+    RETRY_COUNT=0
+    LSP_SERVER_LAUNCHED=false
+
+    while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+        PORT_MAPPING=$(docker ps --format "{{.Names}} {{.Ports}}" | grep "${PRETTY_CP_NAME}_local-lsp-1" | grep "172.17.0.1:.*->3303/tcp" | awk '{print $2}')
+
+        # Extract host port from mapping (e.g., 172.17.0.1:3305->3303/tcp)
+        if [ ! -z "$PORT_MAPPING" ]; then
+            HOST_PORT=$(echo $PORT_MAPPING | cut -d':' -f2 | cut -d'-' -f1)
+            LSP_SERVER_URL="172.17.0.1:$HOST_PORT"
+            break
+        else
+            echo "No LSP server found (attempt $((RETRY_COUNT + 1))/$MAX_RETRIES)"
+
+            # Only try to launch LSP server on first attempt
+            if [ "$LSP_SERVER_LAUNCHED" = false ]; then
+                echo "Let's try to launch LSP server..."
+                sleep $((RANDOM % 21))
+                pushd "$MLLA_PATH"
+                ./bin/run_lsp_server $CRS_MULTILANG_PATH $CP
+                popd
+                LSP_SERVER_LAUNCHED=true
+            fi
+
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                sleep 3
+            fi
+        fi
+    done
+
+    if [ -z "$PORT_MAPPING" ]; then
+        echo "Failed to find LSP server after $MAX_RETRIES attempts"
+        exit 1
+    fi
+fi
+echo "LSP_SERVER_URL: $LSP_SERVER_URL"
+
+# Set LSP_SERVER_URL only if not already set
+if [ -z "${JOERN_URL+x}" ]; then
+    # Get port mapping from docker ps with retry loop
+    MAX_RETRIES=5
+    RETRY_COUNT=0
+    JOERN_LAUNCHED=false
+
+    while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+        PORT_MAPPING=$(docker ps --format "{{.Names}} {{.Ports}}" | grep "${PRETTY_CP_NAME}_local-joern-1" | grep "172.17.0.1:.*->9909/tcp" | awk '{print $2}')
+
+        # Extract host port from mapping (e.g., 172.17.0.1:3305->3303/tcp)
+        if [ ! -z "$PORT_MAPPING" ]; then
+            HOST_PORT=$(echo $PORT_MAPPING | cut -d':' -f2 | cut -d'-' -f1)
+            JOERN_URL="172.17.0.1:$HOST_PORT"
+            break
+        else
+            echo "No Joern server found (attempt $((RETRY_COUNT + 1))/$MAX_RETRIES)"
+
+            # Only try to launch LSP server on first attempt
+            if [ "$JOERN_LAUNCHED" = false ]; then
+                echo "Let's try to launch Joern server..."
+                sleep $((RANDOM % 21))
+                pushd "$MLLA_PATH"
+                ./bin/run_joern_server $CRS_MULTILANG_PATH $CP
+                popd
+                JOERN_LAUNCHED=true
+            fi
+
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                sleep 3
+            fi
+        fi
+    done
+
+    if [ -z "$PORT_MAPPING" ]; then
+        echo "Failed to find LSP server after $MAX_RETRIES attempts"
+        exit 1
+    fi
+fi
+echo "JOERN_URL: $JOERN_URL"
+
+DELTA_ARG=""
+
+if [[ -n "${DELTA:-}" ]]; then
+    DELTA_ARG="--delta-mode"
+fi
+
+cwd=$(pwd)
+pushd "$CRS_MULTILANG_PATH"
+LITELLM_KEY=$LLM_KEY CODE_INDEXER_REDIS_URL=172.17.0.1 LSP_SERVER_URL=$LSP_SERVER_URL JOERN_URL=$JOERN_URL ./run.py run --target $CP --config $cwd/ci.config $DELTA_ARG --mlla \
+  $cwd $MLLA_ARGS --enable-telemetry --project-name $date-$harness_name | tee \
+  $cwd/.ci-stdout
+popd

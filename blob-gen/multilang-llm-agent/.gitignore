@@ -1,0 +1,26 @@
+__pycache__/
+# Don't commit secrets
+.env.secret
+dump.rdb
+checker_output/
+.vscode
+phoenix_data/
+redis_data/
+.secrets
+.coverage
+coverage.xml
+.ci-stdout
+ci-results/
+summary.md
+targets.txt*
+results_summary.html
+test
+*__t/
+bin/run_mlla_soyeon
+.cursor*
+CRS-multilang
+tmp/
+logs/
+soyeon.config
+relations.txt
+/prompts/

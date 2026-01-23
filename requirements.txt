@@ -1,0 +1,10 @@
+coloredlogs
+python_on_whales
+pyinotify
+graphviz
+line_profiler
+redis
+clang==14.0
+pyyaml
+loguru
+psutil

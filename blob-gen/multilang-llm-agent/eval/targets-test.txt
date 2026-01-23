@@ -1,0 +1,6 @@
+aixcc/jvm/ztzip
+aixcc/jvm/aerospike
+aixcc/jvm/cxf
+aixcc/jvm/batik
+aixcc/jvm/widoco
+aixcc/jvm/jakarta-mail-api

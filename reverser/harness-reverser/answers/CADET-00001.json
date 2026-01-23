@@ -1,0 +1,56 @@
+{
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_count",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "commands",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "command_count"
+          },
+          "items": {
+            "kind": "record",
+            "name": "Command"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "Command",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "code",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [0]
+        },
+        {
+          "name": "size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "data",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "size"
+          }
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

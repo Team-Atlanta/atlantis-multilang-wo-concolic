@@ -1,0 +1,5 @@
+#!/bin/bash
+
+get_cp no_cov_symcc
+
+test_lsp.py

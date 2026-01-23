@@ -1,0 +1,222 @@
+{
+  "is_partial": false,
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "CreateTxn",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "path",
+          "kind": "string",
+          "possible_values": [
+            "/",
+            "/zookeeper",
+            "/test"
+          ]
+        },
+        {
+          "name": "data_length",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [],
+          "endianness": "big"
+        },
+        {
+          "name": "data",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "data_length"
+          },
+          "possible_values": []
+        },
+        {
+          "name": "acl_size",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [
+            {
+              "start": 0,
+              "end": 10
+            }
+          ],
+          "endianness": "big"
+        },
+        {
+          "name": "acl",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "acl_size"
+          },
+          "items": {
+            "kind": "record",
+            "name": "ACL"
+          }
+        },
+        {
+          "name": "ephemeral",
+          "kind": "int",
+          "byte_size": 1,
+          "possible_values": [
+            0,
+            1
+          ],
+          "endianness": "big",
+          "note": "This is actually a boolean in the code (see CreateTxn.java line 110), but represented as a byte in the binary format"
+        },
+        {
+          "name": "parentCVersion",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [],
+          "endianness": "big"
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "TxnHeader",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "clientId",
+          "kind": "int",
+          "byte_size": 8,
+          "possible_values": [],
+          "endianness": "big"
+        },
+        {
+          "name": "cxid",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [],
+          "endianness": "big"
+        },
+        {
+          "name": "zxid",
+          "kind": "int",
+          "byte_size": 8,
+          "possible_values": [],
+          "endianness": "big"
+        },
+        {
+          "name": "time",
+          "kind": "int",
+          "byte_size": 8,
+          "possible_values": [],
+          "endianness": "big"
+        },
+        {
+          "name": "type",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [
+            1
+          ],
+          "endianness": "big"
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "ACL",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "perms",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [
+            1,
+            2,
+            4,
+            8,
+            16,
+            31
+          ],
+          "endianness": "big"
+        },
+        {
+          "name": "scheme",
+          "kind": "string",
+          "possible_values": [
+            "world",
+            "auth",
+            "digest",
+            "host",
+            "ip"
+          ]
+        },
+        {
+          "name": "id",
+          "kind": "string",
+          "possible_values": [
+            "anyone"
+          ]
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "byte_size": {
+        "start": 0,
+        "end": 10000
+      },
+      "fields": [
+        {
+          "name": "numRecords",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [
+            {
+              "start": 0,
+              "end": 10
+            }
+          ],
+          "endianness": "big"
+        },
+        {
+          "name": "records",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "numRecords"
+          },
+          "items": {
+            "kind": "record",
+            "name": "TransactionRecord"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "TransactionRecord",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "txnHeader",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "TxnHeader"
+          }
+        },
+        {
+          "name": "createTxn",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "CreateTxn"
+          }
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

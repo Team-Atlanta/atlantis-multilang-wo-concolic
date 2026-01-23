@@ -1,0 +1,9 @@
+services:
+  lsp:
+    ports:
+      - "172.17.0.1:$PORT:3303"
+    network_mode: bridge
+  joern:
+    ports:
+      - "172.17.0.1:$PORT:9909"
+    network_mode: bridge

@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+
+import os
+import subprocess
+import time
+import sys
+from pathlib import Path
+from libCRS import (
+    init_cp_in_runner,
+)
+
+
+def main(shared_dir, harness_name):
+    cp = init_cp_in_runner()
+    harness = cp.get_harnesses()[harness_name]
+    shared_dir = Path(shared_dir)
+    cov_shared_dir = shared_dir / "coverage_shared_dir" / harness_name
+    cov_request_dir = shared_dir / "cov_request" / harness_name
+    cov_shared_dir.mkdir(parents=True, exist_ok=True)
+    cov_request_dir.mkdir(parents=True, exist_ok=True)
+    worker_idx = int(os.environ.get("CUR_WORKER", "0"))
+    cov_file = Path(f"/executor/{harness_name}/dummy/uniafl_cov/tmp_{worker_idx}.cov")
+    done = set()
+    while True:
+        for file in cov_request_dir.glob("*"):
+            dst_file = cov_shared_dir / f"{file.name}.cov"
+            if file in done or file.name.startswith("."):
+                continue
+            if dst_file.exists():
+                done.add(file)
+                continue
+            if cov_file.exists():
+                cov_file.unlink()
+            harness.run_input(file)
+            dst_file = cov_shared_dir / f"{file.name}.cov"
+            subprocess.run(["rsync", "-a", str(cov_file), str(dst_file)], check=False)
+            done.add(file)
+        time.sleep(1)
+
+
+if __name__ == "__main__":
+    main(sys.argv[1], sys.argv[2])

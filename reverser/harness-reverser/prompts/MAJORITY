@@ -1,0 +1,8 @@
+Generated Testlangs:
+
+<testlangs>
+
+Please choose the best testlang from the above list.
+You can also add your own testlang if you think it is better.
+Or, you can combine multiple testlangs into one for better results.
+Please provide the testlang in JSON5 format between <testlang> and </testlang> at the end of the message.

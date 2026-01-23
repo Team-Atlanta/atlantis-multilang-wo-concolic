@@ -1,0 +1,27 @@
+[project]
+name = "uniafl-customgen"
+version = "0.1.0"
+description = ""
+authors = [{ name = "Kangsu Kim", email = "ksalpha.x@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.10"
+dynamic = ["dependencies"]
+
+[tool.poetry]
+packages = [{ include = "customgen", from = "src" }]
+include = [
+    { path = "src/customgen/generated/**/*", format = [
+        "sdist",
+        "wheel",
+    ] },
+]
+
+[tool.poetry.dependencies]
+grpcio = { version = "==1.71.0" }
+pillow = { version = ">=11.2.1,<12.0.0" }
+grammarinator = { path = "./third_party/grammarinator" }
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

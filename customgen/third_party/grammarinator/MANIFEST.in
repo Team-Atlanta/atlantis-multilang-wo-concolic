@@ -1,0 +1,2 @@
+include grammarinator/tool/resources/**/*
+exclude grammarinator/tool/g4/ANTLRv4*.py

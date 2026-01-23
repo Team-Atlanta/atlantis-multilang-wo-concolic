@@ -1,0 +1,3 @@
+Before generating the `testlang`, use the provided Tool to request any necessary source code for information gathering.
+Search for all functions required to analyze the input structure and gather sufficient information about each field's value.
+Once all required information has been collected, output ONLY the message "END CODE SEARCH" and DO NOT proceed to next step.

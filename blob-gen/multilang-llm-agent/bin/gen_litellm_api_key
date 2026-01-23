@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+
+set -e
+set -x
+
+echo "Generating new LLM key..."
+response=$(curl -s -X POST "$LITELLM_URL/key/generate" \
+  -H "Authorization: Bearer $LITELLM_MASTER_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}')
+key=$(echo "$response" | jq -r '.key')
+if [ -z "$key" ] || [ "$key" = "null" ]; then
+  echo "Error: Failed to generate key"
+  exit 1
+fi
+echo "LLM_KEY=$key" >>$GITHUB_ENV
+echo "llm_key=$key" >>$GITHUB_OUTPUT

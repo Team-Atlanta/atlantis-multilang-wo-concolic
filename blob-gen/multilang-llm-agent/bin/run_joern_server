@@ -1,0 +1,45 @@
+#!/usr/bin/bash
+
+set -e
+set -x
+
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <crs_multilang_path> <cp>"
+  exit 1
+fi
+
+CRS_MULTILANG_PATH="$1"
+CP="$2"
+LSP_OVERRIDE_FILE=`realpath lsp.override.yml`
+if [ -z "${PROJ_NAME:-}" ]; then
+    PROJ_NAME=$(echo "$CP" | tr '/' '_')
+fi
+
+# Function to check if port is in use
+check_port() {
+    local port=$1
+    if netstat -tuln | grep "172.17.0.1:$port "; then
+        return 0  # Port is in use
+    else
+        return 1  # Port is available
+    fi
+}
+
+# Initial port
+if [ -z "${PORT:-}" ]; then
+    PORT=9909
+    # Try to find an available port
+    while check_port $PORT; do
+        echo "Port $PORT is in use, trying next port..."
+        sleep $((RANDOM % 3))
+        PORT=$((PORT + 1))
+    done
+fi
+
+echo "Using port $PORT"
+
+pushd "$CRS_MULTILANG_PATH"
+pip install -r requirements.txt
+./run.py run --target $CP --build-only
+CP=$CP PORT=$PORT docker compose -p ${PROJ_NAME}_local -f other-services.yml -f $LSP_OVERRIDE_FILE up joern --build -d
+popd

@@ -1,0 +1,14 @@
+/.vscode/
+*.pyc
+/build/
+*~
+.DS_Store
+*.swp
+.venv
+.gdb_history
+
+# IntelliJ IDEA
+/.idea
+**/*.iml
+projects/**/Dockerfile.multilang
+infra/base-images/multilang-clang/manager.*

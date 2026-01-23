@@ -1,0 +1,21 @@
+{
+    "_description": "Used to download the runtime dependencies for running Clang",
+    "runtimeDependencies": [
+        {
+            "id": "Clangd",
+            "description": "Clangd for Linux (x64)",
+            "url": "https://github.com/clangd/clangd/releases/download/20.1.0/clangd-linux-20.1.0.zip",
+            "platformId": "linux-x64",
+            "archiveType": "zip",
+            "binaryName": "clangd"
+        },
+        {
+            "id": "Clangd-indexer",
+            "description": "Clangd-indexer for Linux (x64)",
+            "url": "https://github.com/clangd/clangd/releases/download/20.1.0/clangd_indexing_tools-linux-20.1.0.zip",
+            "platformId": "linux-x64",
+            "archiveType": "zip",
+            "binaryName": "clangd-indexer"
+        }
+    ]
+}

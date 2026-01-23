@@ -1,0 +1,47 @@
+# Build dynamorio
+FROM ghcr.io/aixcc-finals/base-runner:v1.3.0 AS tracer-dynamorio-builder
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    wget \
+    tar
+
+ENV TRACE_TOOL_DIR=/trace-tool
+COPY ./tools $TRACE_TOOL_DIR
+
+
+ENV TRACER_DYNAMORIO_TOOL_DIR=$TRACE_TOOL_DIR/dynamorio
+RUN cd $TRACER_DYNAMORIO_TOOL_DIR && \
+    chmod +x build.sh && \
+    ./build.sh
+
+
+# Build tracer image
+FROM ghcr.io/aixcc-finals/base-runner:v1.3.0
+
+RUN apt-get update && apt-get install -y python3 python3-pip
+
+RUN python3 -m pip install loguru pydantic 
+
+ENV TRACE_TOOL_DIR=/trace-tool
+ENV DYNAMORIO_TOOL_DIR=$TRACE_TOOL_DIR/dynamorio
+ENV DYNAMORIO_HOME=$DYNAMORIO_TOOL_DIR/DynamoRIO-Linux-11.90.20147
+ENV DYNAMORIO_PLUGIN=$DYNAMORIO_TOOL_DIR/libfunction_trace.so
+
+
+COPY --from=tracer-dynamorio-builder $DYNAMORIO_HOME/bin64 $DYNAMORIO_HOME/bin64
+COPY --from=tracer-dynamorio-builder $DYNAMORIO_HOME/lib64 $DYNAMORIO_HOME/lib64
+COPY --from=tracer-dynamorio-builder $DYNAMORIO_HOME/lib32 $DYNAMORIO_HOME/lib32
+
+RUN mkdir $DYNAMORIO_HOME/ext
+COPY --from=tracer-dynamorio-builder $DYNAMORIO_HOME/ext/lib64 $DYNAMORIO_HOME/ext/lib64
+
+COPY --from=tracer-dynamorio-builder $DYNAMORIO_PLUGIN $DYNAMORIO_PLUGIN
+
+
+ENV TRACER_PATH=/tracer
+
+COPY ./src $TRACER_PATH
+
+WORKDIR $TRACER_PATH

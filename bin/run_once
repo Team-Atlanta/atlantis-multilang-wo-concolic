@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import json
+from libCRS import (
+    Config,
+    init_cp_in_runner,
+)
+
+if __name__ == "__main__":
+    conf = Config(0, 1).load("/crs.config")
+    cp = init_cp_in_runner()
+    name = sys.argv[1]
+    harness = cp.get_harnesses()[name]
+    ret = []
+    worker_idx = int(os.environ.get("CUR_WORKER", "0"))
+    raw_cov = f"/executor/{sys.argv[1]}/dummy/uniafl_cov/tmp_{worker_idx}"
+    line_cov = raw_cov+".cov"
+    for blob_path in sys.argv[2:]:
+        ret.append((blob_path, harness.run_input(blob_path)))
+        try:
+            os.rename(raw_cov, blob_path + ".raw_cov")
+            os.rename(line_cov, blob_path + ".cov")
+        except:
+            pass
+    for r in ret:
+        print(r)

@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+
+set -e
+set -x
+
+echo "Retrieving LLM usage info for key: $LLM_KEY"
+response=$(curl -s -X GET "$LITELLM_URL/key/info?key=$LLM_KEY" \
+  -H "Authorization: Bearer $LLM_KEY")
+cost=$(echo "$response" | jq -r '.info.spend')
+echo "spend=$cost" >>$GITHUB_OUTPUT

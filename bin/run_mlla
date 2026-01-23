@@ -1,0 +1,19 @@
+#!/bin/bash
+sysctl -w fs.file-max=2097152
+ulimit -c 0
+get_cp
+main.py &
+sleep 10
+
+if [ -z "${RUN_SHELL}" ]; then
+
+  echo mlla_args: "$@"
+  cd /mlla
+  python -m mlla.main --cp $SRC $@
+  # while true; do
+  #   echo "hello"
+  #   sleep 1
+  # done
+else
+  /bin/bash
+fi

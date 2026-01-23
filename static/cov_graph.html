@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fuzzer Crash Reports</title>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      padding: 20px;
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Fuzzer Crash Reports</h2>
+    <table id="crashReportTable" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>STATUS</th>
+          <th>FINDER</th>
+          <th>HARNESS</th>
+          <th>POV</th>
+          <th>UUID</th>
+          <th>SANITIZER OUTPUT</th>
+          <th>TIME (S)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows will be injected here -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="container">
+    <h2> Coverage over time</h2>
+
+    <div style="width: 50%;margin: text-align: left;">
+      <canvas id="numericTimeChart"></canvas>
+    </div>
+  </div>
+
+    <script>
+        // Load JSON file from the same directory
+        fetch('cov.json') // Replace 'data.json' with your JSON file name
+            .then(response => response.json()) // Parse JSON data
+            .then(jsonData => {
+                // Convert JSON data to {x: time, y: value} format
+                const formattedData = jsonData.map(item => ({
+                    x: item.time,  // Use numeric time directly
+                    y: item.cov,
+                    finders: item.finders
+                }));
+
+                drawNumericTimeChart(formattedData);
+            })
+            .catch(error => console.error('Error loading JSON:', error));
+
+        function drawNumericTimeChart(data) {
+            const ctx = document.getElementById('numericTimeChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line', // Line graph
+                data: {
+                    datasets: [{
+                        label: 'coverage',
+                        data: data, // Data in {x: time, y: value} format
+                        fill: false,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(75, 192, 192, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    let dataPoint = tooltipItem.raw;
+                                    return `Finders: ${dataPoint.finders}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear', // Numeric axis
+                            title: {
+                                display: true,
+                                text: 'Time (Seconds)' // Change based on your time unit
+                            },
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Coverage'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        $(document).ready(function() {
+          // Load JSON data from an external file (make sure the file path is correct)
+          $.getJSON('crash.json', function(crashReports) {
+            // Populate the table with JSON data
+            crashReports.forEach(function(report) {
+              $('#crashReportTable tbody').append(`
+                <tr>
+                  <td>${report["Status"]}</td>
+                  <td>${report["Finder"]}</td>
+                  <td>${report["Harness"]}</td>
+                  <td>${report["PoV"]}</td>
+                  <td>${report["UUID"]}</td>
+                  <td>${report["Sanitizer Output"].replace(/\n/g, '<br>')}</td>
+                  <td>${report["Time (s)"]}</td>
+                </tr>
+              `);
+            });
+            // Initialize DataTable on the table once data is loaded
+            $('#crashReportTable').DataTable({
+              paging: true,
+              searching: true,
+              ordering: true,
+              info: true,
+              order: [[6, "desc"]] // Order by TIME (S) descending by default
+            });
+          }).fail(function(jqxhr, textStatus, error) {
+            console.error("Error loading JSON: ", textStatus, error);
+          });
+        });
+    </script>
+</body>
+</html>

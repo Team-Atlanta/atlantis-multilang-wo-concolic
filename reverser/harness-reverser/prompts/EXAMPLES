@@ -1,0 +1,219 @@
+
+# Examples
+Refer to the <harness-example-1>, <chain-of-thought-example-1>, and <testlang-example-1> blocks in the provided examples to understand how to approach similar programs.
+Always prioritize clarity and correctness in your output.
+
+<harness-example-1>
+if input_size > 0x1000:
+  panic
+i = 0
+cmd_cnt = input[i:i + 4]; i += 4
+cmd_i = 0
+while i < input_size && cmd_i < cmd_cnt:
+  cmd_i += 1
+  opcode = input[i:i + 4]; i += 4
+  common_num0 = input[i:i + 4]; i += 4
+  common_num1 = input[i:i + 4]; i += 4
+  if opcode == 0:
+    flag = input[i:i + 4]; i += 4
+    data_one_size = input[i:i + 4]; i += 4
+    data_one = input[i:i + data_one_size]; i += data_one_size
+    data_two_size = input[i:i + 4]; i += 4
+    data_two = input[i:i + data_two_size]; i += data_two_size
+    call0(opcode, flag, data_one, data_two)
+  else if opcode == 1:
+    flag = base64_decode(input[i:i + 4]); i += 4
+    data_one_size = input[i:i + 4]; i += 4
+    data_one = input[i:i + data_one_size]; i += data_one_size
+    data_one_idx = input[i:i + 4]; i += 4
+    call1(opcode, flag, data_one[data_one_idx])
+  else
+    panic
+</harness-example-1>
+
+<python-code-1>
+import codecs
+
+class Base64Encoder:
+    def process(self, input: bytes) -> bytes:
+        return codecs.encode(input, "base64")
+</python-code-1>
+
+<chain-of-thought-example-1>
+First, the input size is checked to be equal or less than 0x1000 bytes.
+Four bytes are taken out for a command count, and then a loop starts, so this is likely the number of commands and then a list of commands.
+There are two cases in the switch statement, so there are likely two possible commands, each starting with some opcode.
+Before each `opcode`'s own data structure, there are also two common data, `common_num0` and `common_num1`.
+Since further structures are different based on the `opcode`, each structure should have a dedicated `struct` and `opcode` field with specific `possible_values` in it.
+The first command has a flag and has two data blobs each with a size and a blob.
+The second command has a base64-encoded flag and has one data blob with a size, a blob and a index to blob. Since `data_one_idx` is a index, it's `possible_values` refers to `data_one_size`.
+To express base64 encoded `flag`, you SHOULD provide python code with encoder class in it and set the `encoding` field attribute with the name of the encoder class: `Base64Encoder`.
+</chain-of-thought-example-1>
+
+<testlang-example-1>
+{
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "byte_size": {"start": 0, "end": 0x1000},
+      "fields": [
+        {
+          "name": "cmd_cnt",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "commands",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "cmd_cnt"
+          },
+          "items": {
+            "kind": "record",
+            "name": "Command"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Command",
+      "kind": "union",
+      "fields": [
+        {
+          "name": "CommandUnion0",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "CommandType0"
+          }
+        },
+        {
+          "name": "CommandUnion1",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "CommandType1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "CommandType0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "opcode",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [0]
+        },
+        {
+          "name": "common",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "CommonData"
+          }
+        },
+        {
+          "name": "flag",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "data_one_size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "data_one",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "data_one_size"
+          }
+        },
+        {
+          "name": "data_two_size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "data_two",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "data_two_size"
+          }
+        }
+      ]
+    },
+    {
+      "name": "CommandType1",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "opcode",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [1]
+        },
+        {
+          "name": "common",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "CommonData"
+          }
+        },
+        {
+          "name": "flag",
+          "kind": "int",
+          "byte_size": 4,
+          "encoding": "Base64Encoder",
+        },
+        {
+          "name": "data_one_size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "data_one",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "data_one_size"
+          }
+        },
+        {
+          "name": "data_one_idx",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [{"start": 0, "end": {"kind": "field", "name": "data_one_size"}}]
+        },
+      ]
+    },
+    {
+      "name": "CommonData",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "common_num0",
+          "kind": "int",
+          "byte_size": 4,
+        },
+        {
+          "name": "common_num1",
+          "kind": "int",
+          "byte_size": 4,
+        },
+      ]
+    }
+  ]
+}
+</testlang-example-1>
+

@@ -1,0 +1,189 @@
+{
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_count",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "commands",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "command_count"
+          },
+          "items": {
+            "kind": "record",
+            "name": "Command"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "Command",
+      "kind": "union",
+      "fields": [
+        {
+          "name": "LISTCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "LIST_Command"
+          }
+        },
+        {
+          "name": "ADDCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "ADD_Command"
+          }
+        },
+        {
+          "name": "COUNTCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "COUNT_Command"
+          }
+        },
+        {
+          "name": "SHOWCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "SHOW_Command"
+          }
+        },
+        {
+          "name": "HELPCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "HELP_Command"
+          }
+        },
+        {
+          "name": "QUITCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "QUIT_Command"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "LIST_Command",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [3735928560]
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "ADD_Command",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [3735928561]
+        },
+        {
+          "name": "buf_len",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "buffer",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "buf_len"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "COUNT_Command",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [3735928562]
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "SHOW_Command",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [3735928563]
+        },
+        {
+          "name": "buf_len",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "buffer",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "buf_len"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "HELP_Command",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [3735928564]
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "QUIT_Command",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [3735928565]
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

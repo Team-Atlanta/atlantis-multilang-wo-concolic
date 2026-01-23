@@ -1,0 +1,71 @@
+diff --git a/llvm/tools/llvm-cov/SourceCoverageView.cpp b/llvm/tools/llvm-cov/SourceCoverageView.cpp
+index 5b85d7d86..95d0c5af2 100644
+--- a/llvm/tools/llvm-cov/SourceCoverageView.cpp
++++ b/llvm/tools/llvm-cov/SourceCoverageView.cpp
+@@ -239,63 +239,9 @@ void SourceCoverageView::print(raw_ostream &OS, bool WholeFile,
+         continue;
+     }
+ 
+-    renderLinePrefix(OS, ViewDepth);
+-    if (getOptions().ShowLineNumbers)
+-      renderLineNumberColumn(OS, LI.line_number());
+-
+-    if (getOptions().ShowLineStats)
+-      renderLineCoverageColumn(OS, *LCI);
+-
+-    // If there are expansion subviews, we want to highlight the first one.
+-    unsigned ExpansionColumn = 0;
+-    if (NextESV != EndESV && NextESV->getLine() == LI.line_number() &&
+-        getOptions().Colors)
+-      ExpansionColumn = NextESV->getStartCol();
+-
+-    // Display the source code for the current line.
+-    renderLine(OS, {*LI, LI.line_number()}, *LCI, ExpansionColumn, ViewDepth);
+-
+-    // Show the region markers.
+-    if (shouldRenderRegionMarkers(*LCI))
+-      renderRegionMarkers(OS, *LCI, ViewDepth);
+-
+-    // Show the expansions, instantiations, and branches for this line.
+-    bool RenderedSubView = false;
+-    for (; NextESV != EndESV && NextESV->getLine() == LI.line_number();
+-         ++NextESV) {
+-      renderViewDivider(OS, ViewDepth + 1);
+-
+-      // Re-render the current line and highlight the expansion range for
+-      // this subview.
+-      if (RenderedSubView) {
+-        ExpansionColumn = NextESV->getStartCol();
+-        renderExpansionSite(OS, {*LI, LI.line_number()}, *LCI, ExpansionColumn,
+-                            ViewDepth);
+-        renderViewDivider(OS, ViewDepth + 1);
+-      }
+-
+-      renderExpansionView(OS, *NextESV, ViewDepth + 1);
+-      RenderedSubView = true;
++    if (LCI->isMapped() && LCI->getExecutionCount() > 0) {
++      OS << LI.line_number() << ' ';
+     }
+-    for (; NextISV != EndISV && NextISV->Line == LI.line_number(); ++NextISV) {
+-      renderViewDivider(OS, ViewDepth + 1);
+-      renderInstantiationView(OS, *NextISV, ViewDepth + 1);
+-      RenderedSubView = true;
+-    }
+-    for (; NextBRV != EndBRV && NextBRV->Line == LI.line_number(); ++NextBRV) {
+-      renderViewDivider(OS, ViewDepth + 1);
+-      renderBranchView(OS, *NextBRV, ViewDepth + 1);
+-      RenderedSubView = true;
+-    }
+-    for (; NextMSV != EndMSV && NextMSV->Line == LI.line_number(); ++NextMSV) {
+-      renderViewDivider(OS, ViewDepth + 1);
+-      renderMCDCView(OS, *NextMSV, ViewDepth + 1);
+-      RenderedSubView = true;
+-    }
+-    if (RenderedSubView)
+-      renderViewDivider(OS, ViewDepth + 1);
+-    renderLineSuffix(OS, ViewDepth);
+   }
+-
+-  renderViewFooter(OS);
++  OS << '\n';
+ }

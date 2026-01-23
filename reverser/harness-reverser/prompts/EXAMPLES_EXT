@@ -1,0 +1,173 @@
+
+<harness-example-2>
+int harness(uint8_t *blob, uint32_t blob_size) {
+    uint32_t opcode = 0;
+    uint32_t name_and_value_size = 0;
+
+    if (blob == NULL) {
+        printf("Error: No blob is given\n");
+        return -1;
+    }
+
+    if (blob_size > 0x100) {
+        printf("Error: Too many data\n");
+        return -1;
+    }
+
+    if (blob_size < 4) {
+        printf("Error: Not enough data for `opcode` field\n");
+        return -1;
+    }
+    memcpy(&opcode, blob, 4);
+    blob += 4;
+    blob_size -= 4;
+
+    if (opcode == 0x1337 || (opcode >= 0x31337 && opcode <= 0x31339)) {
+        if (blob_size < 4) {
+            printf("Error: Not enough data for `name_and_value_size` field\n");
+            return -1;
+        }
+        memcpy(&name_and_value_size, blob, 4);
+        blob += 4;
+        blob_size -= 4;
+
+        if (blob_size < name_and_value_size) {
+            printf("Error: Not enough data for `name` and `value` fields\n");
+            return -1;
+        }
+
+        char* name = (char*)blob;
+        char* end = name + name_and_value_size;
+        char* sep_pos = strchr(name, '/');
+        if (sep_pos == NULL) {
+            return -1;
+        }
+
+        *sep_pos = '\0';
+
+        char* value = (char*)(sep_pos + 1);
+        int value_size = end - value;
+
+        // `process_name_value` is just a conceptual function to represent the processing of name and value.
+        process_name_value(name, value, value_size);
+
+        char *opcode2_buf = end;
+        int opcode2;
+        sscanf(opcode2_buf, "%9x\n", &opcode2);
+        if (opcode2 == 0x31337) {
+          puts("WIN");
+        }
+    }
+    return 0;
+}
+</harness-example-2>
+
+<chain-of-thought-example-2>
+First, the blob size should be equal or under 0x100 bytes.
+The first 4 bytes of the blob are `opcode`.
+Based on the `opcode`, the structure of the blob changes.
+(IMPORTANT) Thus, we SHOULD make a new `union` record to represent the different structures, WHENEVER we meet a branches like if-else or switch-case statements.
+If `opcode` is 0x1337 or between 0x31337 and 0x31339, program will have a different structure.
+Thus, we make a dedicated record, `Opcode0x1337Struct` with `opcode` field with specific `possible_values` in it.
+The next 4 bytes are `name_and_value_size`, another integer that specifies the length of the `name_and_value` record field.
+The `name_and_value` record field consists of a `name`, a separator ("/"), and a `value`, which are parsed sequentially.
+As the separator is a slash, which can be encoded as 0x2F, the `name` field is terminated by 0x2F.
+After the separator, the `value` field is terminated by a null byte.
+These components suggest a structured representation with fields for `opcode`, `name_and_value_size`, and a nested record for `name_and_value`.
+Finally, `opcode2` is being read from `sscanf` using format `%9x`.
+Thus, `opcode2` should be `string` kind with hex int format (i.e. "31337"), not `int` kind.
+</chain-of-thought-example-2>
+
+<testlang-example-2>
+{
+    "mode": "Bytes",
+    "default_endian": "little",
+    "records": [
+      {
+        "name": "INPUT",
+        "kind": "struct",
+        "byte_size": {"start": 0, "end": 0x100},
+        "fields": [
+          {
+            "name": "opcode_branch",
+            "kind": "record",
+            "items": {
+                "kind": "record",
+                "name": "OpcodeBranchStruct"
+            },
+          },
+        ]
+      },
+      {
+        "name": "OpcodeBranchStruct",
+        "kind": "union",
+        "fields": [
+          {
+            "name": "if_opcode_0x1337",
+            "kind": "record",
+            "items": {
+              "kind": "record",
+              "name": "Opcode0x1337Struct"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Opcode0x1337Struct",
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "opcode",
+            "kind": "int",
+            "byte_size": 4,
+            "possible_values": [0x1337, {"start": 0x31337, "end": 0x31339}]
+          },
+          {
+            "name": "name_and_value_size",
+            "kind": "int",
+            "byte_size": 4
+          },
+          {
+            "name": "data",
+            "kind": "record",
+            "items": {
+                "kind": "record",
+                "name": "name_and_value"
+            },
+            "byte_size": {
+              "kind": "field",
+              "name": "name_and_value_size"
+            }
+          },
+          {
+            "name": "opcode2",
+            "kind": "string",
+            "byte_size": {
+              "start": 0,
+              "end": 10,
+            },
+            "string_format": "hex_int",
+            "terminator": "\n",
+            "possible_values": [0x31337]
+          }
+        ]
+      },
+      {
+        "name": "name_and_value",
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "kind": "string",
+            "terminator": "/"
+          },
+          {
+            "name": "value",
+            "kind": "string",
+            "terminator": "\0"
+          }
+        ]
+      }
+    ]
+}
+</testlang-example-2>

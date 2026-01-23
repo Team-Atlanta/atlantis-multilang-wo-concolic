@@ -1,0 +1,75 @@
+[tool.poetry]
+name = "mlla" # multilang-llm-agent
+version = "0.1.0"
+description = "LLM agent for bug finding and blob generation based on sanitizers and CP repository"
+authors = ["Soyeon Park <spark720@gatech.edu>"]
+readme = "README.md"
+
+[tool.pytest.ini_options]
+pythonpath = "mlla"
+asyncio_default_fixture_loop_scope = "session"
+
+[tool.poetry.dependencies]
+python = "3.11.8"
+pre-commit = "^3.8.0"
+typing-extensions = "^4.12.2"
+langchain-openai = "^0.2.2"
+langchain-community = "^0.3.1"
+python-dotenv = "^1.0.1"
+langgraph = "^0.2.34"
+redis = "^5.1.1"
+gitpython = "^3.1.43"
+loguru = "^0.7.2"
+langchain-anthropic = "0.3.14"
+psutil = ">=6.1.1,<8.0.0"
+pyyaml = "^6.0.2"
+tokencost = "^0.1.23"
+langchain-google-genai = "^2.0.8"
+litellm = "^1.57.3"
+python-dateutil = "^2.9.0.post0"
+tree-sitter = "0.23.2"
+tree-sitter-c = "==0.23.4"
+tree-sitter-java = "==0.23.5"
+tree-sitter-python = "==0.23.6"
+tree-sitter-cpp = "==0.23.4"
+ast-grep-py = "^0.34.4"
+chardet = "^5.2.0"
+unidiff = "^0.7.5"
+
+[tool.poetry.group.telemetry]
+optional = true
+
+[tool.poetry.group.telemetry.dependencies]
+arize-phoenix-otel = "^0.6.1"
+opentelemetry-instrumentation-redis = "^0.50b0"
+openinference-instrumentation-langchain = "^0.1.29"
+#traceloop-sdk = "^0.36.0"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+pytest-asyncio = "^0.25.3"
+pytest-xdist = "^3.6.1"
+pytest-timeout= "^2.4.0"
+html2text = "^2024.2.26"
+bs4 = "^0.0.2"
+
+
+[tool.poetry.group.dev.dependencies]
+libcrs = {git = "git@github.com:Team-Atlanta/libCRS.git", branch = "oss-fuzz"}
+multilspy = { git = "git@github.com:Team-Atlanta/multilspy.git" }
+fuzzdb = {git = "git@github.com:Team-Atlanta/CRS-multilang.git", subdirectory = "fuzzdb/"}
+mljoern = {git = "git@github.com:Team-Atlanta/CRS-multilang.git", subdirectory = "joern/", branch = "main"}
+libfdp = {git = "git@github.com:Team-Atlanta/libFDP.git", subdirectory = "pyfdp/"}
+# mljoern = {path = "../CRS-multilang/joern", develop = true}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+mlla = 'mlla.main:main'
+test_bga = 'mlla.scripts.test_bga_checker_result:main'

@@ -1,0 +1,170 @@
+{
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "cmd_cnt",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "commands",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "cmd_cnt"
+          },
+          "items": {
+            "kind": "record",
+            "name": "Command"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "Command",
+      "kind": "union",
+      "fields": [
+        {
+          "name": "ReadCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "Read"
+          }
+        },
+        {
+          "name": "WriteCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "Write"
+          }
+        },
+        {
+          "name": "GetConsumerCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "GetConsumer"
+          }
+        },
+        {
+          "name": "SetConsumerCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "SetConsumer"
+          }
+        },
+        {
+          "name": "GetStatsCommand",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "GetStats"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "Read",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_id",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [2002875237]
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "Write",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_id",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [2002875238]
+        },
+        {
+          "name": "size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "data",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "size"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "GetConsumer",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_id",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [2002875239]
+        },
+        {
+          "name": "offset",
+          "kind": "int",
+          "byte_size": 1
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "SetConsumer",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_id",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [2002875240]
+        },
+        {
+          "name": "offset",
+          "kind": "int",
+          "byte_size": 1
+        },
+        {
+          "name": "pid",
+          "kind": "int",
+          "byte_size": 4
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "GetStats",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_id",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [2002875242]
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

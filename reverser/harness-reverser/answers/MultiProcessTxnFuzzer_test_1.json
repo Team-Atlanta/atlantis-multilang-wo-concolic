@@ -1,0 +1,172 @@
+{
+  "is_partial": false,
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "ACL",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "perms",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "scheme",
+          "kind": "string"
+        },
+        {
+          "name": "id",
+          "kind": "string"
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "byte_size": {
+        "start": 0,
+        "end": 10000
+      },
+      "fields": [
+        {
+          "name": "numRecords",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [
+            {
+              "start": 0,
+              "end": 10
+            }
+          ],
+          "endianness": "big"
+        },
+        {
+          "name": "records",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "numRecords"
+          },
+          "items": {
+            "kind": "record",
+            "name": "TransactionRecord"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "TxnHeader",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "clientId",
+          "kind": "int",
+          "byte_size": 8
+        },
+        {
+          "name": "cxid",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "zxid",
+          "kind": "int",
+          "byte_size": 8
+        },
+        {
+          "name": "time",
+          "kind": "int",
+          "byte_size": 8
+        },
+        {
+          "name": "type",
+          "kind": "int",
+          "byte_size": 4
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "TransactionRecord",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "txnHeader",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "TxnHeader"
+          }
+        },
+        {
+          "name": "createTxn",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "CreateTxn"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "CreateTxn",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "path",
+          "kind": "string"
+        },
+        {
+          "name": "data_length",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "data",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "data_length"
+          }
+        },
+        {
+          "name": "acl_size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "acl",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "acl_size"
+          },
+          "items": {
+            "kind": "record",
+            "name": "ACL"
+          }
+        },
+        {
+          "name": "ephemeral",
+          "kind": "int",
+          "byte_size": 1,
+          "possible_values": [
+            0,
+            1
+          ]
+        },
+        {
+          "name": "parentCVersion",
+          "kind": "int",
+          "byte_size": 4
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

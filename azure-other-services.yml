@@ -1,0 +1,10 @@
+services:
+  lsp:
+    image: ${LSP_RUNNER}:latest
+    restart: unless-stopped
+    volumes:
+      - ${TARBALL_DIR:-./libs/oss-fuzz/build/artifacts/${CP}/tarballs}:/tarballs
+    environment:
+      - CRS_TARGET=${CP}
+    ports:
+      - "3303:3303"

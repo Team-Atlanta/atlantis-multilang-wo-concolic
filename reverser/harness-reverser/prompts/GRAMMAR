@@ -1,0 +1,158 @@
+You will use Testlang, which is a language defined to express arbitrary data structure.
+
+# Workflows
+1. Analyze the <harness>, <diff>, <current-testlang>, and <code-blocks> Section
+
+The <harness> section contains the source code that reads and processes the input.
+The optional <diff> section contains the diff file that has been applied to the project directory. If <diff> section is provided, you should figure out how the input can lead to explore codes in <diff> by searching, analyzing and following all the needed codes.
+The <current-testlang> section shows the current state of the testlang structure built so far based on previous analysis.
+The <code-blocks> section contains code elements (e.g., functions, structs, variables) that were explicitly requested in the previous step and are provided for further analysis.
+
+Your task is to analyze how the program interprets the input data using all three sources, understand how the structures relate to each other, and identify any updates or new structures that should be reflected in the testlang.
+
+2. Write a <chain_of_thought> Section
+Before producing the Testlang output, document your reasoning in a <chain_of_thought> block.
+Include insights such as:
+- Observations about how input is processed.
+- Patterns in the input format.
+- Key components, loops, conditionals, or fields that influence the input structure.
+
+3. Generate the <sub_testlang> and <python_codes> Section
+Based on your <chain_of_thought>, create a Testlang representation of the program's input structure.
+Follow these key rules:
+- Represent fields and their attributes according to the Testlang schema.
+- Ensure records are well-defined and maintain references for other elements.
+- sub-testlang must contain only the new or updated records.
+- sub-testlang must be compatible with the current-testlang: once merged, they should form a complete, hierarchical structure that conforms to the Testlang format.
+- Record names must remain consistent with those in <current-testlang>, as merging is done by overwriting existing records with the same name.
+Arbitrarily renaming or altering record names may lead to merge errors or invalid structures.
+- Provide only testlang written in JSON5 without any formatting or description.
+- Do not miss `is_partial` and `mode` attributes, which are mandatory for sub-testlang.
+- Generate python codes to express encoding or complex logics that are beyond the level of expressiveness of testlang and put them in <python_codes>. Also, just set the `encoding` or `generator` field attributes in the <sub_testlang> with the name of the python class name that you generated since we will save the python codes you generated.
+- Leave `metadata` in record about which code you analyzed to make this record so that you can continue to refer to it later.
+
+4. Specify <codes_to_analyze> for the next step
+If further analysis is needed, use the <codes_to_analyze> section to list additional code elements (e.g., functions, structs, variables) that should be examined in the next step.
+For each entry, provide the code element's name, and if possible, its referenced location using both `file_path` and `line_num`. This ensures the system can retrieve the exact code.
+The selected code elements will be provided in the <code-blocks> section in next step.
+
+5. Utilize <suppressed_warnings> and <suppressed_codes> for optimization
+Use the <suppressed_warnings> section to list any warning indices you intentionally chose to ignore during this step, so they won't appear again in future iterations.
+Use the <suppressed_codes> section to remove any code blocks from <code-blocks> that are no longer necessary for future analysis.
+If a code block has already been fully incorporated into sub-testlang or is irrelevant to remaining structure inference, include its index here.
+You SHOULD BE PROACTIVE in minimizing token usage by discarding redundant code early.
+
+
+# Testlang Syntax
+The syntax of testlang is defined by the following JSON schema:
+<JSON_schema></JSON_schema>
+
+# Key Rules and Notes
+ - Tree Structure Only: Testlang representations must form a tree. Cyclic or self-referential constructions are not allowed.
+ - `INPUT` Record Requirement: The entry point of the data format is a mandatory record named `INPUT`.
+ - First, you need to identify the `mode`. You should set `mode` as `FuzzedDataProvider` if and only if `FuzzedDataProvider` is actually used.
+ - If `mode` is `FuzzedDataProvider`, there should be one corresponding `field` with `fuzzed_data_provider_call` per one `FuzzedDataProvider` API call. When specifying its `args`, use `Ref` to reference other fields. If you want to describe the inner structure of it from its further use, make an additional record and refer to it.
+ - There can be custom and manually implemented variants of `FuzzedDataProvider` when reading integer, string or bytes from something. In this case, you SHOULD set `mode` as `Custom` variant in `FuzzedDataProvider`. Since we have no prepared `encoder`s for this unexpected variant, you SHOULD REVIEW this `FuzzedDataProvider`-like `Custom` implementation and express it in python `encoder` bofore you analyze any codes further.
+
+# Common Patterns and Guidelines
+1. Variable-Length Data Fields
+If the length of a variable data field is encoded in the input, specify it as a separate field.
+Reference the length field in the definition of the variable-length data field.
+
+2. Arrays
+When describing arrays of data fields, create a new record for the array element type.
+Use the `Ref` property to represent the type of array elements.
+DO NOT just assume or limit length unless there is a proper reason.
+
+3. Records
+Define all records independently, even when they are referenced by other records.
+DO NOT nest one record inside another; instead, use a reference.
+ALWAYS make a new `union` record when you see a conditional branch (e.g. if-else or switch-case statement) to represent all possible structures.
+When some `field` is given as the other function call's input, ALWAYS make a new `struct` record for the function input and replace the existing `field` and let it refer to this new record.
+Leave a `note` about what specific function or code ranges you've analzyed to make this record.
+
+4. Field Values
+- Avoid using mathematical expressions or symbolic constants in attributes.
+- Use only numeric literals, hexadecimal values, or double-quoted strings for the value attribute.
+- Hexadecimal Values: Represent hexadecimal values directly in the output without conversion (e.g., 0x1234 should remain 0x1234).
+- Resolve compile-time constants to their numeric or hexadecimal equivalents when possible. If unsure, omit the value attribute.
+- When you see integer format string: %d, %i, %u, %o, %x, %X, %ld, %li, %lu, %lo, %lx, %lX, %hd, %hi, %hu, %ho, %hx, %hX, %jd, %ju, %zd, %zu, etc. from functions like `scanf`, interpret it as a `string` kind with `string_format` attribute, not a `int` kind, and specify its max size using `end`.
+- Include all meaningful values in `possible_values`. `possible_values` are NOT just random values, rather they SHOULD be valid values that will lead to the intended program behaviors, values appeared explicitly in codes, or any inferred meaningful values in its own context. You can also refer to other field in `possible_values`. (e.g. An array index field can have a range that refers to the length of the array.) Split range `possible_values` to represent different groups.
+- When generating `possible_values` for the field that is used in shell command, if the harness is using `com.code_intelligence.jazzer`, try to generate ONLY ONE `possible_values` which will eventually execute exact `jazze` command (It's NOT `jazzer`. There is NO `r` at the end.) without any parameters or paths because it is the only sentinel that `jazzer` recognizes. DO NOT generate other `possible_values`.
+- `terminator` is a string or bytes that stops reading the field from the input, NOT what function automatically appends after reading.
+- Any specified `terminator` attribute must follow the kind of its field. For example, `terminator` may be `"abc"` but not `[97, 98, 99]` when its field is `string` and vice versa when its field is `bytes`.
+- `terminator` attribute is a end-of-field sequence rather than a list of possible final byte or character. For example, format string functions like `scanf` may accept various characters(e.g., "\n", "\t", ...) as a tokenizer but its corresponding `terminator` attribute must be one chosen value between those characters(e.g., `"\n"`, but not `"\t\n"`). Still, `terminator` attribute should contain a sequence if the field is terminated with string or bytes with length above 1(e.g., `"=====EOF====="`, `[97, 97, 97, 97, 97]`).
+- `byte_size` or `len` attributes should be computed with consideration of `terminator` attribute. For example, `string` field with attributes `possible_values` of `["abc"]` and `terminator` of `"="` should have `len` of `4` rather than `3`. Note that this should be considered on both `start` and `end` if `len` or `byte_size` is specified in range.
+- When generating a field containing known file formats(e.g., jpeg, html) by customgen, which is defined in `Supported custom type string IDs` section later, you should place an `union` record field. And this specific `union` record should at least contain the following two variants:
+  - A record containing a `custom` type field with its string ID corresponding to the file format.
+  - A record containing analysis result conducted by your own. In other words, a record that might have been produced if there wasn't a `custom` typed field. In this case, make separate record per different types so that certain headers/signatures are guaranteed to be placed with corresponding sturctures.
+- Use all information inferred from source code, conditions, and chain-of-thought reasoning to write `possible_values` as detailed and thoroughly as possible.
+- Leave a `note` about what specific function or code ranges you've analzyed to make this field.
+
+5. Field Order
+Maintain the field order as it appears in the program. For instance, OPCODE followed by FLAG is different from FLAG followed by OPCODE.
+
+# FuzzedDataProvider API Signatures
+
+1. Original
+- template <typename T> std::vector<T> ConsumeBytes(size_t num_bytes);
+- template <typename T> std::vector<T> ConsumeBytesWithTerminator(size_t num_bytes, T terminator = 0);
+- template <typename T> std::vector<T> ConsumeRemainingBytes();
+- std::string ConsumeBytesAsString(size_t num_bytes);
+- std::string ConsumeRandomLengthString(size_t max_length);
+- std::string ConsumeRandomLengthString();
+- std::string ConsumeRemainingBytesAsString();
+- template <typename T> T ConsumeIntegral();
+- template <typename T> T ConsumeIntegralInRange(T min, T max);
+- template <typename T> T ConsumeFloatingPoint();
+- template <typename T> T ConsumeFloatingPointInRange(T min, T max);
+- template <typename T> T ConsumeProbability();
+- bool ConsumeBool();
+- template <typename T> T ConsumeEnum();
+- template <typename T, size_t size> T PickValueInArray(const T (&array)[size]);
+- template <typename T, size_t size> T PickValueInArray(const std::array<T, size> &array);
+- template <typename T> T PickValueInArray(std::initializer_list<const T> list);
+- size_t ConsumeData(void *destination, size_t num_bytes);
+- size_t remaining_bytes();
+
+2. Jazzer
+- String consumeAsciiString(int maxLength)
+- boolean consumeBoolean()
+- boolean[] consumeBooleans(int maxLength)
+- byte consumeByte()
+- byte consumeByte(byte min, byte max)
+- byte[] consumeBytes(int maxLength)
+- char consumeChar()
+- char consumeChar(char min, char max)
+- char consumeCharNoSurrogates()
+- double consumeDouble()
+- float consumeFloat()
+- int consumeInt()
+- int consumeInt(int min, int max)
+- int[] consumeInts(int maxLength)
+- long consumeLong()
+- long consumeLong(long min, long max)
+- long[] consumeLongs(int maxLength)
+- double consumeProbabilityDouble()
+- float consumeProbabilityFloat()
+- double consumeRegularDouble()
+- double consumeRegularDouble(double min, double max)
+- float consumeRegularFloat()
+- float consumeRegularFloat(float min, float max)
+- String consumeRemainingAsAsciiString()
+- byte[] consumeRemainingAsBytes()
+- String consumeRemainingAsString()
+- short consumeShort()
+- short consumeShort(short min, short max)
+- short[] consumeShorts(int maxLength)
+- String consumeString(int maxLength)
+- T pickValue(Collection<T> collection)
+- T pickValue(T[] array)
+- List<T> pickValues(Collection<T> collection, int numOfElements)
+- List<T> pickValues(T[] array, int numOfElements)
+- int remainingBytes()
+
+# Supported custom type string IDs
+
+The following list is the supported custom type indicators:
+<custom_type_ids></custom_type_ids>

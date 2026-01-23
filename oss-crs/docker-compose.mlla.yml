@@ -1,0 +1,138 @@
+version: '3.8'
+
+# MLLA/Testlang mode: redis -> codeindexer, joern, lsp -> crs
+# Use this when CRS_INPUT_GENS includes mlla or testlang_input_gen
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis_${SAFE_TARGET}_${SAFE_HARNESS}
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    cpuset: ${CPUSET_CPUS:-0-7}
+    networks:
+      - crs-internal
+
+  codeindexer:
+    image: crs-multilang/crs-multilang:latest
+    container_name: codeindexer_${SAFE_TARGET}_${SAFE_HARNESS}
+    cpuset: ${CPUSET_CPUS:-0-7}
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TARBALL_DIR=/tarballs
+      - CODE_INDEXER_REDIS_URL=redis://redis:6379
+    volumes:
+      - ${HOST_ARTIFACT_DIR:-/out}/tarballs:/tarballs:ro
+    depends_on:
+      redis:
+        condition: service_started
+    networks:
+      - crs-internal
+    command: ["init_codeindexer"]
+    restart: "no"
+
+  joern:
+    image: crs-multilang/multilang-runner-joern:latest
+    container_name: joern_${SAFE_TARGET}_${SAFE_HARNESS}
+    cpuset: ${CPUSET_CPUS:-0-7}
+    volumes:
+      - ${HOST_ARTIFACT_DIR:-/out}/tarballs:/tarballs:ro
+    depends_on:
+      redis:
+        condition: service_started
+    networks:
+      - crs-internal
+
+  lsp:
+    image: ${LSP_RUNNER:-crs-multilang/multilang-lsp-base:latest}
+    container_name: lsp_${SAFE_TARGET}_${SAFE_HARNESS}
+    restart: unless-stopped
+    cpuset: ${CPUSET_CPUS:-0-7}
+    environment:
+      - CRS_TARGET=${CRS_TARGET:-}
+    volumes:
+      - ${HOST_ARTIFACT_DIR:-/out}/tarballs:/tarballs:ro
+    depends_on:
+      redis:
+        condition: service_started
+    networks:
+      - crs-internal
+    ports:
+      - "3303"
+
+  crs:
+    image: crs-multilang/crs-multilang:latest
+    container_name: crs_${SAFE_TARGET}_${SAFE_HARNESS}
+    privileged: true
+    cpuset: ${CPUSET_CPUS:-0-7}
+    mem_limit: ${MEMORY_LIMIT:-16G}
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TARBALL_DIR=/tarballs
+      - CRS_CONFIG=/crs.config
+      - LITELLM_URL=${LITELLM_URL:-}
+      - LITELLM_KEY=${LITELLM_KEY:-}
+      - CPUSET_CPUS=${CPUSET_CPUS:-0-7}
+      - FUZZING_ENGINE=${FUZZING_ENGINE:-libfuzzer}
+      - SANITIZER=${SANITIZER:-address}
+      - RUN_FUZZER_MODE=${RUN_FUZZER_MODE:-interactive}
+      - HELPER=True
+      - CRS_INTERACTIVE=True
+      - CRS_TARGET=${CRS_TARGET:-}
+      - SEED_SHARE_DIR=/seed_share_dir
+      - CRS_NAME=${CRS_NAME:-crs-multilang}
+      - CRS_SKIP_SAVE=${CRS_SKIP_SAVE:-}
+      - CRS_POV_DIR=/artifacts/povs
+      - CRS_CORPUS_DIR=/artifacts/corpus
+      - CODE_INDEXER_REDIS_URL=redis://redis:6379
+      - DICTGEN_REDIS_URL=redis://redis:6379
+      - JOERN_URL=http://joern:9909
+      - LSP_SERVER_URL=http://lsp:3303
+    volumes:
+      - ${HOST_ARTIFACT_DIR:-/out}/tarballs:/tarballs:ro
+      - ${HOST_ARTIFACT_DIR:-/out}:/artifacts
+      # Per-harness artifact overlays
+      - ${HOST_POV_DIR}:/artifacts/povs
+      - ${HOST_CORPUS_DIR}:/artifacts/corpus
+      - ${HOST_CRS_DATA_DIR}:/artifacts/crs-data
+      - ${HOST_OUT_DIR:-/out}:/out
+      - ${HOST_CRS_CONFIG:-/tmp/crs.config}:/crs.config:ro
+    depends_on:
+      codeindexer:
+        condition: service_completed_successfully
+      joern:
+        condition: service_started
+      lsp:
+        condition: service_started
+    networks:
+      - crs-internal
+      - crs-external
+    command: ["run_crs"]
+
+  cleanup:
+    image: docker:cli
+    container_name: cleanup_${SAFE_TARGET}_${SAFE_HARNESS}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - RUNNER_CONTAINER_ID=${RUNNER_CONTAINER_ID:-}
+      - COMPOSE_PROJECT_NAME
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Cleanup sidecar started, monitoring runner: $RUNNER_CONTAINER_ID"
+        if [ -z "$RUNNER_CONTAINER_ID" ]; then
+          echo "WARNING: RUNNER_CONTAINER_ID not set, cleanup disabled"
+          sleep infinity
+        fi
+        docker wait $RUNNER_CONTAINER_ID || true
+        echo "Runner exited, stopping all services..."
+        docker ps -q --filter "label=com.docker.compose.project=$COMPOSE_PROJECT_NAME" | xargs -r docker stop -t 30
+    restart: "no"
+
+networks:
+  crs-internal:
+    driver: bridge
+  crs-external:
+    name: ${CRS_EXTERNAL_NETWORK:-crs-multilang-network}
+    external: ${CRS_NETWORK_EXTERNAL:-false}

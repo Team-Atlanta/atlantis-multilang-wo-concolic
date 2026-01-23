@@ -1,0 +1,11 @@
+[package]
+name = "pyfdp"
+version = "0.2.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.25", features = ["extension-module", "abi3-py310"] }
+rlibfdp = { package = "libfdp", path = "../libfdp" }

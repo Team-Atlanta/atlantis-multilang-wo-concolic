@@ -1,0 +1,16 @@
+[package]
+name = "fuzzdb"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "fuzzdb"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+dashmap = "6.1.0"
+fs2 = "0.4.3"
+serde = { version = "1.0.217", features = ["derive"] }
+serde_json = "1.0.135"
+md5 = "0.7.0"

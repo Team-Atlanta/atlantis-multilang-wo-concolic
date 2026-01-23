@@ -1,0 +1,38 @@
+**/*.swp
+**/venv
+__pycache__
+target
+uniafl/src/concolic/SkyQEMU/out
+
+# multilang-llm-agent specific ignores
+blob-gen/multilang-llm-agent/phoenix_data
+blob-gen/multilang-llm-agent/redis_data
+# temporarily use this for testing
+blob-gen/multilang-llm-agent/bin
+blob-gen/multilang-llm-agent/scripts
+blob-gen/multilang-llm-agent/images
+blob-gen/multilang-llm-agent/results
+blob-gen/multilang-llm-agent/tests
+blob-gen/multilang-llm-agent/hooks
+blob-gen/multilang-llm-agent/**/*.pyc
+# blob-gen/multilang-llm-agent/**/.*
+blob-gen/multilang-llm-agent/**/*.sh
+blob-gen/multilang-llm-agent/**/*.png
+blob-gen/multilang-llm-agent/**/*.lock
+blob-gen/multilang-llm-agent/**/*.toml
+blob-gen/multilang-llm-agent/**/.git*
+blob-gen/multilang-llm-agent/**/.py*
+blob-gen/multilang-llm-agent/**/.my*
+blob-gen/multilang-llm-agent/**/.pre*
+blob-gen/multilang-llm-agent/requirements.txt
+blob-gen/multilang-llm-agent/docker-compose.yml
+blob-gen/multilang-llm-agent/*.md
+blob-gen/multilang-llm-agent/run_parallel.py
+blob-gen/multilang-llm-agent/ci.config
+# blob-gen/multilang-llm-agent/.pytest_cache
+# blob-gen/multilang-llm-agent/.git
+# blob-gen/multilang-llm-agent/.gitignore
+
+# Pre-built Docker image cache (mounted at runtime via volumes)
+oss-crs/cache
+oss-crs-dind/cache

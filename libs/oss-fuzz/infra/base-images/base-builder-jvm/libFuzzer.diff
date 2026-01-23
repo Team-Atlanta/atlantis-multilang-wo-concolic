@@ -1,0 +1,1164 @@
+diff --color -ruN fuzzer_before/CMakeLists.txt fuzzer/CMakeLists.txt
+--- fuzzer_before/CMakeLists.txt	2025-01-16 10:39:54.031844887 -0800
++++ fuzzer/CMakeLists.txt	2025-02-12 13:51:14.444970983 -0800
+@@ -16,13 +16,15 @@
+   FuzzerMerge.cpp
+   FuzzerMutate.cpp
+   FuzzerSHA1.cpp
++  FuzzerShm.cpp
+   FuzzerTracePC.cpp
+   FuzzerUtil.cpp
+   FuzzerUtilDarwin.cpp
+   FuzzerUtilFuchsia.cpp
+   FuzzerUtilLinux.cpp
+   FuzzerUtilPosix.cpp
+-  FuzzerUtilWindows.cpp)
++  FuzzerUtilWindows.cpp
++  manager.cpp)
+ 
+ set(LIBFUZZER_HEADERS
+   FuzzerBuiltins.h
+@@ -44,9 +46,11 @@
+   FuzzerOptions.h
+   FuzzerRandom.h
+   FuzzerSHA1.h
++  FuzzerShm.h
+   FuzzerTracePC.h
+   FuzzerUtil.h
+-  FuzzerValueBitMap.h)
++  FuzzerValueBitMap.h
++  manager.h)
+ 
+ include_directories(../../include)
+ 
+diff --color -ruN fuzzer_before/FuzzerCorpus.h fuzzer/FuzzerCorpus.h
+--- fuzzer_before/FuzzerCorpus.h	2025-01-16 10:39:54.031844887 -0800
++++ fuzzer/FuzzerCorpus.h	2025-06-09 20:48:14.673891635 -0700
+@@ -165,6 +165,7 @@
+   InputCorpus(const std::string &OutputCorpus, EntropicOptions Entropic)
+       : Entropic(Entropic), OutputCorpus(OutputCorpus) {
+     memset(InputSizesPerFeature, 0, sizeof(InputSizesPerFeature));
++    memset(InputSizesPerTestlangFeature, 0, sizeof(InputSizesPerTestlangFeature));
+     memset(SmallestElementPerFeature, 0, sizeof(SmallestElementPerFeature));
+   }
+   ~InputCorpus() {
+@@ -216,6 +217,7 @@
+       Printf("ADD_TO_CORPUS %zd NF %zd\n", Inputs.size(), NumFeatures);
+     // Inputs.size() is cast to uint32_t below.
+     assert(Inputs.size() < std::numeric_limits<uint32_t>::max());
++    size_t Idx = Inputs.size();
+     Inputs.push_back(new InputInfo());
+     InputInfo &II = *Inputs.back();
+     II.U = U;
+@@ -232,7 +234,7 @@
+     std::sort(II.UniqFeatureSet.begin(), II.UniqFeatureSet.end());
+     ComputeSHA1(U.data(), U.size(), II.Sha1);
+     auto Sha1Str = Sha1ToString(II.Sha1);
+-    Hashes.insert(Sha1Str);
++    Hashes[Sha1Str] = Idx;
+     if (HasFocusFunction)
+       if (auto V = DFT.Get(Sha1Str))
+         II.DataFlowTraceForFocusFunction = *V;
+@@ -287,18 +289,29 @@
+   void Replace(InputInfo *II, const Unit &U,
+                std::chrono::microseconds TimeOfUnit) {
+     assert(II->U.size() > U.size());
+-    Hashes.erase(Sha1ToString(II->Sha1));
++    size_t Idx = Hashes[Sha1ToString(II->Sha1)];
+     DeleteFile(*II);
+     ComputeSHA1(U.data(), U.size(), II->Sha1);
+-    Hashes.insert(Sha1ToString(II->Sha1));
++    Hashes[Sha1ToString(II->Sha1)] = Idx;
+     II->U = U;
+     II->Reduced = true;
+     II->TimeOfUnit = TimeOfUnit;
+     DistributionNeedsUpdate = true;
+   }
+ 
+-  bool HasUnit(const Unit &U) { return Hashes.count(Hash(U)); }
+-  bool HasUnit(const std::string &H) { return Hashes.count(H); }
++  bool HasUnit(const Unit &U) { return Hashes.find(Hash(U)) != Hashes.end(); }
++  bool HasUnit(const std::string &H) { return Hashes.find(H) != Hashes.end(); }
++  size_t FindUnit(const std::string &H) { 
++      auto Iter = Hashes.find(H);
++      if (Iter == Hashes.end()) return SIZE_MAX;
++      return Iter->second;
++  }
++  InputInfo &ChooseUnitToMutateWithIdx(Random &Rand, size_t Idx) {
++    InputInfo &II = *Inputs[ChooseUnitIdxToMutateWithIdx(Rand, Idx)];
++    assert(!II.U.empty());
++    return II;
++  }
++
+   InputInfo &ChooseUnitToMutate(Random &Rand) {
+     InputInfo &II = *Inputs[ChooseUnitIdxToMutate(Rand)];
+     assert(!II.U.empty());
+@@ -322,6 +335,11 @@
+     return Idx;
+   }
+ 
++  size_t ChooseUnitIdxToMutateWithIdx(Random &Rand, size_t Idx) {
++    if(Idx == SIZE_MAX) { return ChooseUnitIdxToMutate(Rand); }
++    else { return Idx; }
++  }
++
+   void PrintStats() {
+     for (size_t i = 0; i < Inputs.size(); i++) {
+       const auto &II = *Inputs[i];
+@@ -439,6 +457,18 @@
+     }
+     return false;
+   }
++  
++  bool AddTestlangFeature(size_t Idx, uint32_t NewSize, bool Shrink) {
++    assert(NewSize);
++    Idx = Idx % kFeatureSetSize;
++    uint32_t OldSize = GetTestlangFeature(Idx);
++    if (OldSize == 0 || (Shrink && OldSize > NewSize)) {
++      NumUpdatedTestlangFeatures++;
++      InputSizesPerTestlangFeature[Idx] = NewSize;
++      return true;
++    }
++    return false;
++  }
+ 
+   // Increment frequency of feature Idx globally and locally.
+   void UpdateFeatureFrequency(InputInfo *II, size_t Idx) {
+@@ -466,12 +496,14 @@
+ 
+   size_t NumFeatures() const { return NumAddedFeatures; }
+   size_t NumFeatureUpdates() const { return NumUpdatedFeatures; }
++  size_t NumTestlangFeatureUpdates() const { return NumUpdatedTestlangFeatures; }
+ 
+ private:
+ 
+   static const bool FeatureDebug = false;
+ 
+   uint32_t GetFeature(size_t Idx) const { return InputSizesPerFeature[Idx]; }
++  uint32_t GetTestlangFeature(size_t Idx) const { return InputSizesPerTestlangFeature[Idx]; }
+ 
+   void ValidateFeatureSet() {
+     if (FeatureDebug)
+@@ -569,7 +601,7 @@
+   std::vector<double> Intervals;
+   std::vector<double> Weights;
+ 
+-  std::unordered_set<std::string> Hashes;
++  std::unordered_map<std::string, size_t> Hashes;
+   std::vector<InputInfo *> Inputs;
+ 
+   size_t NumAddedFeatures = 0;
+@@ -577,6 +609,9 @@
+   uint32_t InputSizesPerFeature[kFeatureSetSize];
+   uint32_t SmallestElementPerFeature[kFeatureSetSize];
+ 
++  size_t NumUpdatedTestlangFeatures = 0;
++  uint32_t InputSizesPerTestlangFeature[kFeatureSetSize];
++
+   bool DistributionNeedsUpdate = true;
+   uint16_t FreqOfMostAbundantRareFeature = 0;
+   uint16_t GlobalFeatureFreqs[kFeatureSetSize] = {};
+diff --color -ruN fuzzer_before/FuzzerDriver.cpp fuzzer/FuzzerDriver.cpp
+--- fuzzer_before/FuzzerDriver.cpp	2025-01-16 10:39:54.031844887 -0800
++++ fuzzer/FuzzerDriver.cpp	2025-06-09 20:41:53.591835761 -0700
+@@ -8,6 +8,7 @@
+ // FuzzerDriver and flag parsing.
+ //===----------------------------------------------------------------------===//
+ 
++#include "FuzzerShm.h"
+ #include "FuzzerCommand.h"
+ #include "FuzzerCorpus.h"
+ #include "FuzzerFork.h"
+@@ -640,6 +641,7 @@
+ 
+ int FuzzerDriver(int *argc, char ***argv, UserCallback Callback) {
+   using namespace fuzzer;
++  //if(getenv("SILENT_MODE") != NULL) silent_mode = true; // disable
+   assert(argc && argv && "Argument pointers cannot be nullptr");
+   std::string Argv0((*argv)[0]);
+   EF = new ExternalFunctions();
+diff --color -ruN fuzzer_before/FuzzerInternal.h fuzzer/FuzzerInternal.h
+--- fuzzer_before/FuzzerInternal.h	2025-01-16 10:39:54.031844887 -0800
++++ fuzzer/FuzzerInternal.h	2025-02-12 13:51:14.448971042 -0800
+@@ -72,6 +72,8 @@
+               InputInfo *II = nullptr, bool ForceAddToCorpus = false,
+               bool *FoundUniqFeatures = nullptr);
+   void TPCUpdateObservedPCs();
++  void RunWithSeed();
++  void RunGivenInputs();
+ 
+   // Merge Corpora[1:] into Corpora[0].
+   void Merge(const std::vector<std::string> &Corpora);
+@@ -99,7 +101,7 @@
+   void ExitCallback();
+   void CrashOnOverwrittenData();
+   void InterruptCallback();
+-  void MutateAndTestOne();
++  void MutateAndTestOne(size_t);
+   void PurgeAllocator();
+   void ReportNewCoverage(InputInfo *II, const Unit &U);
+   void PrintPulseAndReportSlowInput(const uint8_t *Data, size_t Size);
+@@ -110,7 +112,7 @@
+   void CheckExitOnSrcPosOrItem();
+ 
+   static void StaticDeathCallback();
+-  void DumpCurrentUnit(const char *Prefix);
++  void DumpCurrentUnit(const char *Prefix, unsigned int Status);
+   void DeathCallback();
+ 
+   void AllocateCurrentUnitData();
+diff --color -ruN fuzzer_before/FuzzerIO.cpp fuzzer/FuzzerIO.cpp
+--- fuzzer_before/FuzzerIO.cpp	2025-01-16 10:39:54.031844887 -0800
++++ fuzzer/FuzzerIO.cpp	2025-02-12 14:48:05.459203057 -0800
+@@ -8,6 +8,7 @@
+ // IO functions.
+ //===----------------------------------------------------------------------===//
+ 
++#include "FuzzerShm.h"
+ #include "FuzzerDefs.h"
+ #include "FuzzerExtFunctions.h"
+ #include "FuzzerIO.h"
+@@ -152,11 +153,13 @@
+ }
+ 
+ void Puts(const char *Str) {
++  if(silent_mode) return;
+   fputs(Str, OutputFile);
+   fflush(OutputFile);
+ }
+ 
+ void Printf(const char *Fmt, ...) {
++  if(silent_mode) return;
+   va_list ap;
+   va_start(ap, Fmt);
+   vfprintf(OutputFile, Fmt, ap);
+@@ -165,6 +168,7 @@
+ }
+ 
+ void VPrintf(bool Verbose, const char *Fmt, ...) {
++  if(silent_mode) return;
+   if (!Verbose) return;
+   va_list ap;
+   va_start(ap, Fmt);
+diff --color -ruN fuzzer_before/FuzzerLoop.cpp fuzzer/FuzzerLoop.cpp
+--- fuzzer_before/FuzzerLoop.cpp	2025-01-16 10:39:54.031844887 -0800
++++ fuzzer/FuzzerLoop.cpp	2025-06-09 20:47:06.100801919 -0700
+@@ -14,7 +14,9 @@
+ #include "FuzzerMutate.h"
+ #include "FuzzerPlatform.h"
+ #include "FuzzerRandom.h"
++#include "FuzzerShm.h"
+ #include "FuzzerTracePC.h"
++#include "manager.h"
+ #include <algorithm>
+ #include <cstring>
+ #include <memory>
+@@ -129,7 +131,7 @@
+          Size);
+   Printf("   To change the out-of-memory limit use -rss_limit_mb=<N>\n\n");
+   PrintStackTrace();
+-  DumpCurrentUnit("oom-");
++  DumpCurrentUnit("oom-", OOM);
+   Printf("SUMMARY: libFuzzer: out-of-memory\n");
+   PrintFinalStats();
+   _Exit(Options.OOMExitCode); // Stop right now.
+@@ -171,8 +173,9 @@
+   F->DeathCallback();
+ }
+ 
+-void Fuzzer::DumpCurrentUnit(const char *Prefix) {
+-  if (!CurrentUnitData)
++void Fuzzer::DumpCurrentUnit(const char *Prefix, unsigned int Status) {
++  bool shared = ShareCorpus(CurrentUnitData, CurrentUnitSize, Status, false);
++  if (shared || !CurrentUnitData)
+     return; // Happens when running individual inputs.
+   ScopedDisableMsanInterceptorChecks S;
+   MD.PrintMutationSequence();
+@@ -188,7 +191,7 @@
+ 
+ NO_SANITIZE_MEMORY
+ void Fuzzer::DeathCallback() {
+-  DumpCurrentUnit("crash-");
++  DumpCurrentUnit("crash-", CRASH);
+   PrintFinalStats();
+ }
+ 
+@@ -233,7 +236,7 @@
+          "      Combine libFuzzer with AddressSanitizer or similar for better "
+          "crash reports.\n");
+   Printf("SUMMARY: libFuzzer: deadly signal\n");
+-  DumpCurrentUnit("crash-");
++  DumpCurrentUnit("crash-", CRASH);
+   PrintFinalStats();
+   _Exit(Options.ErrorExitCode); // Stop right now.
+ }
+@@ -247,7 +250,7 @@
+   Printf("==%lu== ERROR: libFuzzer: fuzz target exited\n", GetPid());
+   PrintStackTrace();
+   Printf("SUMMARY: libFuzzer: fuzz target exited\n");
+-  DumpCurrentUnit("crash-");
++  DumpCurrentUnit("crash-", CRASH);
+   PrintFinalStats();
+   _Exit(Options.ErrorExitCode);
+ }
+@@ -300,11 +303,11 @@
+     Printf("ALARM: working on the last Unit for %zd seconds\n", Seconds);
+     Printf("       and the timeout value is %d (use -timeout=N to change)\n",
+            Options.UnitTimeoutSec);
+-    DumpCurrentUnit("timeout-");
+     Printf("==%lu== ERROR: libFuzzer: timeout after %zu seconds\n", GetPid(),
+            Seconds);
+     PrintStackTrace();
+     Printf("SUMMARY: libFuzzer: timeout\n");
++    DumpCurrentUnit("timeout-", TIMEOUT);
+     PrintFinalStats();
+     _Exit(Options.TimeoutExitCode); // Stop right now.
+   }
+@@ -318,7 +321,7 @@
+          GetPid(), GetPeakRSSMb(), Options.RssLimitMb);
+   Printf("   To change the out-of-memory limit use -rss_limit_mb=<N>\n\n");
+   PrintMemoryProfile();
+-  DumpCurrentUnit("oom-");
++  DumpCurrentUnit("oom-", OOM);
+   Printf("SUMMARY: libFuzzer: out-of-memory\n");
+   PrintFinalStats();
+   _Exit(Options.OOMExitCode); // Stop right now.
+@@ -521,9 +524,12 @@
+   UniqFeatureSetTmp.clear();
+   size_t FoundUniqFeaturesOfII = 0;
+   size_t NumUpdatesBefore = Corpus.NumFeatureUpdates();
++  size_t NumTestlangUpdatesBefore = Corpus.NumTestlangFeatureUpdates();
+   TPC.CollectFeatures([&](uint32_t Feature) {
+     if (Corpus.AddFeature(Feature, static_cast<uint32_t>(Size), Options.Shrink))
+       UniqFeatureSetTmp.push_back(Feature);
++    if (testlang_feature)
++      Corpus.AddTestlangFeature(Feature, static_cast<uint32_t>(Size), Options.Shrink);
+     if (Options.Entropic)
+       Corpus.UpdateFeatureFrequency(II, Feature);
+     if (Options.ReduceInputs && II && !II->NeverReduce)
+@@ -535,6 +541,10 @@
+     *FoundUniqFeatures = FoundUniqFeaturesOfII;
+   PrintPulseAndReportSlowInput(Data, Size);
+   size_t NumNewFeatures = Corpus.NumFeatureUpdates() - NumUpdatesBefore;
++  size_t NumNewTestlangFeatures = Corpus.NumTestlangFeatureUpdates() - NumTestlangUpdatesBefore;
++  if (NumNewFeatures || NumNewTestlangFeatures || always_share) {
++    ShareCorpus(Data, Size, NORMAL, NumNewFeatures != 0);
++  }
+   if (NumNewFeatures || ForceAddToCorpus) {
+     TPC.UpdateObservedPCs();
+     auto NewII =
+@@ -573,7 +583,7 @@
+          GetPid());
+   PrintStackTrace();
+   Printf("SUMMARY: libFuzzer: overwrites-const-input\n");
+-  DumpCurrentUnit("crash-");
++  DumpCurrentUnit("crash-", CRASH);
+   PrintFinalStats();
+   _Exit(Options.ErrorExitCode); // Stop right now.
+ }
+@@ -589,6 +599,7 @@
+     memcpy(CurrentUnitData, Data, Size);
+   CurrentUnitSize = Size;
+   int CBRes = 0;
++  is_crash = false;
+   {
+     ScopedEnableMsanInterceptorChecks S;
+     AllocTracer.Start(Options.TraceMalloc);
+@@ -604,7 +615,7 @@
+   CurrentUnitSize = 0;
+   if (CBRes == -2)
+     ReturnRequested = true;
+-  return CBRes == 0;
++  return CBRes == 0 && !is_crash;
+ }
+ 
+ std::string Fuzzer::WriteToOutputCorpus(const Unit &U) {
+@@ -692,16 +703,16 @@
+       Printf("\nINFO: a leak has been found in the initial corpus.\n\n");
+     Printf("INFO: to ignore leaks on libFuzzer side use -detect_leaks=0.\n\n");
+     CurrentUnitSize = Size;
+-    DumpCurrentUnit("leak-");
++    DumpCurrentUnit("leak-", CRASH);
+     PrintFinalStats();
+     _Exit(Options.ErrorExitCode); // not exit() to disable lsan further on.
+   }
+ }
+ 
+-void Fuzzer::MutateAndTestOne() {
++void Fuzzer::MutateAndTestOne(size_t Idx) {
+   MD.StartMutationSequence();
+ 
+-  auto &II = Corpus.ChooseUnitToMutate(MD.GetRand());
++  auto &II = Corpus.ChooseUnitToMutateWithIdx(MD.GetRand(), Idx);
+   if (Options.DoCrossOver) {
+     auto &CrossOverII = Corpus.ChooseUnitToCrossOverWith(
+         MD.GetRand(), Options.CrossOverUniformDist);
+@@ -850,6 +861,41 @@
+   }
+ }
+ 
++void Fuzzer::RunGivenInputs() {
++  const uint8_t *data = nullptr;
++  size_t size = 0;
++  int alloc_input_idx = g_current_worker->alloc_input_idx;
++  int cur_idx = g_current_worker->execute_input_idx;
++  while (alloc_input_idx > cur_idx) {
++    data = (const uint8_t *)get_input_buffer(g_input_mgr, cur_idx);
++    size = get_input_size(g_input_mgr, cur_idx);
++    cur_idx++;
++    g_current_worker->execute_input_idx = cur_idx;
++    if (data != nullptr) {
++      RunOne(data, size, true, nullptr, false, nullptr);
++      TryDetectingAMemoryLeak(data, size, false);
++    }
++  }
++}
++
++void Fuzzer::RunWithSeed() {
++  int Idx = get_seed_idx(g_input_mgr, g_cur_worker_idx);
++  const uint8_t *Data = (const uint8_t *)get_input_buffer(g_input_mgr, Idx);
++  if (Data == nullptr)
++    return;
++  size_t Size = get_input_size(g_input_mgr, Idx);
++  uint8_t Sha1[kSHA1NumBytes];
++  ComputeSHA1(Data, Size, Sha1);
++  auto Sha1Str = Sha1ToString(Sha1);
++  size_t CorpusIdx = Corpus.FindUnit(Sha1Str);
++  if (CorpusIdx == SIZE_MAX) {
++    RunOne(Data, Size);
++    TryDetectingAMemoryLeak(Data, Size, false);
++    CorpusIdx = Corpus.FindUnit(Sha1Str);
++  }
++  MutateAndTestOne(CorpusIdx);
++}
++
+ void Fuzzer::Loop(std::vector<SizedFile> &CorporaFiles) {
+   auto FocusFunctionOrAuto = Options.FocusFunction;
+   DFT.Init(Options.DataFlowTrace, &FocusFunctionOrAuto, CorporaFiles,
+@@ -866,6 +912,8 @@
+   TmpMaxMutationLen =
+       Min(MaxMutationLen, Max(size_t(4), Corpus.MaxInputSize()));
+ 
++  bool shared = InitShm();
++
+   while (true) {
+     auto Now = system_clock::now();
+     if (!Options.StopFile.empty() &&
+@@ -894,8 +942,30 @@
+       TmpMaxMutationLen = MaxMutationLen;
+     }
+ 
+-    // Perform several mutations and runs.
+-    MutateAndTestOne();
++    if (!shared) {
++      // Perform several mutations and runs.
++      MutateAndTestOne(SIZE_MAX);
++    } else {
++      WaitShm();
++      switch (get_mode()) {
++      case RUN_FUZZER:
++        g_cur_seed_id = NO_SEED_ID;
++        while (consume_iter_cnt()) {
++          MutateAndTestOne(SIZE_MAX);
++        }
++        break;
++      case RUN_FUZZER_WITH_SEED:
++        RunWithSeed();
++        break;
++      case EXECUTE_INPUT:
++        RunGivenInputs();
++        break;
++      default:
++        MutateAndTestOne(SIZE_MAX);
++        break;
++      }
++      EndShm(false);
++    }
+ 
+     PurgeAllocator();
+ 
+diff --color -ruN fuzzer_before/FuzzerLoop.cpp.rej fuzzer/FuzzerLoop.cpp.rej
+--- fuzzer_before/FuzzerLoop.cpp.rej	1969-12-31 16:00:00.000000000 -0800
++++ fuzzer/FuzzerLoop.cpp.rej	2025-02-12 13:51:14.448971042 -0800
+@@ -0,0 +1,52 @@
++--- compiler-rt/lib/fuzzer/FuzzerLoop.cpp
+++++ compiler-rt/lib/fuzzer/FuzzerLoop.cpp
++@@ -869,13 +879,48 @@ void Fuzzer::ReadAndExecuteSeedCorpora(std::vector<SizedFile> &CorporaFiles) {
++   }
++ }
++ 
+++void Fuzzer::RunGivenInputs() {
+++  const uint8_t *data = nullptr;
+++  size_t size = 0;
+++  int alloc_input_idx = g_current_worker->alloc_input_idx;
+++  int cur_idx = g_current_worker->execute_input_idx;
+++  while (alloc_input_idx > cur_idx) {
+++    data = (const uint8_t *)get_input_buffer(cur_idx);
+++    size = get_input_size(cur_idx);
+++    cur_idx++;
+++    g_current_worker->execute_input_idx = cur_idx;
+++    if (data != nullptr) {
+++      RunOne(data, size, true, nullptr, false, nullptr);
+++      TryDetectingAMemoryLeak(data, size, false);
+++    }
+++  }
+++}
+++
+++void Fuzzer::RunWithSeed() {
+++  int Idx = get_seed_idx(g_cur_worker_idx);
+++  const uint8_t *Data = (const uint8_t *)get_input_buffer(Idx);
+++  if (Data == nullptr)
+++    return;
+++  size_t Size = get_input_size(Idx);
+++  uint8_t Sha1[kSHA1NumBytes];
+++  ComputeSHA1(Data, Size, Sha1);
+++  auto Sha1Str = Sha1ToString(Sha1);
+++  size_t CorpusIdx = Corpus.FindUnit(Sha1Str);
+++  if (CorpusIdx == SIZE_MAX) {
+++    RunOne(Data, Size);
+++    TryDetectingAMemoryLeak(Data, Size, false);
+++    CorpusIdx = Corpus.FindUnit(Sha1Str);
+++  }
+++  MutateAndTestOne(CorpusIdx);
+++}
+++
++ void Fuzzer::Loop(std::vector<SizedFile> &CorporaFiles) {
++   auto FocusFunctionOrAuto = Options.FocusFunction;
++   DFT.Init(Options.DataFlowTrace, &FocusFunctionOrAuto, CorporaFiles,
++            MD.GetRand());
++   TPC.SetFocusFunction(FocusFunctionOrAuto);
++   ReadAndExecuteSeedCorpora(CorporaFiles);
++-  DFT.Clear();  // No need for DFT any more.
+++  DFT.Clear(); // No need for DFT any more.
++   TPC.SetPrintNewPCs(Options.PrintNewCovPcs);
++   TPC.SetPrintNewFuncs(Options.PrintNewCovFuncs);
++   system_clock::time_point LastCorpusReload = system_clock::now();
+diff --color -ruN fuzzer_before/FuzzerShm.cpp fuzzer/FuzzerShm.cpp
+--- fuzzer_before/FuzzerShm.cpp	1969-12-31 16:00:00.000000000 -0800
++++ fuzzer/FuzzerShm.cpp	2025-06-10 00:28:50.524227085 -0700
+@@ -0,0 +1,128 @@
++#include "FuzzerShm.h"
++#include "manager.h"
++#include "FuzzerTracePC.h"
++
++#include <fcntl.h>
++#include <semaphore.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/mman.h>
++#include <sys/shm.h>
++#include <unistd.h>
++
++sem_t *StartSem = nullptr;
++sem_t *EndSem = nullptr;
++bool inited = false;
++bool pass_wait = false;
++struct InputManager* g_input_mgr = nullptr;
++bool is_fuzzing_end = true;
++bool is_crash = false;
++char crash_logs[0x4000];
++bool always_share = false;
++bool testlang_feature = false;
++bool silent_mode = false;
++char* msg_in_wait = nullptr;
++
++void WaitShm() {
++  if (StartSem) {
++    if(msg_in_wait) {
++        fprintf(stdout, "\n%s\n", msg_in_wait);
++        fprintf(stderr, "\n%s\n", msg_in_wait);
++        fflush(stdout);
++        fflush(stderr);
++    }
++    if (!g_current_worker->in_loop) {
++      while (1) {
++        if (sem_wait(StartSem) == 0)
++          break;
++      }
++      g_current_worker->in_loop = 1;
++    }
++    pass_wait = true;
++    testlang_feature = (g_current_worker->testlang_feature != 0);
++  }
++}
++
++void EndShm(bool is_exited) {
++  if (EndSem) {
++    if (!is_exited) {
++      g_current_worker->in_loop = 0;
++      while (1) {
++        if (sem_post(EndSem) == 0)
++          break;
++      }
++    }
++    pass_wait = false;
++  }
++}
++
++void ExitShm() { EndShm(get_mode() == EXECUTE_INPUT); }
++
++void AddResult(int Idx, unsigned int Result, bool new_normal_feature) {
++  struct InputMetadata *md = get_input_metadata(g_input_mgr, Idx);
++  if (md == nullptr)
++    return;
++  Coverage *cov = get_cov_buffer(g_input_mgr, Idx);
++  if (cov == nullptr)
++    return;
++  int cov_size = fuzzer::TPC.StoreObservedPCs((uint64_t *)cov, COV_SIZE);
++  md->cov_size = cov_size;
++  md->result = Result;
++  if (new_normal_feature) {
++      md->new_normal_feature = 1;
++  } else {
++      md->new_normal_feature = 0;
++  }
++  if (Result != NORMAL) {
++    CrashLog *dst_log = get_crash_log(g_input_mgr, Idx);
++    if (dst_log == nullptr)
++      return;
++    int log_size = strlen(crash_logs);
++    if (log_size > CRASH_LOG_SIZE) log_size = CRASH_LOG_SIZE;
++    md->crash_size = log_size;
++    memcpy(dst_log, crash_logs, log_size);
++    crash_logs[0] = 0;
++    if(is_fuzzing_end){
++        ExitShm();
++    }
++    is_crash = true;
++    is_fuzzing_end = true;
++  }
++}
++
++bool ShareCorpus(const uint8_t *Data, size_t Size, unsigned int Result, bool new_normal_feature) {
++  if (!pass_wait)
++    return false;
++  if (get_mode() == EXECUTE_INPUT) {
++    AddResult(g_current_worker->execute_input_idx - 1, Result, new_normal_feature);
++  } else {
++    int idx = alloc_executed_input(g_input_mgr, Data, Size);
++    if (idx < 0)
++      return false;
++    AddResult(idx, Result, new_normal_feature);
++  }
++  return true;
++}
++
++bool InitShm() {
++  if (inited)
++    return inited;
++  msg_in_wait = getenv("UNIAFL_MSG_IN_WAIT");
++  const char *sem_key = getenv("SEM_KEY");
++  if (sem_key == NULL)
++    return false;
++  g_input_mgr = init_mgr(NULL, false);
++  if(g_input_mgr == NULL)
++      return false;
++  if(getenv("ALWAYS_GET_COV") != NULL)
++      always_share = true;
++
++  char name[0x100];
++  snprintf(name, sizeof(name), "%s.start", sem_key);
++  StartSem = init_sem(name, false);
++  snprintf(name, sizeof(name), "%s.end", sem_key);
++  EndSem = init_sem(name, false);
++  inited = StartSem != NULL && EndSem != NULL;
++  return inited;
++}
+diff --color -ruN fuzzer_before/FuzzerShm.h fuzzer/FuzzerShm.h
+--- fuzzer_before/FuzzerShm.h	1969-12-31 16:00:00.000000000 -0800
++++ fuzzer/FuzzerShm.h	2025-06-09 20:42:49.072717424 -0700
+@@ -0,0 +1,14 @@
++#include "FuzzerCorpus.h"
++
++bool InitShm();
++void WaitShm();
++void EndShm(bool);
++
++bool ShareCorpus(const uint8_t *, size_t, unsigned int Status, bool new_normal_feature);
++extern struct InputManager* g_input_mgr;
++extern bool is_fuzzing_end;
++extern bool is_crash;
++extern char crash_logs[0x4000];
++extern bool always_share;
++extern bool silent_mode;
++extern bool testlang_feature;
+diff --color -ruN fuzzer_before/FuzzerTracePC.cpp fuzzer/FuzzerTracePC.cpp
+--- fuzzer_before/FuzzerTracePC.cpp	2025-01-16 10:39:54.031844887 -0800
++++ fuzzer/FuzzerTracePC.cpp	2025-02-12 13:54:53.540231000 -0800
+@@ -11,6 +11,7 @@
+ //
+ //===----------------------------------------------------------------------===//
+ 
++#include "FuzzerShm.h"
+ #include "FuzzerTracePC.h"
+ #include "FuzzerBuiltins.h"
+ #include "FuzzerBuiltinsMsvc.h"
+@@ -167,6 +168,35 @@
+ #endif
+ }
+ 
++int TracePC::StoreObservedPCs(uint64_t *buffer, int buffer_size) {
++  int cur_idx = 0;
++  auto Observe = [&](const PCTableEntry *TE) {
++    if (cur_idx < buffer_size) {
++      buffer[cur_idx] = TE->PC;
++      cur_idx++;
++    }
++  };
++
++  if (NumPCsInPCTables) {
++    if (NumInline8bitCounters == NumPCsInPCTables) {
++      for (size_t i = 0; i < NumModules; i++) {
++        auto &M = Modules[i];
++        assert(M.Size() ==
++               (size_t)(ModulePCTable[i].Stop - ModulePCTable[i].Start));
++        for (size_t r = 0; r < M.NumRegions; r++) {
++          auto &R = M.Regions[r];
++          if (!R.Enabled)
++            continue;
++          for (uint8_t *P = R.Start; P < R.Stop; P++)
++            if (*P)
++              Observe(&ModulePCTable[i].Start[M.Idx(P)]);
++        }
++      }
++    }
++  }
++  return cur_idx;
++}
++
+ void TracePC::UpdateObservedPCs() {
+   std::vector<uintptr_t> CoveredFuncs;
+   auto ObservePC = [&](const PCTableEntry *TE) {
+@@ -457,6 +487,11 @@
+ 
+ extern "C" {
+ ATTRIBUTE_INTERFACE
++void __sanitizer_on_print(const char *str) {
++    strncat(crash_logs, str, sizeof(crash_logs) - strlen(crash_logs) - 1);
++}
++
++ATTRIBUTE_INTERFACE
+ ATTRIBUTE_NO_SANITIZE_ALL
+ void __sanitizer_cov_trace_pc_guard(uint32_t *Guard) {
+   fuzzer::WarnAboutDeprecatedInstrumentation(
+diff --color -ruN fuzzer_before/FuzzerTracePC.h fuzzer/FuzzerTracePC.h
+--- fuzzer_before/FuzzerTracePC.h	2025-01-16 10:39:54.031844887 -0800
++++ fuzzer/FuzzerTracePC.h	2025-02-12 13:51:14.448971042 -0800
+@@ -79,6 +79,7 @@
+   void SetPrintNewPCs(bool P) { DoPrintNewPCs = P; }
+   void SetPrintNewFuncs(size_t P) { NumPrintNewFuncs = P; }
+   void UpdateObservedPCs();
++  int StoreObservedPCs(uint64_t *buffer, int buffer_size);
+   template <class Callback> size_t CollectFeatures(Callback CB) const;
+ 
+   void ResetMaps() {
+diff --color -ruN fuzzer_before/manager.cpp fuzzer/manager.cpp
+--- fuzzer_before/manager.cpp	1969-12-31 16:00:00.000000000 -0800
++++ fuzzer/manager.cpp	2025-06-09 20:42:31.588439576 -0700
+@@ -0,0 +1,308 @@
++#include "manager.h"
++
++#include <fcntl.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/mman.h>
++#include <sys/shm.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <sys/stat.h>
++
++int g_input_per_worker = 0;
++int g_cur_worker_idx = -1;
++struct Worker *g_current_worker = NULL;
++
++int g_ready_idx = -1;
++uint64_t g_cur_seed_id = NO_SEED_ID;
++
++int g_capacity = 0;
++int g_worker_cnt = 0;
++size_t max_input_size = 0;
++size_t aligned_input_size = 0;
++#define PAGE_SIZE 4096
++#define IS_INVALID_IDX(idx) (idx < 0 || idx >= g_capacity)
++#define IS_INVALID_WORKER_IDX(idx) (idx < 0 || idx >= g_worker_cnt)
++
++int create_shared_mem(const char *name, size_t size) {
++  shm_unlink(name);
++  int fd = shm_open(name, O_CREAT | O_RDWR, 0666);
++  if (fd < 0)
++    return -1;
++  fchmod(fd, 0666);
++  if (ftruncate(fd, size) < 0)
++    return -1;
++  return fd;
++}
++
++void *init_shared_mem(const char *name, const char *post, size_t size,
++                      bool create) {
++  int fd = -1;
++  char mem_name[0x100];
++  snprintf(mem_name, sizeof(mem_name), "%s.%s", name, post);
++  if (create)
++    fd = create_shared_mem(mem_name, size);
++  else
++    fd = shm_open(mem_name, O_RDWR, 0666);
++  if (fd < 0) {
++    return NULL;
++  }
++  void *ret = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++  if (ret == MAP_FAILED)
++    return NULL;
++  return ret;
++}
++
++void init_cb(struct InputManager *mgr, const char *name, size_t worker_cnt,
++             size_t capacity, bool create) {
++  size_t size = sizeof(struct Worker) * worker_cnt +
++                sizeof(struct InputMetadata) * capacity;
++  uint8_t *block = (uint8_t *)init_shared_mem(name, "uniafl_cb", size, create);
++
++  if (create) {
++    memset(block, 0, size);
++    for (size_t i = 0; i < worker_cnt; i++) {
++      ((struct Worker *)block)[i].start_input_idx = i * g_input_per_worker;
++      ((struct Worker *)block)[i].end_input_idx = (i + 1) * g_input_per_worker;
++    }
++  }
++  mgr->workers = (struct Worker *)block;
++  mgr->input_metadatas =
++      (struct InputMetadata *)&block[sizeof(struct Worker) * worker_cnt];
++}
++
++sem_t *init_sem(const char *name, bool create) {
++  if (create) {
++    sem_t *ret = sem_open(name, O_CREAT, 0666, 0);
++    char sem_path[1024];
++    snprintf(sem_path, sizeof(sem_path), "/dev/shm/sem.%s", name);
++    chmod(sem_path, 0666);
++    return ret;
++  } else {
++    return sem_open(name, 0);
++  }
++}
++
++struct InputManager *init_mgr(const char *name, bool create) {
++  if (name == NULL)
++    name = getenv("HARNESS_NAME");
++
++  max_input_size = (size_t) atoi(getenv("MAX_INPUT_SIZE"));
++  aligned_input_size = (max_input_size / PAGE_SIZE) * PAGE_SIZE;
++  if ((max_input_size % PAGE_SIZE) != 0) {
++      aligned_input_size += PAGE_SIZE;
++  }
++
++  struct InputManager *input_mgr =
++      (struct InputManager *)malloc(sizeof(struct InputManager));
++  g_input_per_worker = atoi(getenv("INPUT_PER_WORKER"));
++  unsigned int worker_cnt = atoi(getenv("WORKER_CNT"));
++  size_t capacity = g_input_per_worker * worker_cnt;
++  g_capacity = capacity;
++  g_worker_cnt = worker_cnt;
++
++  init_cb(input_mgr, name, (size_t)worker_cnt, capacity, create);
++  input_mgr->inputs = (char *)init_shared_mem(
++      name, "uniafl_inputs", aligned_input_size * capacity, create);
++  input_mgr->coverages = (Coverage *)init_shared_mem(
++      name, "uniafl_coverage", sizeof(Coverage) * capacity, create);
++  input_mgr->crash_logs = (CrashLog *)init_shared_mem(
++      name, "uniafl_crash_log", sizeof(CrashLog) * capacity, create);
++  const char *cur_worker = getenv("CUR_WORKER");
++  if (cur_worker) {
++    unsigned int cur_idx = atoi(cur_worker);
++    if (cur_idx < worker_cnt) {
++      g_cur_worker_idx = cur_idx;
++      g_current_worker = &input_mgr->workers[cur_idx];
++    } else {
++      g_current_worker = NULL;
++    }
++  }
++
++  if (input_mgr->workers != NULL && input_mgr->input_metadatas != NULL &&
++      input_mgr->inputs != NULL && input_mgr->coverages != NULL) {
++    return input_mgr;
++  }
++  return NULL;
++}
++
++int alloc_input(struct InputManager *input_mgr, int worker_idx) {
++  if (IS_INVALID_WORKER_IDX(worker_idx))
++    return -1;
++  struct Worker *worker = &(input_mgr->workers[worker_idx]);
++  int cur_idx = worker->alloc_input_idx;
++  if (worker->end_input_idx > cur_idx) {
++    memset(get_input_metadata(input_mgr, cur_idx), 0,
++           sizeof(struct InputMetadata));
++    worker->alloc_input_idx++;
++    return cur_idx;
++  }
++  return -1;
++}
++
++int alloc_executed_input(struct InputManager *input_mgr, const uint8_t *data,
++                         size_t size) {
++  if (size > max_input_size) return -1;
++  int cur_idx = g_current_worker->execute_input_idx;
++  if (g_current_worker->end_input_idx > cur_idx) {
++    struct InputMetadata *md = get_input_metadata(input_mgr, cur_idx);
++    md->input_size = size;
++    md->id = g_cur_seed_id;
++    memcpy(get_input_buffer(input_mgr, cur_idx), data, size);
++    g_current_worker->execute_input_idx++;
++    return cur_idx;
++  }
++  return -1;
++}
++
++struct InputMetadata *get_input_metadata(struct InputManager *input_mgr,
++                                         int idx) {
++  if (IS_INVALID_IDX(idx))
++    return NULL;
++  return &(input_mgr->input_metadatas[idx]);
++}
++
++void set_input_metadata(struct InputManager *input_mgr, int idx,
++                        unsigned int size, uint64_t id) {
++  struct InputMetadata *md = get_input_metadata(input_mgr, idx);
++  if (md == NULL)
++    return;
++  md->input_size = size;
++  md->id = id;
++  memset(&md->fname, 0, sizeof(md->fname));
++}
++
++char *get_input_buffer(struct InputManager *input_mgr, int idx) {
++  if (IS_INVALID_IDX(idx))
++    return NULL;
++  return &(input_mgr->inputs[aligned_input_size * (size_t)idx]);
++}
++
++unsigned int get_input_size(struct InputManager *input_mgr, int idx) {
++  struct InputMetadata *md = get_input_metadata(input_mgr, idx);
++  if (md == NULL)
++    return 0;
++  return md->input_size;
++}
++
++Coverage *get_cov_buffer(struct InputManager *input_mgr, int idx) {
++  if (IS_INVALID_IDX(idx))
++    return NULL;
++  return &(input_mgr->coverages[idx]);
++}
++
++unsigned int get_cov_size(struct InputManager *input_mgr, int idx) {
++  struct InputMetadata *md = get_input_metadata(input_mgr, idx);
++  if (md == NULL)
++    return 0;
++  return md->cov_size;
++}
++
++CrashLog *get_crash_log(struct InputManager *input_mgr, int idx) {
++  if (IS_INVALID_IDX(idx))
++    return NULL;
++  return &(input_mgr->crash_logs[idx]);
++}
++
++unsigned int get_crash_size(struct InputManager *input_mgr, int idx) {
++  struct InputMetadata *md = get_input_metadata(input_mgr, idx);
++  if (md == NULL)
++    return 0;
++  return md->crash_size;
++}
++
++uint64_t get_id(struct InputManager *input_mgr, int idx) {
++  struct InputMetadata *md = get_input_metadata(input_mgr, idx);
++  if (md == NULL)
++    return 0;
++  return md->id;
++}
++
++int get_result(struct InputManager *input_mgr, int idx) {
++  struct InputMetadata *md = get_input_metadata(input_mgr, idx);
++  if (md == NULL)
++    return -1;
++  return md->result;
++}
++
++char *get_fname(struct InputManager *input_mgr, int idx) {
++  struct InputMetadata *md = get_input_metadata(input_mgr, idx);
++  if (md == NULL)
++    return NULL;
++  return md->fname;
++}
++
++int get_mode() {
++  if (g_current_worker == NULL)
++    return -1;
++  return g_current_worker->mode;
++}
++
++void set_mode(struct InputManager *input_mgr, int worker_idx, int mode, bool testlang_feature) {
++  if (IS_INVALID_WORKER_IDX(worker_idx))
++    return;
++  struct Worker *worker = &input_mgr->workers[worker_idx];
++  worker->mode = mode;
++  worker->iter_cnt = 0;
++  worker->in_loop = 0;
++  worker->alloc_input_idx = worker->start_input_idx;
++  worker->execute_input_idx = worker->start_input_idx;
++  if (testlang_feature) {
++      worker->testlang_feature = 1;
++  } else {
++      worker->testlang_feature = 0;
++  }
++}
++
++void set_iter_cnt(struct InputManager *input_mgr, int worker_idx, int cnt) {
++  if (IS_INVALID_WORKER_IDX(worker_idx))
++    return;
++  struct Worker *worker = &input_mgr->workers[worker_idx];
++  worker->iter_cnt = cnt;
++}
++
++bool is_mode_ended(struct InputManager *input_mgr, int worker_idx) {
++  if (IS_INVALID_WORKER_IDX(worker_idx))
++    return false;
++  struct Worker *worker = &input_mgr->workers[worker_idx];
++  switch (worker->mode) {
++  case RUN_FUZZER:
++  case RUN_FUZZER_WITH_SEED:
++    return worker->iter_cnt <= 0 ||
++           worker->execute_input_idx >= worker->end_input_idx;
++  case EXECUTE_INPUT:
++    return worker->execute_input_idx == worker->alloc_input_idx;
++  }
++  return false;
++}
++
++bool consume_iter_cnt() {
++  if (g_current_worker->iter_cnt > 0) {
++    g_current_worker->iter_cnt--;
++    return true;
++  }
++  return false;
++}
++
++int get_start_input_idx(struct InputManager *input_mgr, int worker_idx) {
++  if (IS_INVALID_WORKER_IDX(worker_idx))
++    return -1;
++  return input_mgr->workers[worker_idx].start_input_idx;
++}
++
++int get_alloc_input_idx(struct InputManager *input_mgr, int worker_idx) {
++  if (IS_INVALID_WORKER_IDX(worker_idx))
++    return -1;
++  return input_mgr->workers[worker_idx].alloc_input_idx;
++}
++
++int get_execute_input_idx(struct InputManager *input_mgr, int worker_idx) {
++  if (IS_INVALID_WORKER_IDX(worker_idx))
++    return -1;
++  return input_mgr->workers[worker_idx].execute_input_idx;
++}
++
++int get_seed_idx(struct InputManager *input_mgr, int worker_idx) {
++  return get_start_input_idx(input_mgr, worker_idx);
++}
+diff --color -ruN fuzzer_before/manager.h fuzzer/manager.h
+--- fuzzer_before/manager.h	1969-12-31 16:00:00.000000000 -0800
++++ fuzzer/manager.h	2025-06-09 20:42:27.420373343 -0700
+@@ -0,0 +1,93 @@
++#include <semaphore.h>
++#include <stdatomic.h>
++#include <stdbool.h>
++#include <stddef.h>
++#include <stdint.h>
++
++#define COV_SIZE (1024 * 1024 / 8) // 1MB
++#define CRASH_LOG_SIZE 16 * 1024 // 16KB
++
++#define NO_SEED_ID 0xffffffffffffffff
++
++// Mode
++#define RUN_FUZZER 0
++#define RUN_FUZZER_WITH_SEED 1
++#define EXECUTE_INPUT 2
++
++// Result
++#define WAIT 0
++#define NORMAL 1
++#define CRASH 2
++#define TIMEOUT 3
++#define OOM 4
++
++typedef uint64_t Coverage[COV_SIZE];
++typedef char CrashLog[CRASH_LOG_SIZE];
++
++struct InputMetadata {
++  unsigned int input_size;
++  unsigned int result;
++  unsigned int cov_size;
++  unsigned int crash_size;
++  uint64_t id;    // id for seed, parent id for mutated seed
++  uint64_t new_normal_feature; 
++  char fname[16]; // might not be null terminated.
++};
++
++struct Worker {
++  int start_input_idx;
++  int end_input_idx;
++  int alloc_input_idx;
++  int execute_input_idx;
++
++  int in_loop;
++  unsigned int mode;
++  int iter_cnt;
++  unsigned int testlang_feature;
++};
++
++struct InputManager {
++  struct Worker *workers;
++  struct InputMetadata *input_metadatas;
++  char *inputs;
++  Coverage *coverages;
++  CrashLog *crash_logs;
++};
++
++extern int g_input_per_worker;
++extern int g_cur_worker_idx;
++extern struct Worker *g_current_worker;
++
++extern int g_ready_idx;
++extern uint64_t g_cur_seed_id;
++extern size_t max_input_size;
++extern size_t aligned_input_size;
++
++struct InputManager *init_mgr(const char *, bool);
++sem_t *init_sem(const char *, bool);
++
++int alloc_input(struct InputManager *, int);
++int alloc_executed_input(struct InputManager *, const uint8_t *, size_t);
++
++struct InputMetadata *get_input_metadata(struct InputManager *, int);
++void set_input_metadata(struct InputManager *, int, unsigned int, uint64_t);
++char *get_input_buffer(struct InputManager *, int);
++unsigned int get_input_size(struct InputManager *, int);
++Coverage *get_cov_buffer(struct InputManager *, int);
++unsigned int get_cov_size(struct InputManager *, int);
++CrashLog *get_crash_log(struct InputManager *, int);
++unsigned int get_crash_size(struct InputManager *, int);
++uint64_t get_id(struct InputManager *, int);
++int get_result(struct InputManager *, int);
++char *get_fname(struct InputManager *, int);
++
++int get_mode();
++void set_mode(struct InputManager *, int, int, bool);
++void set_iter_cnt(struct InputManager *, int, int);
++bool is_mode_ended(struct InputManager *, int);
++bool consume_iter_cnt();
++
++int get_start_input_idx(struct InputManager *, int);
++int get_alloc_input_idx(struct InputManager *, int);
++int get_execute_input_idx(struct InputManager *, int);
++int get_seed_idx(struct InputManager *, int);

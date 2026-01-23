@@ -1,0 +1,23 @@
+diff --git a/compiler-rt/lib/sanitizer_common/sanitizer_printf.cpp b/compiler-rt/lib/sanitizer_common/sanitizer_printf.cpp
+index 62c1cf4abe42..b8c01b960cc8 100644
+--- a/compiler-rt/lib/sanitizer_common/sanitizer_printf.cpp
++++ b/compiler-rt/lib/sanitizer_common/sanitizer_printf.cpp
+@@ -228,6 +228,8 @@ void SetPrintfAndReportCallback(void (*callback)(const char *)) {
+   PrintfAndReportCallback = callback;
+ }
+ 
++extern "C" int __llvm_profile_write_file() __attribute__((weak));
++
+ // Can be overriden in frontend.
+ #if SANITIZER_GO && defined(TSAN_EXTERNAL_HOOKS)
+ // Implementation must be defined in frontend.
+@@ -235,6 +237,9 @@ extern "C" void __sanitizer_on_print(const char *str);
+ #else
+ SANITIZER_INTERFACE_WEAK_DEF(void, __sanitizer_on_print, const char *str) {
+   (void)str;
++  if (__llvm_profile_write_file) {
++    __llvm_profile_write_file();
++  }
+ }
+ #endif
+ 

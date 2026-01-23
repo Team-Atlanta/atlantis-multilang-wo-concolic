@@ -1,0 +1,16 @@
+#!/usr/bin/bash
+
+set -e
+set -x
+
+if [ "$#" -gt 0 ]; then
+  LLM_KEY="$1"
+  export LLM_KEY
+fi
+echo "Delete key: $LLM_KEY"
+response=$(
+  curl -X POST "$LITELLM_URL/key/delete" \
+    -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer $LITELLM_MASTER_KEY" --data '{"keys": ["'$LLM_KEY'"]}'
+)
+keys=$(echo "$response" | jq -r '.deleted_keys')

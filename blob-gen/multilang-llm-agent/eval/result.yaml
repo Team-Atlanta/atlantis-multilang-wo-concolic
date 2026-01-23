@@ -1,0 +1,64 @@
+blob_stats:
+  failed: 0
+  succeeded: 4
+  total: 4
+harness_status:
+  JenkinsTwo:
+    exploited: true
+    successful_blobs: 4
+    total_blobs: 4
+llm_metrics:
+  per_agent:
+    bcda:
+      completion_tokens: 25419
+      execution_time: '0:02:58.148140'
+      model: ''
+      prompt_tokens: 69640
+      successful_requests: 41
+      temperature: 0.0
+      total_cost: 0.2523015999999999
+      total_tokens: 95059
+    bga:
+      completion_tokens: 46389
+      execution_time: '0:04:12.041255'
+      model: claude-3-7-sonnet-20250219
+      prompt_tokens: 125726
+      successful_requests: 32
+      temperature: 0.4
+      total_cost: 1.0730130000000004
+      total_tokens: 172115
+    cpua:
+      completion_tokens: 1981
+      execution_time: '0:01:36.810263'
+      model: ''
+      prompt_tokens: 25035
+      successful_requests: 11
+      temperature: 0.0
+      total_cost: 0.058917800000000006
+      total_tokens: 27016
+    payload_gen:
+      completion_tokens: 1416
+      execution_time: '0:00:24.627341'
+      model: gpt-4o
+      prompt_tokens: 7274
+      successful_requests: 2
+      temperature: 0.4
+      total_cost: 0.043062000000000045
+      total_tokens: 8690
+  total:
+    completion_tokens: 73789
+    execution_time: '752.688341'
+    prompt_tokens: 220401
+    successful_requests: 84
+    total_cost: 1.3842324000000004
+    total_tokens: 294190
+sanitizer_results:
+  JazzerSanitizer.OsCommandInjection:
+  - blob: results/aixcc/jvm/jenkins-JenkinsTwo/blobs/2025-04-29_01-34-05/JenkinsTwo_13d6c68b2a293f9d323767f5fa682934.blob
+    harness: JenkinsTwo
+  - blob: results/aixcc/jvm/jenkins-JenkinsTwo/blobs/2025-04-29_01-34-05/JenkinsTwo_1876f7c5d2cadc36a7bc210ce82d2e29.blob
+    harness: JenkinsTwo
+  - blob: results/aixcc/jvm/jenkins-JenkinsTwo/blobs/2025-04-29_01-34-05/JenkinsTwo_2e07ba63348f8e357796a209a878e94c.blob
+    harness: JenkinsTwo
+  - blob: results/aixcc/jvm/jenkins-JenkinsTwo/blobs/2025-04-29_01-34-05/JenkinsTwo_e1056422985425e1be72b033ed8e55f7.blob
+    harness: JenkinsTwo

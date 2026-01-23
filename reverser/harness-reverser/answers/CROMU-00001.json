@@ -1,0 +1,267 @@
+{
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_count",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "commands",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "command_count"
+          },
+          "items": {
+            "kind": "record",
+            "name": "Command"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "Command",
+      "kind": "union",
+      "fields": [
+        {
+          "name": "create",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "IOCTL_CREATE"
+          }
+        },
+        {
+          "name": "login",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "IOCTL_LOGIN"
+          }
+        },
+        {
+          "name": "exit",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "IOCTL_EXIT"
+          }
+        },
+        {
+          "name": "send_msg",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "IOCTL_SEND_MSG"
+          }
+        },
+        {
+          "name": "read_msg",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "IOCTL_READ_MSG"
+          }
+        },
+        {
+          "name": "list_msg",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "IOCTL_LIST_MSG"
+          }
+        },
+        {
+          "name": "del_msg",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "IOCTL_DEL_MSG"
+          }
+        },
+        {
+          "name": "logout",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "IOCTL_LOGOUT"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "IOCTL_CREATE",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [3221229823]
+        },
+        {
+          "name": "size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "username",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "size"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "IOCTL_LOGIN",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [322420463]
+        },
+        {
+          "name": "size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "username",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "size"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "IOCTL_EXIT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [322371585]
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "IOCTL_SEND_MSG",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [322371586]
+        },
+        {
+          "name": "username_size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "username",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "username_size"
+          }
+        },
+        {
+          "name": "msg_size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "message",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "msg_size"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "IOCTL_READ_MSG",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [322371587]
+        },
+        {
+          "name": "msg_id",
+          "kind": "int",
+          "byte_size": 4
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "IOCTL_LIST_MSG",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [322371588]
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "IOCTL_DEL_MSG",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [322371589]
+        },
+        {
+          "name": "msg_id",
+          "kind": "int",
+          "byte_size": 4
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "IOCTL_LOGOUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [322371590]
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

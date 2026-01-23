@@ -1,0 +1,25 @@
+services:
+  redis:
+    image: redis:latest
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+
+  # LSP will be launched by user, when used for testing.
+  lsp:
+    image: ${LSP_RUNNER}:latest
+    restart: unless-stopped
+    volumes:
+      - ./libs/oss-fuzz/build/artifacts/${CP}/tarballs:/tarballs
+    environment:
+      - CRS_TARGET=${CP}
+
+  joern:
+    image: ml-joern:latest
+    build:
+      context: .
+      dockerfile: joern/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./libs/oss-fuzz/build/artifacts/${CP}/tarballs:/tarballs
+    environment:
+      - CRS_TARGET=${CP}

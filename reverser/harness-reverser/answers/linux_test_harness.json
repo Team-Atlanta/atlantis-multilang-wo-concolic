@@ -1,0 +1,125 @@
+{
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_count",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "commands",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "command_count"
+          },
+          "items": {
+            "kind": "record",
+            "name": "Command"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "Command",
+      "kind": "union",
+      "fields": [
+        {
+          "name": "send_packet_command",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "SendPacketCommand"
+          }
+        },
+        {
+          "name": "send_netlink_packet_command",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "SendNetlinkPacketCommand"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "SendPacketCommand",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [0]
+        },
+        {
+          "name": "packet_size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "flags",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "packet_data",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "packet_size"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "SendNetlinkPacketCommand",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [1]
+        },
+        {
+          "name": "msg_type",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "msg_flags",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "protocol",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "size",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "data",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "size"
+          }
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

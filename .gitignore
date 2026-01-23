@@ -1,0 +1,22 @@
+*.swp
+*.swo
+**/venv
+__pycache__
+cp_root
+crs.list
+experiments
+/workdir/
+target/
+!**/symqemu-multilang/**/target/
+/*.config
+/*.list
+.cursorignore
+.vscode
+
+# Pre-built Docker image cache
+oss-crs/cache/
+
+# DinD cache and editor/tool files
+oss-crs-dind/cache/
+tags
+uv.lock

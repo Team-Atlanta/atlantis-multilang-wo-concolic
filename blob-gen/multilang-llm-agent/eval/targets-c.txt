@@ -1,0 +1,12 @@
+aixcc/c/asc-nginx
+aixcc/c/babynginx
+aixcc/c/babynote
+aixcc/c/concolic-test
+aixcc/c/concolic-test-no-symcc
+aixcc/c/itoa
+aixcc/c/libcue
+aixcc/c/mock-c
+aixcc/c/mock-cp
+aixcc/c/rpn-calculator
+aixcc/c/simple-switch
+aixcc/c/user-nginx

@@ -1,0 +1,507 @@
+{
+  "is_partial": false,
+  "mode": "Bytes",
+  "default_endian": "big",
+  "records": [
+    {
+      "name": "StandardTarEntry",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "header",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "TarHeader"
+          }
+        },
+        {
+          "name": "file_data",
+          "kind": "bytes",
+          "possible_values": [],
+          "note": "File data with size specified in the header"
+        },
+        {
+          "name": "padding",
+          "kind": "bytes",
+          "byte_size": {
+            "start": 0,
+            "end": 511
+          },
+          "possible_values": [],
+          "note": "TAR files are padded to 512-byte blocks"
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "GnuSparseData",
+      "kind": "union",
+      "fields": [
+        {
+          "name": "sparse_0x_data",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "GnuSparse0xData"
+          }
+        },
+        {
+          "name": "sparse_1x_data",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "GnuSparse1xData"
+          }
+        },
+        {
+          "name": "star_sparse_data",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "StarSparseData"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "TarArchive",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "entries",
+          "kind": "array",
+          "items": {
+            "kind": "record",
+            "name": "TarEntry"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "GnuSparse1xData",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "sparse_realsize",
+          "kind": "string",
+          "possible_values": [],
+          "terminator": "\n",
+          "string_format": "dec_int",
+          "note": "GNU.sparse.realsize field for version 1.0"
+        },
+        {
+          "name": "sparse_name",
+          "kind": "string",
+          "possible_values": [],
+          "terminator": "\n",
+          "note": "GNU.sparse.name field for version 1.0, optional"
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "GnuSparseHeader",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "header",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "TarHeader"
+          },
+          "note": "typeflag should be 'S' (0x53) for GNU sparse file"
+        },
+        {
+          "name": "sparse_map",
+          "kind": "array",
+          "items": {
+            "kind": "record",
+            "name": "GnuSparseMap"
+          }
+        },
+        {
+          "name": "sparse_data",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "GnuSparseData"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "TarHeader",
+      "kind": "struct",
+      "byte_size": 512,
+      "fields": [
+        {
+          "name": "name",
+          "kind": "string",
+          "byte_size": 100,
+          "possible_values": [],
+          "terminator": "\u0000"
+        },
+        {
+          "name": "mode",
+          "kind": "string",
+          "byte_size": 8,
+          "possible_values": [],
+          "terminator": "\u0000",
+          "string_format": "oct_int"
+        },
+        {
+          "name": "uid",
+          "kind": "string",
+          "byte_size": 8,
+          "possible_values": [],
+          "terminator": "\u0000",
+          "string_format": "oct_int"
+        },
+        {
+          "name": "gid",
+          "kind": "string",
+          "byte_size": 8,
+          "possible_values": [],
+          "terminator": "\u0000",
+          "string_format": "oct_int"
+        },
+        {
+          "name": "size",
+          "kind": "string",
+          "byte_size": 12,
+          "possible_values": [],
+          "terminator": "\u0000",
+          "string_format": "oct_int"
+        },
+        {
+          "name": "mtime",
+          "kind": "string",
+          "byte_size": 12,
+          "possible_values": [],
+          "terminator": "\u0000",
+          "string_format": "oct_int"
+        },
+        {
+          "name": "checksum",
+          "kind": "string",
+          "byte_size": 8,
+          "possible_values": [],
+          "terminator": "\u0000",
+          "string_format": "oct_int"
+        },
+        {
+          "name": "typeflag",
+          "kind": "bytes",
+          "byte_size": 1,
+          "possible_values": [
+            [
+              48
+            ],
+            [
+              49
+            ],
+            [
+              50
+            ],
+            [
+              51
+            ],
+            [
+              52
+            ],
+            [
+              53
+            ],
+            [
+              54
+            ],
+            [
+              55
+            ],
+            [
+              120
+            ],
+            [
+              103
+            ],
+            [
+              83
+            ],
+            [
+              76
+            ],
+            [
+              75
+            ]
+          ]
+        },
+        {
+          "name": "linkname",
+          "kind": "string",
+          "byte_size": 100,
+          "possible_values": [],
+          "terminator": "\u0000"
+        },
+        {
+          "name": "magic",
+          "kind": "string",
+          "byte_size": 6,
+          "possible_values": [
+            "ustar\u0000",
+            "ustar "
+          ]
+        },
+        {
+          "name": "version",
+          "kind": "string",
+          "byte_size": 2,
+          "possible_values": [
+            "00",
+            "  "
+          ]
+        },
+        {
+          "name": "uname",
+          "kind": "string",
+          "byte_size": 32,
+          "possible_values": [],
+          "terminator": "\u0000"
+        },
+        {
+          "name": "gname",
+          "kind": "string",
+          "byte_size": 32,
+          "possible_values": [],
+          "terminator": "\u0000"
+        },
+        {
+          "name": "devmajor",
+          "kind": "string",
+          "byte_size": 8,
+          "possible_values": [],
+          "terminator": "\u0000",
+          "string_format": "oct_int"
+        },
+        {
+          "name": "devminor",
+          "kind": "string",
+          "byte_size": 8,
+          "possible_values": [],
+          "terminator": "\u0000",
+          "string_format": "oct_int"
+        },
+        {
+          "name": "prefix",
+          "kind": "string",
+          "byte_size": 155,
+          "possible_values": [],
+          "terminator": "\u0000"
+        },
+        {
+          "name": "padding",
+          "kind": "bytes",
+          "byte_size": 12,
+          "possible_values": []
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "TarEntry",
+      "kind": "union",
+      "fields": [
+        {
+          "name": "standard_entry",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "StandardTarEntry"
+          }
+        },
+        {
+          "name": "pax_extended_header",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "PaxExtendedHeader"
+          }
+        },
+        {
+          "name": "gnu_sparse_header",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "GnuSparseHeader"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "tar_archive",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "TarArchive"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "GnuSparse0xData",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "sparse_size",
+          "kind": "string",
+          "possible_values": [],
+          "terminator": "\n",
+          "string_format": "dec_int",
+          "note": "GNU.sparse.size field for versions 0.0 and 0.1"
+        },
+        {
+          "name": "sparse_name",
+          "kind": "string",
+          "possible_values": [],
+          "terminator": "\n",
+          "note": "GNU.sparse.name field for version 0.1, optional"
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "PaxExtendedHeader",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "header",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "TarHeader"
+          },
+          "note": "typeflag should be 'x' (0x78) for PAX extended header"
+        },
+        {
+          "name": "pax_headers",
+          "kind": "array",
+          "items": {
+            "kind": "record",
+            "name": "PaxHeader"
+          }
+        },
+        {
+          "name": "padding",
+          "kind": "bytes",
+          "byte_size": {
+            "start": 0,
+            "end": 511
+          },
+          "possible_values": [],
+          "note": "PAX headers are padded to 512-byte blocks"
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "GnuSparseMap",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "offset",
+          "kind": "string",
+          "byte_size": 12,
+          "possible_values": [],
+          "terminator": "\u0000",
+          "string_format": "oct_int"
+        },
+        {
+          "name": "numbytes",
+          "kind": "string",
+          "byte_size": 12,
+          "possible_values": [],
+          "terminator": "\u0000",
+          "string_format": "oct_int"
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "PaxHeader",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "length",
+          "kind": "string",
+          "possible_values": [],
+          "terminator": " ",
+          "string_format": "dec_int"
+        },
+        {
+          "name": "key_value",
+          "kind": "string",
+          "possible_values": [
+            "path=some/path",
+            "linkpath=some/link/path",
+            "gid=0",
+            "gname=root",
+            "uid=0",
+            "uname=root",
+            "size=1024",
+            "mtime=1234567890.123456",
+            "atime=1234567890.123456",
+            "ctime=1234567890.123456",
+            "LIBARCHIVE.creationtime=1234567890.123456",
+            "SCHILY.devminor=0",
+            "SCHILY.devmajor=0",
+            "GNU.sparse.size=1024",
+            "GNU.sparse.realsize=2048",
+            "GNU.sparse.name=sparse_file",
+            "GNU.sparse.map=offset,numbytes",
+            "GNU.sparse.offset=1024",
+            "GNU.sparse.numbytes=512",
+            "SCHILY.filetype=sparse",
+            "SCHILY.realsize=2048"
+          ],
+          "terminator": "\n",
+          "note": "Format: key=value based on processPaxHeader implementation"
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "StarSparseData",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "filetype",
+          "kind": "string",
+          "possible_values": [
+            "sparse"
+          ],
+          "terminator": "\n",
+          "note": "SCHILY.filetype field with value 'sparse'"
+        },
+        {
+          "name": "realsize",
+          "kind": "string",
+          "possible_values": [],
+          "terminator": "\n",
+          "string_format": "dec_int",
+          "note": "SCHILY.realsize field, optional"
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

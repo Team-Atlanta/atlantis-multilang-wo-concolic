@@ -1,0 +1,56 @@
+{
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_count",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "commands",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "command_count"
+          },
+          "items": {
+            "kind": "record",
+            "name": "Command0"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "Command0",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [0]
+        },
+        {
+          "name": "move_len",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "chess_move_data",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "move_len"
+          }
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

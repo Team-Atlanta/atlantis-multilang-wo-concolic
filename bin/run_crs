@@ -1,0 +1,99 @@
+#!/bin/bash
+sysctl -w fs.file-max=2097152
+ulimit -c 0
+get_cp
+
+MAIN_PID=""
+
+# Function to save results
+save_results() {
+    if [ "$CRS_SKIP_SAVE" != "True" ] && [ -d "/artifacts" ]; then
+        echo "=== Saving CRS results to /artifacts/ ==="
+
+        # Create output directories
+        # mkdir -p /artifacts/workdir_result
+        mkdir -p /artifacts/crs-data/workdir_result
+
+        # Find and copy results from each harness workdir
+        for harness_dir in /crs-workdir/worker-*/HarnessRunner/*/; do
+            if [ -d "$harness_dir" ]; then
+                harness=$(basename "$harness_dir")
+                echo "Saving results for harness: $harness"
+
+                # Copy POVs (skip if CRS_POV_DIR set - already written directly)
+                if [ -z "$CRS_POV_DIR" ]; then
+                    if [ -d "$harness_dir/pov" ] && [ "$(ls -A "$harness_dir/pov" 2>/dev/null)" ]; then
+                        # mkdir -p /artifacts/povs/$harness
+                        # cp -r "$harness_dir/pov/"* /artifacts/povs/$harness/ 2>/dev/null || true
+                        mkdir -p /artifacts/povs
+                        cp -r "$harness_dir/pov/"* /artifacts/povs/ 2>/dev/null || true
+                    fi
+                fi
+
+                # Copy corpus (skip if CRS_CORPUS_DIR set - already written directly)
+                if [ -z "$CRS_CORPUS_DIR" ]; then
+                    if [ -d "$harness_dir/uniafl_corpus" ] && [ "$(ls -A "$harness_dir/uniafl_corpus" 2>/dev/null)" ]; then
+                        # mkdir -p /artifacts/corpus/$harness
+                        # cp -r "$harness_dir/uniafl_corpus/"* /artifacts/corpus/$harness/ 2>/dev/null || true
+                        mkdir -p /artifacts/corpus
+                        cp -r "$harness_dir/uniafl_corpus/"* /artifacts/corpus/ 2>/dev/null || true
+                    fi
+                fi
+
+                # Copy full workdir (logs, coverage, etc.)
+                # mkdir -p /artifacts/workdir_result/$harness
+                # cp -r "$harness_dir"/* /artifacts/workdir_result/$harness/ 2>/dev/null || true
+                mkdir -p /artifacts/crs-data/workdir_result
+                cp -r "$harness_dir"/* /artifacts/crs-data/workdir_result/ 2>/dev/null || true
+            fi
+        done
+
+        echo "=== Results saved ==="
+        ls -la /artifacts/
+    fi
+}
+
+# Cleanup function for signal handling
+cleanup() {
+    echo "=== Interrupted, saving results... ==="
+
+    # Kill main.py if still running
+    if [ -n "$MAIN_PID" ] && kill -0 $MAIN_PID 2>/dev/null; then
+        echo "Sending SIGTERM to main.py (PID: $MAIN_PID)..."
+        kill -TERM $MAIN_PID 2>/dev/null
+
+        # Wait up to 5 seconds for graceful shutdown
+        for i in 1 2 3 4 5; do
+            if ! kill -0 $MAIN_PID 2>/dev/null; then
+                break
+            fi
+            sleep 1
+        done
+
+        # Force kill if still running
+        if kill -0 $MAIN_PID 2>/dev/null; then
+            echo "main.py didn't exit, sending SIGKILL..."
+            kill -KILL $MAIN_PID 2>/dev/null
+        fi
+
+        wait $MAIN_PID 2>/dev/null
+    fi
+
+    save_results
+    exit 130
+}
+
+# Trap signals - must be before main.py starts
+trap cleanup INT TERM
+
+# Run main.py in background so 'wait' is interruptible by signals
+# This allows the trap to fire immediately when SIGTERM arrives
+main.py &
+MAIN_PID=$!
+wait $MAIN_PID
+EXIT_CODE=$?
+
+# Save results on normal exit
+save_results
+
+exit $EXIT_CODE

@@ -1,0 +1,315 @@
+{
+  "is_partial": false,
+  "mode": "Bytes",
+  "default_endian": "big",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "tar_archive",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "TarArchive"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "TarArchive",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "entries",
+          "kind": "array",
+          "items": {
+            "kind": "record",
+            "name": "TarEntry"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "TarEntry",
+      "kind": "union",
+      "fields": [
+        {
+          "name": "standard_entry",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "StandardTarEntry"
+          }
+        },
+        {
+          "name": "pax_extended_header",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "PaxExtendedHeader"
+          }
+        },
+        {
+          "name": "gnu_sparse_header",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "GnuSparseHeader"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "StandardTarEntry",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "header",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "TarHeader"
+          }
+        },
+        {
+          "name": "file_data",
+          "kind": "bytes",
+          "note": "File data with size specified in the header"
+        },
+        {
+          "name": "padding",
+          "kind": "bytes",
+          "note": "TAR files are padded to 512-byte blocks",
+          "byte_size": {
+            "start": 0,
+            "end": 511
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "TarHeader",
+      "kind": "struct",
+      "byte_size": 512,
+      "fields": [
+        {
+          "name": "name",
+          "kind": "string",
+          "byte_size": 100,
+          "terminator": "\0"
+        },
+        {
+          "name": "mode",
+          "kind": "string",
+          "byte_size": 8,
+          "string_format": "oct_int"
+        },
+        {
+          "name": "uid",
+          "kind": "string",
+          "byte_size": 8,
+          "string_format": "oct_int"
+        },
+        {
+          "name": "gid",
+          "kind": "string",
+          "byte_size": 8,
+          "string_format": "oct_int"
+        },
+        {
+          "name": "size",
+          "kind": "string",
+          "byte_size": 12,
+          "string_format": "oct_int"
+        },
+        {
+          "name": "mtime",
+          "kind": "string",
+          "byte_size": 12,
+          "string_format": "oct_int"
+        },
+        {
+          "name": "checksum",
+          "kind": "string",
+          "byte_size": 8,
+          "string_format": "oct_int"
+        },
+        {
+          "name": "typeflag",
+          "kind": "bytes",
+          "byte_size": 1,
+          "possible_values": [
+            [0x30], // Regular file
+            [0x31], // Hard link
+            [0x32], // Symbolic link
+            [0x33], // Character device
+            [0x34], // Block device
+            [0x35], // Directory
+            [0x36], // FIFO
+            [0x37], // Contiguous file
+            [0x78], // Extended header (PAX)
+            [0x67], // Global extended header
+            [0x53], // Sparse file
+            [0x4c], // Long name
+            [0x4b]  // Long link name
+          ]
+        },
+        {
+          "name": "linkname",
+          "kind": "string",
+          "byte_size": 100,
+          "terminator": "\0"
+        },
+        {
+          "name": "magic",
+          "kind": "string",
+          "byte_size": 6,
+          "possible_values": ["ustar\0", "ustar "]
+        },
+        {
+          "name": "version",
+          "kind": "string",
+          "byte_size": 2,
+          "possible_values": ["00", "  "]
+        },
+        {
+          "name": "uname",
+          "kind": "string",
+          "byte_size": 32,
+          "terminator": "\0"
+        },
+        {
+          "name": "gname",
+          "kind": "string",
+          "byte_size": 32,
+          "terminator": "\0"
+        },
+        {
+          "name": "devmajor",
+          "kind": "string",
+          "byte_size": 8,
+          "string_format": "oct_int"
+        },
+        {
+          "name": "devminor",
+          "kind": "string",
+          "byte_size": 8,
+          "string_format": "oct_int"
+        },
+        {
+          "name": "prefix",
+          "kind": "string",
+          "byte_size": 155,
+          "terminator": "\0"
+        },
+        {
+          "name": "padding",
+          "kind": "bytes",
+          "byte_size": 12
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "PaxExtendedHeader",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "header",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "TarHeader"
+          },
+          "note": "typeflag should be 'x' (0x78) for PAX extended header"
+        },
+        {
+          "name": "pax_headers",
+          "kind": "array",
+          "items": {
+            "kind": "record",
+            "name": "PaxHeader"
+          }
+        },
+        {
+          "name": "padding",
+          "kind": "bytes",
+          "note": "PAX headers are padded to 512-byte blocks",
+          "byte_size": {
+            "start": 0,
+            "end": 511
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "PaxHeader",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "length",
+          "kind": "string",
+          "string_format": "dec_int",
+          "terminator": " "
+        },
+        {
+          "name": "key_value",
+          "kind": "string",
+          "terminator": "\n",
+          "note": "Format: key=value"
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "GnuSparseHeader",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "header",
+          "kind": "record",
+          "items": {
+            "kind": "record",
+            "name": "TarHeader"
+          },
+          "note": "typeflag should be 'S' (0x53) for GNU sparse file"
+        },
+        {
+          "name": "sparse_map",
+          "kind": "array",
+          "items": {
+            "kind": "record",
+            "name": "GnuSparseMap"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "GnuSparseMap",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "offset",
+          "kind": "string",
+          "byte_size": 12,
+          "string_format": "oct_int"
+        },
+        {
+          "name": "numbytes",
+          "kind": "string",
+          "byte_size": 12,
+          "string_format": "oct_int"
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

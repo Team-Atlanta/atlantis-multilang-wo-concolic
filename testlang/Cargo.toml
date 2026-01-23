@@ -1,0 +1,33 @@
+[package]
+name = "testlang"
+version = "0.2.0"
+edition = "2021"
+
+[dependencies]
+byteorder = "1.5"
+bytes = "1.10"
+memchr = "2.7"
+pyo3 = { version = "0.25", optional = true }
+rangemap = "1.5"
+schemars = "0.8"
+serde = "1.0"
+serde_json = "1.0"
+serde_json5 = "0.2"
+serde_path_to_error = "0.1"
+thiserror = "2.0"
+rand = "0.9"
+graphviz-rust = "0.9"
+regex = "1.11"
+
+[build-dependencies]
+serde = "1.0"
+serde_json = "1.0"
+
+[dev-dependencies]
+glob = "0.3"
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[features]
+python = ["pyo3", "pyo3/extension-module", "pyo3/abi3-py310"]

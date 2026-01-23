@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+set -x
+
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <crs_multilang_path> <cp>"
+  exit 1
+fi
+
+CRS_MULTILANG_PATH="$1"
+CP="$2"
+LSP_OVERRIDE_FILE=`realpath lsp.override.yml`
+if [ -z "${PROJ_NAME:-}" ]; then
+    PROJ_NAME=$(echo "$CP" | tr '/' '_')
+fi
+
+pushd "$CRS_MULTILANG_PATH"
+docker compose -p ${PROJ_NAME}_local -f other-services.yml -f $LSP_OVERRIDE_FILE down joern
+popd

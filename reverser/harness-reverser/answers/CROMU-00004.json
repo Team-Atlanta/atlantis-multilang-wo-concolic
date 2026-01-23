@@ -1,0 +1,56 @@
+{
+  "mode": "Bytes",
+  "default_endian": "little",
+  "records": [
+    {
+      "name": "INPUT",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_count",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "commands",
+          "kind": "array",
+          "len": {
+            "kind": "field",
+            "name": "command_count"
+          },
+          "items": {
+            "kind": "record",
+            "name": "Command"
+          }
+        }
+      ],
+      "analysis": []
+    },
+    {
+      "name": "Command",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "command_type",
+          "kind": "int",
+          "byte_size": 4,
+          "possible_values": [0]
+        },
+        {
+          "name": "wav_len",
+          "kind": "int",
+          "byte_size": 4
+        },
+        {
+          "name": "wav",
+          "kind": "bytes",
+          "len": {
+            "kind": "field",
+            "name": "wav_len"
+          }
+        }
+      ],
+      "analysis": []
+    }
+  ]
+}

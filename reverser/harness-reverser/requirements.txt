@@ -1,0 +1,16 @@
+langchain_core==0.3.30
+langchain_openai==0.3.1
+langchain_community==0.3.14
+langgraph==0.2.64
+litellm==1.59.0
+loguru==0.7.2
+python_dateutil==2.9.0.post0
+tokencost==0.1.17
+typing_extensions==4.12.2
+tree-sitter-language-pack==0.4.0
+tree-sitter-c==0.21.1
+esprima==4.0.1
+openinference-instrumentation-langchain==0.1.29
+traceloop-sdk==0.36.0
+arize-phoenix-otel==0.6.1
+filelock==3.18.0
