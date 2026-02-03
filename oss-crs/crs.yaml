@@ -26,6 +26,12 @@ target_build_phase:
 crs_run_phase:
   multilang:
     dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
+  redis:
+    dockerfile: oss-crs/dockerfiles/redis.Dockerfile
+  init_codeindexer:
+    dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
+    additional_env:
+      INIT_CODEINDEXER: "True"
 
 supported_target:
   mode:

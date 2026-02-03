@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+env
+if [ "$INIT_CODEINDEXER" = "True" ] ; then
+    init_codeindexer
+else
+    run_crs
+fi
