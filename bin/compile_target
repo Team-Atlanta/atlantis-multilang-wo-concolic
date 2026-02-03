@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -e
+
+log() {
+    echo "[compile_crs] $*"
+}
+
+compile_uniafl_build() {
+    log "  Compiling with UniAFL instrumentation..."
+    compile
+    libCRS submit-build-output $OSS_CRS_TARGET_PROJ_DIR uniafl/project
+    libCRS submit-build-output $OUT uniafl/build
+    libCRS submit-build-output $SRC uniafl/src
+}
+
+compile_coverage_build() {
+    log "  Compiling with coverage instrumentation..."
+    SANITIZER=coverage compile
+    libCRS submit-build-output $OUT coverage/build
+}
+
+if [ "$FUZZING_LANGUAGE" = "c" ] || [ "$FUZZING_LANGUAGE" = "c++" ]; then
+    log "Compiling CRS C/C++ project with BUILD_TYPE: $BUILD_TYPE"
+    if [ "$BUILD_TYPE" = "uniafl" ]; then
+        compile_uniafl_build
+    elif [ "$BUILD_TYPE" = "coverage" ]; then
+        compile_coverage_build
+    fi
+    exit 0
+elif [ "$FUZZING_LANGUAGE" = "jvm" ]; then
+    log "Compiling CRS JVM project with BUILD_TYPE: $BUILD_TYPE"
+    if [ "$BUILD_TYPE" = "uniafl" ]; then
+        compile_uniafl_build
+    elif [ "$BUILD_TYPE" = "coverage" ]; then
+        libCRS skip-build-output coverage/build
+    fi
+    exit 0
+else
+    log "$FUZZING_LANGUAGE is not supported"
+fi
+exit 1

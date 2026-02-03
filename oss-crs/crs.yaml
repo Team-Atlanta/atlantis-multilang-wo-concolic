@@ -1,0 +1,42 @@
+name: atlantis-multilang-wo-concolic
+type:
+  - bug-finding
+version: 1.0.0
+docker_registry: ghcr.io/team-atlanta/atlantis-multilang-wo-concolic
+
+prepare_phase:
+  hcl: oss-crs/docker-bake.hcl
+
+target_build_phase:
+  uniafl-build:
+    dockerfile: oss-crs/dockerfiles/builder.Dockerfile
+    additional_env:
+      BUILD_TYPE: uniafl
+    outputs:
+      - uniafl/build
+      - uniafl/src
+      - uniafl/project
+  coverage-build:
+    dockerfile: oss-crs/dockerfiles/builder.Dockerfile
+    additional_env:
+      BUILD_TYPE: coverage
+    outputs:
+      - coverage/build
+
+crs_run_phase:
+  multilang:
+    dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
+
+supported_target:
+  mode:
+    - full
+    - delta
+  language:
+    - c
+  sanitizer:
+    - address
+  architecture:
+    - x86_64
+
+allowed_llms:
+  - o3
