@@ -1,3 +1,6 @@
 #!/bin/bash
-get_cp no_cov_symcc
+
+set -e
+
+get_cp no_cov
 python3 /server.py

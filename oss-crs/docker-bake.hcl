@@ -66,7 +66,7 @@ group "default" {
 }
 
 group "prepare" {
-  targets = ["multilang-clang", "multilang-builder", "multilang-builder-jvm", "multilang-c-archive", "multilang-jvm-archive", "multilang-crs"]
+  targets = ["multilang-clang", "multilang-builder", "multilang-builder-jvm", "multilang-c-archive", "multilang-jvm-archive", "multilang-crs", "multilang-joern"]
 }
 
 group "prepare-c" {
@@ -125,6 +125,13 @@ target "multilang-crs" {
   context    = "."
   dockerfile = "Dockerfile"
   tags       = tags("multilang-crs")
+  cache-from = USE_PREBUILT ? ["type=registry,ref=${REGISTRY}/multilang-crs:${VERSION}"] : []
+}
+
+target "multilang-joern" {
+  context    = "."
+  dockerfile = "joern/Dockerfile"
+  tags       = tags("multilang-joern")
   cache-from = USE_PREBUILT ? ["type=registry,ref=${REGISTRY}/multilang-crs:${VERSION}"] : []
 }
 

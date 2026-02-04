@@ -32,6 +32,9 @@ crs_run_phase:
     dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
     additional_env:
       INIT_CODEINDEXER: "True"
+  joern:
+    dockerfile: oss-crs/dockerfiles/joern.Dockerfile
+  #lsp
 
 supported_target:
   mode:

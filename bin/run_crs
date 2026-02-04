@@ -1,15 +1,12 @@
 #!/bin/bash
 sysctl -w fs.file-max=2097152
 ulimit -c 0
-
+set -e
 
 # =============================================================================
 # Download build outputs
 # =============================================================================
-libCRS download-build-output uniafl/build /out
-libCRS download-build-output uniafl/src /src
-libCRS download-build-output uniafl/project/ /src/
-libCRS download-build-output coverage/build /coverage-out
+get_cp
 
 # =============================================================================
 # Register dirs
@@ -23,6 +20,13 @@ libCRS register-submit-dir seed /seeds
 # =============================================================================
 # Set env up for this CRS
 # =============================================================================
+REDIS_DOMAIN=$(libCRS get-service-domain redis 2>/dev/null)
+JOERN_DOMAIN=$(libCRS get-service-domain joern 2>/dev/null)
+#LSP_DOMAIN=$(libCRS get-service-domain lsp 2>/dev/null)
+
+export CODE_INDEXER_REDIS_URL=redis://${REDIS_DOMAIN}:6379
+export JOERN_URL=http://${JOERN_DOMAIN}:9909
+#export LSP_SERVER_URL=http://lsp:3303
 
 export CRS_TARGET=$OSS_CRS_TARGET
 echo "{\"target_harnesses\": [\"$OSS_CRS_TARGET_HARNESS\"]}" > /crs.config
