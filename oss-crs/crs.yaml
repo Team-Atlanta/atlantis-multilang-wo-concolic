@@ -22,6 +22,10 @@ target_build_phase:
       BUILD_TYPE: coverage
     outputs:
       - coverage/build
+  lsp-build:
+    dockerfile: oss-crs/dockerfiles/lsp_builder.Dockerfile
+    outputs:
+      - lsp/compile_commands.json
 
 crs_run_phase:
   multilang:
@@ -34,7 +38,8 @@ crs_run_phase:
       INIT_CODEINDEXER: "True"
   joern:
     dockerfile: oss-crs/dockerfiles/joern.Dockerfile
-  #lsp
+  lsp:
+    dockerfile: oss-crs/dockerfiles/lsp.Dockerfile
 
 supported_target:
   mode:

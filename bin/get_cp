@@ -9,6 +9,4 @@ if [ "$1" != "no_cov" ]; then
     libCRS download-build-output coverage/build /coverage-out
 fi
 
-#if [ -e $TARBALL_DIR/compile_commands.json ]; then
-#    rsync_with_retry $TARBALL_DIR/compile_commands.json /src/repo/compile_commands.json
-#fi
+libCRS download-build-output lsp/compile_commands.json /src/repo/compile_commands.json

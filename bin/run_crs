@@ -22,11 +22,11 @@ libCRS register-submit-dir seed /seeds
 # =============================================================================
 REDIS_DOMAIN=$(libCRS get-service-domain redis 2>/dev/null)
 JOERN_DOMAIN=$(libCRS get-service-domain joern 2>/dev/null)
-#LSP_DOMAIN=$(libCRS get-service-domain lsp 2>/dev/null)
+LSP_DOMAIN=$(libCRS get-service-domain lsp 2>/dev/null)
 
 export CODE_INDEXER_REDIS_URL=redis://${REDIS_DOMAIN}:6379
 export JOERN_URL=http://${JOERN_DOMAIN}:9909
-#export LSP_SERVER_URL=http://lsp:3303
+export LSP_SERVER_URL=http://${LSP_DOMAIN}:3303
 
 export CRS_TARGET=$OSS_CRS_TARGET
 echo "{\"target_harnesses\": [\"$OSS_CRS_TARGET_HARNESS\"]}" > /crs.config

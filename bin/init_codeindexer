@@ -2,8 +2,7 @@
 set -e
 
 libCRS download-build-output uniafl/project/ /src/
-rm -rf /src/repo
-libCRS download-build-output uniafl/src /src/repo
+libCRS download-build-output uniafl/src /src
 
 REDIS_DOMAIN=$(libCRS get-service-domain redis 2>/dev/null)
 export CODE_INDEXER_REDIS_URL=redis://${REDIS_DOMAIN}:6379

@@ -8,9 +8,21 @@ log() {
 
 compile_uniafl_build() {
     log "  Compiling with UniAFL instrumentation..."
+    REPODIR=$(pwd)
     compile
     libCRS submit-build-output $OSS_CRS_TARGET_PROJ_DIR uniafl/project
     libCRS submit-build-output $OUT uniafl/build
+    # Create $SRC/repo as symlink or copy depending on whether REPODIR is under SRC
+    if [[ "$REPODIR" == "$SRC"/* ]]; then
+        # REPODIR is a subdirectory of SRC, create a relative symlink
+        RELPATH="${REPODIR#$SRC/}"
+        ln -sfn "$RELPATH" "$SRC/repo"
+        log "  Created relative symlink $SRC/repo -> $RELPATH"
+    else
+        # REPODIR is not under SRC, copy it
+        cp -r "$REPODIR" "$SRC/repo"
+        log "  Copied $REPODIR to $SRC/repo"
+    fi
     libCRS submit-build-output $SRC uniafl/src
 }
 
