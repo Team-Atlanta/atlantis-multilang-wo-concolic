@@ -25,8 +25,11 @@ JOERN_DOMAIN=$(libCRS get-service-domain joern 2>/dev/null)
 LSP_DOMAIN=$(libCRS get-service-domain lsp 2>/dev/null)
 
 export CODE_INDEXER_REDIS_URL=redis://${REDIS_DOMAIN}:6379
+export DICTGEN_REDIS_URL=redis://${REDIS_DOMAIN}:6379
 export JOERN_URL=http://${JOERN_DOMAIN}:9909
 export LSP_SERVER_URL=http://${LSP_DOMAIN}:3303
+export LITELLM_URL=$OSS_CRS_LLM_API_URL
+export LITELLM_KEY=$OSS_CRS_LLM_API_KEY
 
 export CRS_TARGET=$OSS_CRS_TARGET
 echo "{\"target_harnesses\": [\"$OSS_CRS_TARGET_HARNESS\"]}" > /crs.config
@@ -36,5 +39,12 @@ export CRS_CORPUS_DIR="/seeds"
 export SEED_SHARE_DIR="/seed_share_dir"
 #export CRS_DATA_DIR="/crs-data"
 #export BUG_CANDIDATE_DIR="/bug-candidates"
+
+export BGA_TEMPERATURE=1
+export BGA_GENERATOR_TEMPERATURE=1
+export BGA_MUTATOR_TEMPERATURE=1
+export PAYLOAD_GEN_TEMPERATURE=1
+export FAILURE_ANALYSIS_TEMPERATURE=1
+export ORCHESTRATOR_TEMPERATURE=1
 
 main.py
