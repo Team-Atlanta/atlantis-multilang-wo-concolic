@@ -123,7 +123,7 @@ target "multilang-builder-jvm" {
 # Main CRS image with UniAFL, llvm-cov-custom, FuzzDB, libCRS
 target "multilang-crs" {
   context    = "."
-  dockerfile = "Dockerfile"
+  dockerfile = "oss-crs/dockerfiles/multilang-base-runner.Dockerfile"
   tags       = tags("multilang-crs")
   cache-from = USE_PREBUILT ? ["type=registry,ref=${REGISTRY}/multilang-crs:${VERSION}"] : []
 }
