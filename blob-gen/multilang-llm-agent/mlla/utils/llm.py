@@ -398,7 +398,6 @@ class LLM:
                 base_url=config.base_url,
                 timeout=config.gemini_timeout,
                 max_retries=config.gemini_max_retries,
-                max_tokens=max_tokens,
                 callbacks=self.callbacks,
                 rate_limiter=claude_rate_limiter,
             )
@@ -420,7 +419,6 @@ class LLM:
                 # tiktoken_model_name="claude-3-7-sonnet-20250219",
                 timeout=config.openai_timeout,
                 max_retries=config.openai_max_retries,
-                max_tokens=max_tokens,
                 callbacks=self.callbacks,
                 rate_limiter=claude_rate_limiter,
                 betas=["extended-cache-ttl-2025-04-11"],
@@ -443,7 +441,6 @@ class LLM:
                 tiktoken_model_name="gpt-4o",
                 timeout=config.openai_timeout,
                 max_retries=config.openai_max_retries,
-                max_tokens=max_tokens,
                 callbacks=self.callbacks,
                 rate_limiter=rate_limiter,
             )
