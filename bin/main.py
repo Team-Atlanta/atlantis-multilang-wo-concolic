@@ -13,7 +13,15 @@ from pathlib import Path
 import pyinotify
 import yaml
 from fuzzdb import FuzzDB
-from libCRS import CRS, Config, HarnessRunner, Module, init_cp_in_runner, util, get_available_cpus
+from libCRS import (
+    CRS,
+    Config,
+    HarnessRunner,
+    Module,
+    init_cp_in_runner,
+    util,
+    get_available_cpus,
+)
 from libCRS.challenge import CP_Harness
 from libCRS.otel import install_otel_logger
 from libCRS.util import TestResult
@@ -517,7 +525,7 @@ class UniAFL(Module):
                 "executor_timeout_ms": 1000 * 30,
                 "python": "/home/crs/constraint-gen/env/bin/python3",
                 "resolve_script": "resolve",
-                "harness": str(concolic_harness_path)
+                "harness": str(concolic_harness_path),
             }
             config["concolic"] = concolic_config
         if "input_gens" in self.crs.config.others:
@@ -576,7 +584,7 @@ class AnyHR(HarnessRunner):
         seed_share_dir = Path(get_seed_share_dir())
         seed_share_dir_name = seed_share_dir.name
         rootdir = seed_share_dir.parent.parent
-        crs_name = os.environ.get('CRS_NAME', 'crs-multilang')
+        crs_name = os.environ.get("CRS_NAME", "crs-multilang")
         candidates = list(
             rootdir.glob(f"*/{seed_share_dir_name}/{crs_name}/{self.harness.name}")
         )
@@ -945,12 +953,26 @@ def add_env(key, value, replace=None):
 
 CONF_PATH = Path("/src/.aixcc/config.yaml")
 TMP_CONF = Path("/src/.aixcc/config.yaml.tmp")
+AVAILABLE_INPUT_GENS = ["given_fuzzer", "mlla", "testlang_input_gen", "dict_input_gen"]
 if __name__ == "__main__":
     install_otel_logger(action_name="main")
     conf = Config(0, 1).load("/crs.config")
+    CRS_INPUT_GENS = os.environ.get("CRS_INPUT_GENS")
+    if CRS_INPUT_GENS:
+        if "input_gens" not in conf.others:
+            conf.others["input_gens"] = []
+        conf.others["input_gens"] += list(
+            map(lambda x: x.strip(), CRS_INPUT_GENS.split(","))
+        )
+        for input_gen in conf.others["input_gens"]:
+            if input_gen not in AVAILABLE_INPUT_GENS:
+                print(
+                    f"Unknown input_gen {input_gen} specified in CRS_INPUT_GENS or config"
+                )
+                sys.exit(-1)
+
     shm_size = get_available_cpus() * 4
     os.system(f"mount -o remount,size={shm_size}G /dev/shm")
-    os.system("touch /dev/shm/aa")
     shm = Path("/dev/shm")
     prevs = list(shm.iterdir())
     if len(prevs) > 0:
