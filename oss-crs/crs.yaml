@@ -30,6 +30,14 @@ target_build_phase:
 crs_run_phase:
   multilang:
     dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
+    additional_env:
+      # Input generators for fuzzing (comma-separated)
+      # Available options:
+      #   - given_fuzzer: Use provided seed corpus (default)
+      #   - testlang_input_gen: Test language-based input generation
+      #   - dict_input_gen: Dictionary-based input generation
+      #   - mlla: Multi-language LLM agent for input generation
+      CRS_INPUT_GENS: given_fuzzer,mlla,testlang_input_gen,dict_input_gen
   redis:
     dockerfile: oss-crs/dockerfiles/redis.Dockerfile
   init_codeindexer:
@@ -53,4 +61,8 @@ supported_target:
     - x86_64
 
 required_llms:
-  - o3
+  - o4-mini
+  - claude-sonnet-4-20250514
+  - claude-3-7-sonnet-20250219
+  - gpt-4o
+  - gpt-4.1
