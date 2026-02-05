@@ -17,8 +17,8 @@ ARG target_base_image
 ARG crs_version
 
 # Reference archive images for CRS build tools
-FROM ghcr.io/team-atlanta/multilang-c-archive:${crs_version} AS crs-tools-c
-FROM ghcr.io/team-atlanta/multilang-jvm-archive:${crs_version} AS crs-tools-jvm
+FROM multilang-c-archive AS crs-tools-c
+FROM multilang-jvm-archive AS crs-tools-jvm
 
 # =============================================================================
 # Builder: parent_image + CRS tools
