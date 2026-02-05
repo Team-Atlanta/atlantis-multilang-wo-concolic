@@ -52,5 +52,5 @@ supported_target:
   architecture:
     - x86_64
 
-allowed_llms:
+required_llms:
   - o3
