@@ -8,7 +8,7 @@ prepare_phase:
   hcl: oss-crs/docker-bake.hcl
 
 target_build_phase:
-  uniafl-build:
+  - name: uniafl-build
     dockerfile: oss-crs/dockerfiles/builder.Dockerfile
     additional_env:
       BUILD_TYPE: uniafl
@@ -16,13 +16,13 @@ target_build_phase:
       - uniafl/build
       - uniafl/src
       - uniafl/project
-  coverage-build:
+  - name: coverage-build
     dockerfile: oss-crs/dockerfiles/builder.Dockerfile
     additional_env:
       BUILD_TYPE: coverage
     outputs:
       - coverage/build
-  lsp-build:
+  - name: lsp-build
     dockerfile: oss-crs/dockerfiles/lsp_builder.Dockerfile
     outputs:
       - lsp/compile_commands.json
