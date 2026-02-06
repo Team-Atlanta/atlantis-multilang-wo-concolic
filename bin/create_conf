@@ -1,7 +1,5 @@
 #!/bin/bash
-mkdir -p /src/repo
-tar --use-compress-program=pigz -xf /tarballs/project.tar.gz -C /src/
-rm -rf /src/repo
-mkdir -p /src/repo
-tar --use-compress-program=pigz -xf /tarballs/repo.tar.gz -C /src/repo
-CREATE_CONF=$1 main.py
+
+get_cp "no_config"
+CREATE_CONF=/config.yaml main.py
+libCRS submit-build-output /config.yaml uniafl/config.yaml

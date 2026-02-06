@@ -1,8 +1,10 @@
 #!/bin/bash
 set -e
 
-if [ "$INIT_CODEINDEXER" = "True" ] ; then
+if [ "$RUN_TYPE" = "INIT_CODEINDEXER" ] ; then
     init_codeindexer
+elif [ "$RUN_TYPE" = "CREATE_CONFIG" ] ; then
+    create_conf
 else
     run_crs
 fi

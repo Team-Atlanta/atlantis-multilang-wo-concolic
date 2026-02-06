@@ -26,6 +26,12 @@ target_build_phase:
     dockerfile: oss-crs/dockerfiles/lsp_builder.Dockerfile
     outputs:
       - lsp/compile_commands.json
+  - name: create-config
+    dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
+    additional_env:
+      RUN_TYPE: CREATE_CONFIG
+    outputs:
+      - uniafl/config.yaml
 
 crs_run_phase:
   multilang:
@@ -43,7 +49,7 @@ crs_run_phase:
   init_codeindexer:
     dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
     additional_env:
-      INIT_CODEINDEXER: "True"
+      RUN_TYPE: INIT_CODEINDEXER
   joern:
     dockerfile: oss-crs/dockerfiles/joern.Dockerfile
   lsp:
