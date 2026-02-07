@@ -47,4 +47,10 @@ export PAYLOAD_GEN_TEMPERATURE=1
 export FAILURE_ANALYSIS_TEMPERATURE=1
 export ORCHESTRATOR_TEMPERATURE=1
 
+# Register shared dir for saving module result
+LOCAL_WORKDIR=/crs-workdir/worker-0/HarnessRunner/$OSS_CRS_TARGET_HARNESS/uniafl/workdir
+libCRS register-shared-dir $LOCAL_WORKDIR/mlla mlla
+libCRS register-shared-dir $LOCAL_WORKDIR/harness-reverser harness-reverser
+libCRS register-shared-dir $LOCAL_WORKDIR/dictgen dictgen
+
 main.py
