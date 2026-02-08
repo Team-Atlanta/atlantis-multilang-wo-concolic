@@ -55,6 +55,5 @@ libCRS register-shared-dir $LOCAL_WORKDIR/dictgen dictgen
 
 LOCAL_HARNESS_DIR=/crs-workdir/worker-0/HarnessRunner/$OSS_CRS_TARGET_HARNESS
 libCRS register-shared-dir $LOCAL_HARNESS_DIR/uniafl_cov uniafl_cov
-libCRS register-shared-dir /povs povs
 
 main.py
