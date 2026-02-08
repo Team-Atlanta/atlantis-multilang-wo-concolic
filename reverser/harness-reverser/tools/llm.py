@@ -66,8 +66,8 @@ class LLM:
         from langchain_anthropic import ChatAnthropic
 
         temperature = temperature
-        # hotfix: Set temperature as 1 for all models
-        temperature = 1
+        if model in ["o1-mini", "o1-preview"]:
+            temperature = 1
 
         chat_model = ChatAnthropic(
             model=model,
