@@ -74,7 +74,7 @@ class sCP(CP):
     def sanitizers(self) -> List[str]:
         with open(self.yaml_path, "r") as f:
             info = yaml.safe_load(f)
-        return info["sanitizers"]
+        return info.get("sanitizers", ["address"])
 
     @property
     def compile_db_json_path(self) -> Path:
