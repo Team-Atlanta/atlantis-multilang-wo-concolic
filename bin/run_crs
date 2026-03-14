@@ -9,6 +9,19 @@ set -e
 get_cp
 
 # =============================================================================
+# Run code indexing inline (was a separate init_codeindexer service, but that
+# exits after completion and triggers --abort-on-container-exit)
+# =============================================================================
+echo "Starting inline code indexing..."
+REDIS_DOMAIN_INIT=$(libCRS get-service-domain redis 2>/dev/null)
+export CODE_INDEXER_REDIS_URL=redis://${REDIS_DOMAIN_INIT}:6379
+export CP_PROJ_PATH=/src
+export CP_SRC_PATH=/src/repo
+cd /home/crs/blob-gen/multilang-llm-agent && python3 -m mlla.codeindexer.main --cp /src/ --redis $CODE_INDEXER_REDIS_URL
+echo "Code indexing complete."
+cd /
+
+# =============================================================================
 # Register dirs
 # =============================================================================
 

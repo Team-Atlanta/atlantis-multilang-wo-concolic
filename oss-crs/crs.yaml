@@ -46,10 +46,6 @@ crs_run_phase:
       CRS_INPUT_GENS: given_fuzzer,mlla,testlang_input_gen,dict_input_gen
   redis:
     dockerfile: oss-crs/dockerfiles/redis.Dockerfile
-  init_codeindexer:
-    dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
-    additional_env:
-      RUN_TYPE: INIT_CODEINDEXER
   joern:
     dockerfile: oss-crs/dockerfiles/joern.Dockerfile
   lsp:
