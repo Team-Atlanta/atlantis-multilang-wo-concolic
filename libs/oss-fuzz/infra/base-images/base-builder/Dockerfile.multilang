@@ -177,11 +177,15 @@ COPY bazel_build_fuzz_tests \
     install_ruby.sh \
     install_rust.sh \
     install_swift.sh \
+    export_libclang_rt_fuzzer.sh \
     python_coverage_helper.py \
     bash_parser.py \
     srcmap \
     write_labels.py \
     /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/export_libclang_rt_fuzzer.sh && \
+    /usr/local/bin/export_libclang_rt_fuzzer.sh /usr/local/lib/libclang_rt.fuzzer.a
 
 # TODO: Build this as part of a multi-stage build.
 ADD https://commondatastorage.googleapis.com/clusterfuzz-builds/jcc/clang-jcc /usr/local/bin/
