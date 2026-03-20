@@ -20,14 +20,44 @@ libCRS register-submit-dir seed /seeds
 # =============================================================================
 # Set env up for this CRS
 # =============================================================================
-REDIS_DOMAIN=$(libCRS get-service-domain redis 2>/dev/null)
-JOERN_DOMAIN=$(libCRS get-service-domain joern 2>/dev/null)
-LSP_DOMAIN=$(libCRS get-service-domain lsp 2>/dev/null)
 
-export CODE_INDEXER_REDIS_URL=redis://${REDIS_DOMAIN}:6379
-export DICTGEN_REDIS_URL=redis://${REDIS_DOMAIN}:6379
-export JOERN_URL=${JOERN_DOMAIN}:9909
-export LSP_SERVER_URL=${LSP_DOMAIN}:3303
+# Helper: check if a module is in CRS_INPUT_GENS (comma-separated)
+has_input_gen() {
+    echo ",$CRS_INPUT_GENS," | grep -q ",$1,"
+}
+
+# Resolve services only when needed by active input generators
+NEEDS_REDIS=false
+NEEDS_JOERN=false
+NEEDS_LSP=false
+
+if has_input_gen mlla; then
+    NEEDS_REDIS=true
+    NEEDS_JOERN=true
+    NEEDS_LSP=true
+fi
+if has_input_gen testlang_input_gen; then
+    NEEDS_LSP=true
+fi
+if has_input_gen dict_input_gen; then
+    NEEDS_REDIS=true
+fi
+
+if $NEEDS_REDIS; then
+    REDIS_DOMAIN=$(libCRS get-service-domain redis 2>/dev/null)
+    export CODE_INDEXER_REDIS_URL=redis://${REDIS_DOMAIN}:6379
+    export DICTGEN_REDIS_URL=redis://${REDIS_DOMAIN}:6379
+fi
+if $NEEDS_JOERN; then
+    JOERN_DOMAIN=$(libCRS get-service-domain joern 2>/dev/null)
+    export JOERN_URL=${JOERN_DOMAIN}:9909
+fi
+if $NEEDS_LSP; then
+    LSP_DOMAIN=$(libCRS get-service-domain lsp 2>/dev/null)
+    export LSP_SERVER_URL=${LSP_DOMAIN}:3303
+fi
+
+# LLM vars are always set (harmless when unused)
 export LITELLM_URL=$OSS_CRS_LLM_API_URL
 export LITELLM_KEY=$OSS_CRS_LLM_API_KEY
 
@@ -47,11 +77,17 @@ export PAYLOAD_GEN_TEMPERATURE=1
 export FAILURE_ANALYSIS_TEMPERATURE=1
 export ORCHESTRATOR_TEMPERATURE=1
 
-# Register shared dir for saving module result
+# Register shared dirs only for active input generators
 LOCAL_WORKDIR=/crs-workdir/worker-0/HarnessRunner/$OSS_CRS_TARGET_HARNESS/uniafl/workdir
-libCRS register-shared-dir $LOCAL_WORKDIR/mlla mlla
-libCRS register-shared-dir $LOCAL_WORKDIR/harness-reverser harness-reverser
-libCRS register-shared-dir $LOCAL_WORKDIR/dictgen dictgen
+if has_input_gen mlla; then
+    libCRS register-shared-dir $LOCAL_WORKDIR/mlla mlla
+fi
+if has_input_gen testlang_input_gen; then
+    libCRS register-shared-dir $LOCAL_WORKDIR/harness-reverser harness-reverser
+fi
+if has_input_gen dict_input_gen; then
+    libCRS register-shared-dir $LOCAL_WORKDIR/dictgen dictgen
+fi
 
 LOCAL_HARNESS_DIR=/crs-workdir/worker-0/HarnessRunner/$OSS_CRS_TARGET_HARNESS
 libCRS register-shared-dir $LOCAL_HARNESS_DIR/uniafl_cov uniafl_cov

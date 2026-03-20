@@ -4,7 +4,10 @@ set -e
 libCRS download-build-output uniafl/project/ /src/
 libCRS download-build-output uniafl/src /src
 
-REDIS_DOMAIN=$(libCRS get-service-domain redis 2>/dev/null)
+REDIS_DOMAIN=$(libCRS get-service-domain redis 2>/dev/null) || {
+    echo "Redis service not available, skipping code indexing."
+    exit 0
+}
 export CODE_INDEXER_REDIS_URL=redis://${REDIS_DOMAIN}:6379
 
 export CP_PROJ_PATH=/src

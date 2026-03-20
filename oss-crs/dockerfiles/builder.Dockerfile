@@ -35,6 +35,7 @@ RUN chmod +x /usr/local/bin/install_libclang_rt_fuzzer.sh && \
     /usr/local/bin/install_libclang_rt_fuzzer.sh /tmp/libclang_rt.fuzzer.a && \
     rm -f /tmp/libclang_rt.fuzzer.a
 COPY --from=crs-tools-c /multilang-builder/compile /usr/local/bin/compile
+COPY --from=crs-tools-c /multilang-builder/compile_libfuzzer /usr/local/bin/compile_libfuzzer
 COPY --from=crs-tools-jvm /multilang-builder/jazzer_agent_deploy.jar /usr/local/bin/jazzer_agent_deploy.jar
 COPY --from=crs-tools-jvm /multilang-builder/jazzer_driver /usr/local/bin/jazzer_driver
 COPY --from=crs-tools-jvm /multilang-builder/jazzer_api_deploy.jar /usr/local/lib/jazzer_api_deploy.jar
