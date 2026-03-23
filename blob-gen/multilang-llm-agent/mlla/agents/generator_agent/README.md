@@ -175,7 +175,7 @@ mlla/agents/generator_agent/
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `BGA_GENERATOR_MODEL` | `claude-sonnet-4-20250514` | LLM model used for generator creation |
+| `BGA_GENERATOR_MODEL` | `claude-sonnet-4-6` | LLM model used for generator creation |
 | `BGA_GENERATOR_TEMPERATURE` | `0.4` | LLM generation temperature |
 | `BGA_GENERATOR_MAX_TOKENS` | `64000` | Maximum tokens for LLM responses |
 | `BGA_GENERATOR_MAX_ITERATION` | `4` | Maximum improvement iterations |
@@ -189,7 +189,7 @@ mlla/agents/generator_agent/
 ### Example Configuration
 ```bash
 # Generator Settings
-BGA_GENERATOR_MODEL=claude-sonnet-4-20250514
+BGA_GENERATOR_MODEL=claude-sonnet-4-6
 BGA_GENERATOR_TEMPERATURE=0.4
 BGA_GENERATOR_MAX_TOKENS=64000
 BGA_GENERATOR_SEED_NUM=31337
@@ -206,7 +206,7 @@ BGA_GENERATOR_STANDALONE_TIMEOUT=1000
 
 ```bash
 # Standalone mode test
-export BGA_GENERATOR_MODEL="gpt-4o-mini"
+export BGA_GENERATOR_MODEL="gpt-5.4-mini"
 export BGA_GENERATOR_MAX_ITERATION="2"
 python -m mlla.main --cp <test-project> --harness <test-harness> \
   --generator-standalone --source-path <source-file>

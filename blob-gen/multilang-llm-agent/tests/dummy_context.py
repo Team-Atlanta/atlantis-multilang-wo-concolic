@@ -76,7 +76,7 @@ class DummyContext(GlobalContext):
         self.is_dev = True
         self._start_time = datetime.datetime.now()
         self.timestamp = self._start_time.strftime("%Y-%m-%d_%H-%M-%S")
-        self.model_name = "gpt-4.1-nano"
+        self.model_name = "gpt-5.4-nano"
         self.temperature = 0.0
 
         # Add timeout and retry settings

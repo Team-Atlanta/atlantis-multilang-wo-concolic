@@ -38,7 +38,7 @@ class OrchestratorAgent(BaseAgentTemplate):
 
         # Initialize LLM
         self.llm = llm or LLM(
-            model=os.getenv("ORCHESTRATOR_MODEL", "gpt-4o"),
+            model=os.getenv("ORCHESTRATOR_MODEL", "gpt-5.4"),
             config=config,
             temperature=float(os.getenv("ORCHESTRATOR_TEMPERATURE", "0.4")),
             max_tokens=int(os.getenv("ORCHESTRATOR_MAX_TOKENS", "4096")),

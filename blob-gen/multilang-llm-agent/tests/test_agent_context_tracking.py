@@ -64,7 +64,7 @@ class TestAgentContextTracking:
             set_agent_instance_context("cpua_12345")
 
             # Create LLM without explicit agent_name
-            llm = LLM(model="gpt-4", config=dummy_gc)
+            llm = LLM(model="gpt-5.4", config=dummy_gc)
 
             # Should auto-detect agent name from context
             assert llm.agent_name == "cpua"
@@ -77,7 +77,7 @@ class TestAgentContextTracking:
             set_agent_instance_context("cpua_12345")
 
             # Create LLM with explicit agent_name
-            llm = LLM(model="gpt-4", config=dummy_gc, agent_name="explicit_agent")
+            llm = LLM(model="gpt-5.4", config=dummy_gc, agent_name="explicit_agent")
 
             # Should use explicit agent name
             assert llm.agent_name == "explicit_agent"
@@ -90,7 +90,7 @@ class TestAgentContextTracking:
             clear_agent_context()
 
             # Create LLM without explicit agent_name
-            llm = LLM(model="gpt-4", config=dummy_gc)
+            llm = LLM(model="gpt-5.4", config=dummy_gc)
 
             # Should have empty agent name and None instance_id
             assert llm.agent_name == ""

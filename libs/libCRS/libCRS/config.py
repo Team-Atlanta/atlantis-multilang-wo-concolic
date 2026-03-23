@@ -109,7 +109,6 @@ class Config:
 
     def __init__(self, node_idx: int | None = None, node_cnt: int | None = None):
         self.modules: list[str] | None = None
-        self.target_cps: list[str] | None = None
         self.target_harnesses: list[str] | None = None
         self.debug: bool = False
         self.test: bool = bool(os.environ.get("CRS_TEST"))

@@ -60,9 +60,9 @@ def test_remove_manual():
     tools = [search]
     tool_node = ToolNode(tools)
     gc = DummyContext(False)
-    model = LLM(model="gpt-4", config=gc)
+    model = LLM(model="gpt-5.4", config=gc)
     # model = ChatOpenAI(
-    #     model_name="gpt-4o-mini",
+    #     model_name="gpt-5.4-mini",
     #     api_key=os.environ["OPENAI_TEST_KEY"]
     # )
 
@@ -118,9 +118,9 @@ def test_remove_graph():
     tools = [search]
     tool_node = ToolNode(tools)
     gc = DummyContext(False)
-    model = LLM(model="gpt-4", config=gc)
+    model = LLM(model="gpt-5.4", config=gc)
     # model = ChatOpenAI(
-    #     model_name="gpt-4o-mini",
+    #     model_name="gpt-5.4-mini",
     #     api_key=os.environ["OPENAI_TEST_KEY"]
     # )
 

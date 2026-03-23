@@ -72,7 +72,7 @@ def mock_gc():
     )
 
     gc.general_callback.model_usage = {
-        "gpt-4": MockUsage(
+        "gpt-5.4": MockUsage(
             requests=5,
             total_tokens=500,
             prompt_tokens=300,
@@ -211,9 +211,9 @@ def test_collect_snapshot_model_usage():
     assert collect_snapshot_model_usage(gc, []) == {}
 
     # Test with data
-    model_usage1 = {"gpt-4": MockUsage(requests=2, total_tokens=100)}
+    model_usage1 = {"gpt-5.4": MockUsage(requests=2, total_tokens=100)}
     model_usage2 = {
-        "gpt-4": MockUsage(requests=1, total_tokens=75),
+        "gpt-5.4": MockUsage(requests=1, total_tokens=75),
         "claude": MockUsage(requests=1, total_tokens=25),
     }
 
@@ -223,8 +223,8 @@ def test_collect_snapshot_model_usage():
     gc.general_callback.get_usage_between_snapshots.side_effect = [snapshot1, snapshot2]
 
     result = collect_snapshot_model_usage(gc, ["i1", "i2"])
-    assert result["gpt-4"].requests == 3
-    assert result["gpt-4"].total_tokens == 175
+    assert result["gpt-5.4"].requests == 3
+    assert result["gpt-5.4"].total_tokens == 175
     assert result["claude"].requests == 1
 
 
@@ -249,7 +249,7 @@ def test_display_agent_metrics_per_model(mock_gc):
     result = output.getvalue()
 
     assert "=== Per-Model Usage ===" in result
-    assert "Model: gpt-4" in result
+    assert "Model: gpt-5.4" in result
 
 
 def test_display_agent_metrics_snapshot_agent(mock_gc):

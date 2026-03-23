@@ -10,7 +10,6 @@ from utility.workdir import Workdir
 from utility.log import get_logger
 from utility.java_util import *
 
-from agents.ConstantExtractor import ConstantExtractor
 from agents.DictAnalyzer import DictAnalyzer
 
 from tests import *
@@ -98,34 +97,7 @@ class DictionaryGenerator:
             # TODO: support C
             return
 
-        if self.analysis_config.inter_file_analysis_using_llm:
-            # This is an outdated implementation from when we didn't
-            # know what language we should support
-            self.preprocess_source_file_with_llm()
-        else:
-            self.preprocess_source_file_static()
-
-    def preprocess_source_file_with_llm(self) -> None:
-        logging.warning("This is outdated, please use static analysis")
-        constant_extractor = ConstantExtractor(
-            self.prompt_configs.constant_extractor,
-            self.model_config.model_name,
-            self.model_config.url,
-            self.model_config.key,
-            self.model_config.timeout,
-            self.model_config.temp,
-        )
-        for source_file, _ in self.source_files_to_analyze:
-            if source_file in self.constant_map:
-                continue
-            if self.load_constant_map(source_file):
-                continue
-            self.constant_map[source_file] = constant_extractor.extract_constants(
-                source_file
-            )
-            self.store_constant_map(source_file)
-
-        logging.debug(f"constants: {json.dumps(self.constant_map, indent=4)}")
+        self.preprocess_source_file_static()
 
     def preprocess_source_file_static(self) -> None:
         def format_constants(raw_constants):

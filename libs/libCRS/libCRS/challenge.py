@@ -141,16 +141,21 @@ class CP:
     def get_harnesses(self) -> dict[str, CP_Harness]:
         harnesses = {}
         config = self.aixcc_path / "config.yaml"
-        if not config.exists():
+        # First: load source mappings from config.yaml if it exists
+        src_map = {}
+        if config.exists():
+            with open(config, "r") as f:
+                aixcc_conf = yaml.safe_load(f)
+                src_map = self.get_harness_srcs(aixcc_conf)
+        # Then: discover all harness binaries in /out
+        if self.built_path:
             for name in get_harness_names(self.built_path):
-                bin_path = None
-                if self.built_path:
-                    bin_path = self.built_path / name
-                harnesses[name] = CP_Harness(self, name, bin_path, None)
-            return harnesses
-        with open(self.aixcc_path / "config.yaml", "r") as f:
-            aixcc_conf = yaml.safe_load(f)
-            for name, src_path in self.get_harness_srcs(aixcc_conf).items():
+                bin_path = self.built_path / name
+                src_path = src_map.get(name, None)
+                harnesses[name] = CP_Harness(self, name, bin_path, src_path)
+        # Fallback: if no binaries found but config has entries, use config only
+        if not harnesses:
+            for name, src_path in src_map.items():
                 bin_path = None
                 if self.built_path:
                     bin_path = self.built_path / name
@@ -173,4 +178,13 @@ class CP:
 
 
 def init_cp_in_runner() -> CP:
-    return CP(os.environ.get("CRS_TARGET"), "/src/", "/src/repo", "/out")
+    # Target name from framework env var (fallback to CRS internal)
+    name = os.environ.get("OSS_CRS_TARGET", os.environ.get("CRS_TARGET"))
+    # Paths are where get_cp (libCRS download-build-output) downloads to:
+    #   uniafl/src, uniafl/project -> /src/
+    #   uniafl/build -> /out
+    #   repo source -> /src/repo
+    proj_path = "/src/"
+    repo_path = "/src/repo"
+    built_path = "/out"
+    return CP(name, proj_path, repo_path, built_path)

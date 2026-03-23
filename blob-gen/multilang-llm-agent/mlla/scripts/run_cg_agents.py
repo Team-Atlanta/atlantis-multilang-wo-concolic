@@ -104,7 +104,7 @@ async def main():
         default="both",
         help="Which agent to run",
     )
-    parser.add_argument("--model", default="gpt-4", help="Model to use")
+    parser.add_argument("--model", default="gpt-5.4", help="Model to use")
     parser.add_argument("--trials", type=int, default=1, help="Number of trials per CG")
     parser.add_argument(
         "--sanitizer", default="", help="Sanitizer to use (auto-detect if empty)"

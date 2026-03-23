@@ -316,7 +316,7 @@ class MakeCallGraphAgent(BaseAgentTemplate):
             MakeCallGraphOverallState,
             step_mapper=step_mapper,
             enable_usage_snapshot=False,
-            llm_with_tools=os.getenv("MCGA_MODEL", "o4-mini"),
+            llm_with_tools=os.getenv("MCGA_MODEL", "gpt-5.4-mini"),
         )
 
         self._setup_graph()
@@ -327,7 +327,7 @@ class MakeCallGraphAgent(BaseAgentTemplate):
         self.priority_queue = priority_queue
 
         self.llm_sanitizer_validator = LLM(
-            model=os.getenv("MCGA_SANITIZER_VALIDATOR_MODEL", "o4-mini"),
+            model=os.getenv("MCGA_SANITIZER_VALIDATOR_MODEL", "gpt-5.4-mini"),
             config=config,
             output_format=SanitizerValidationReport,
         )

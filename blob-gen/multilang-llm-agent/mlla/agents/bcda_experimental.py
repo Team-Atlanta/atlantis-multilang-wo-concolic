@@ -115,43 +115,43 @@ class BugCandDetectAgent(BaseAgentTemplate):
         self._setup_workflow_graph()
 
         # Initialize LLM models
-        self.llm_o3 = LLM(model="o3-mini", config=config)
+        self.llm_o3 = LLM(model="gpt-5.4-mini", config=config)
         self.llm_4o_key_cond = LLM(
-            model="gpt-4.1", config=config, output_format=KeyConditionReport
+            model="gpt-5.4", config=config, output_format=KeyConditionReport
         )
-        self.llm_powerful = LLM(model="o3-mini", config=config)
-        self.llm_prune_path = LLM(model="claude-sonnet-4-20250514", config=config)
+        self.llm_powerful = LLM(model="gpt-5.4-mini", config=config)
+        self.llm_prune_path = LLM(model="claude-sonnet-4-6", config=config)
         self.llm_partial_key_cond = LLM(
-            model="o4-mini",
+            model="gpt-5.4-mini",
             config=config,
         )
         self.llm_extract_key_cond = LLM(
-            model="claude-3-5-haiku-20241022",
+            model="claude-haiku-4-5-20251001",
             config=config,
             output_format=KeyConditionReport,
             max_tokens=8192,
         )
         # self.llm_extract_key_cond = LLM(
-        #     model="gpt-4.1-mini",
+        #     model="gpt-5.4-mini",
         #     config=config,
         #     output_format=KeyConditionReport,
         # )
         # self.llm_extract_taken_lines = LLM(
-        #     model="gpt-4.1-mini",
+        #     model="gpt-5.4-mini",
         #     config=config,
         #     output_format=TakenLineReport,
         # )
 
         self.llm_classify = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=config,
             output_format=VulnerabilityReport,
         )
         self.llm_sanitizer_validator = LLM(
-            model="gpt-4.1-mini", config=config, output_format=SanitizerValidationReport
+            model="gpt-5.4-mini", config=config, output_format=SanitizerValidationReport
         )
         self.llm_lightweight_keyword_extracor = LLM(
-            model="gpt-4o-mini", config=config, output_format=KeywordExtractionReport
+            model="gpt-5.4-mini", config=config, output_format=KeywordExtractionReport
         )
         # self.ret_file = self.ret_file.with_suffix(".json")
         self.language = config.cp.language

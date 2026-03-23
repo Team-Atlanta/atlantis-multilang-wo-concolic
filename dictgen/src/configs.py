@@ -50,14 +50,12 @@ class AnalysisConfig:
 
 
 def get_model_name(name):
-    if name == "gemini-1.5":
-        return "gemini-1.5-flash"
-    elif name == "claude-3-5-sonnet":
-        return "claude-3-5-sonnet-20241022"
-    elif name == "claude-3-5-opus":
-        return "claude-3-5-opus"
-    elif name == "claude-3-5-haiku":
-        return "claude-3-5-haiku-20241022"
+    if name == "claude-sonnet-4-6":
+        return "claude-sonnet-4-6"
+    elif name == "claude-opus-4-6":
+        return "claude-opus-4-6"
+    elif name == "claude-haiku-4-5":
+        return "claude-haiku-4-5-20251001"
     else:
         return name
 
@@ -129,17 +127,16 @@ def reinit_analysis_config(analysis_config: AnalysisConfig, workdir) -> Analysis
 
 def add_model_arguments(parser):
     models = [
-        "gpt-4o",
-        "o1",
-        "gemini-1.5",
-        "claude-3-5-sonnet",
-        "claude-3-5-opus",
-        "claude-3-5-haiku",
+        "gpt-5.4",
+        "gemini-3.1-pro-preview",
+        "claude-sonnet-4-6",
+        "claude-opus-4-6",
+        "claude-haiku-4-5",
     ]
     parser.add_argument(
         "--model-name",
         choices=models,
-        default="gpt-4o",
+        default="gpt-5.4",
         help="The model name to use for analysis.",
     )
     parser.add_argument(

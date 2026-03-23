@@ -217,7 +217,7 @@ class CPUnderstandAgent(BaseAgentTemplate):
                 3: "get_file_path",
                 4: "mcga",
             },
-            llm_with_tools=os.getenv("CPUA_MODEL", "o4-mini"),
+            llm_with_tools=os.getenv("CPUA_MODEL", "gpt-5.4-mini"),
         )
 
         self.builder.add_node("understand_harnesses", self.understand_harnesses)
@@ -254,7 +254,7 @@ class CPUnderstandAgent(BaseAgentTemplate):
         self.builder.add_edge("collect_cg_external_calls", "finalize")
 
         self.get_ci_api_res_llm = LLM(
-            model="gemini-2.5-pro",
+            model="gemini-3.1-pro-preview",
             config=config,
             output_format=CILLMAPIRes,
         )

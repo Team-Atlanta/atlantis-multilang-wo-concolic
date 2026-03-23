@@ -26,7 +26,7 @@ import helper
 
 ALLOWED_FUZZ_TARGET_EXTENSIONS = ['', '.exe']
 FUZZ_TARGET_SEARCH_STRING = 'LLVMFuzzerTestOneInput'
-VALID_TARGET_NAME_REGEX = re.compile(r'^[a-zA-Z0-9_-]+$')
+VALID_TARGET_NAME_REGEX = re.compile(r'^[a-zA-Z0-9_@.-]+$')
 BLOCKLISTED_TARGET_NAME_REGEX = re.compile(r'^(jazzer_driver.*)$')
 
 # Location of google cloud storage for latest OSS-Fuzz builds.

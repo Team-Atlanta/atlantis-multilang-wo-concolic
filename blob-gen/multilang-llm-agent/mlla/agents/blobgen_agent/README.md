@@ -149,7 +149,7 @@ mlla/agents/blobgen_agent/
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `BGA_MODEL` | `claude-sonnet-4-20250514` | LLM model used for payload generation |
+| `BGA_MODEL` | `claude-sonnet-4-6` | LLM model used for payload generation |
 | `BGA_TEMPERATURE` | `0.4` | LLM generation temperature |
 | `BGA_MAX_TOKENS` | `64000` | Maximum tokens for LLM responses |
 | `BGA_MAX_ITERATION` | `4` | Maximum improvement attempts |
@@ -161,7 +161,7 @@ mlla/agents/blobgen_agent/
 ```bash
 # BGA Settings
 BGA_MAX_BLOB_SIZE=1048576
-BGA_MODEL=claude-sonnet-4-20250514
+BGA_MODEL=claude-sonnet-4-6
 BGA_TEMPERATURE=0.4
 BGA_MAX_TOKENS=64000
 BGA_MAX_ITERATION=4
@@ -174,7 +174,7 @@ BGA_CG_TIMEOUT=1000  # Maximum time in seconds for processing each CG
 ### Basic Testing
 ```bash
 # Quick test with minimal iterations
-export BGA_MODEL="gpt-4o-mini"
+export BGA_MODEL="gpt-5.4-mini"
 export BGA_MAX_ITERATION="1"
 python -m mlla.main --cp <test-project> --harness <test-harness>
 ```

@@ -1,7 +1,6 @@
 import os
 import logging
-import asyncio
-from openai import *
+from openai import AsyncOpenAI
 import tiktoken
 import time
 from typing import Tuple
@@ -85,36 +84,3 @@ class LLM:
             )
         else:
             return ""
-
-    MODEL_TOKEN_LIMITS = {
-        "gpt-4o": 128000,
-        # TODO: add more models here as needed
-    }
-
-    @staticmethod
-    def count_tokens(text: str, model: str = "gpt-4o") -> int:
-        """
-        Return the number of tokens that `text` will be for the given OpenAI model.
-        """
-        try:
-            enc = tiktoken.encoding_for_model(model)
-        except KeyError:
-            enc = tiktoken.get_encoding("cl100k_base")
-        return len(enc.encode(text))
-
-    @classmethod
-    def get_token_limit(cls, model: str) -> int:
-        """
-        Lookup the max token limit for a given model.
-        Falls back to 8192 if model is unknown.
-        """
-        return cls.MODEL_TOKEN_LIMITS.get(model, 128000)
-
-    @classmethod
-    def exceeds_limit(cls, text: str, model: str = "gpt-4o", coeff=1) -> bool:
-        """
-        Return True if the token count of `text` exceeds the model's limit.
-        """
-        count = cls.count_tokens(text, model)
-        limit = cls.get_token_limit(model)
-        return int(count * coeff) > limit

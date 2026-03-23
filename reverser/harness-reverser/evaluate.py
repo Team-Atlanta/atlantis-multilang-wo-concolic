@@ -33,7 +33,7 @@ def main():
     parser.add_argument('--harness_dir', type=str, default='./test_harnesses', help='Directory containing harness files')
     parser.add_argument('--answers_dir', type=str, default='./answers', help='Directory containing answer files')
     parser.add_argument('--num_tries', type=int, default=1, help='Number of tries for each harness')
-    parser.add_argument('--model', type=str, default='gpt-4o', help='Model to use')
+    parser.add_argument('--model', type=str, default='gpt-5.4', help='Model to use')
     args = parser.parse_args()
 
     harness_dir = args.harness_dir
@@ -48,7 +48,7 @@ def main():
     # glob = [Path(harness_dir) / f'{x}.c' for x in handpicked]
     # options = "--majority 5 --few-shot --few-shot-ratio 0.3"
     options = "--majority 5"
-    # options = "--majority 9 --few-shot --few-shot-ratio 1.0 --model claude-3-haiku"
+    # options = "--majority 9 --few-shot --few-shot-ratio 1.0 --model claude-haiku-4-5"
     output_files = []
 
     time = datetime.datetime.now().isoformat()
