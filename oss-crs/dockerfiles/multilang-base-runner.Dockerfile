@@ -290,11 +290,6 @@ RUN pip3 install -r /home/crs/requirements.txt
 # Copy Uniafl
 COPY --from=uniafl /home/crs/uniafl /home/crs/uniafl
 COPY --from=uniafl /root/.cargo /root/.cargo
-COPY ./constraint-gen /home/crs/constraint-gen
-WORKDIR /home/crs/constraint-gen
-RUN python3.10 -m venv ./env
-RUN bash -c 'source ./env/bin/activate && pip install .'
-
 COPY ./dictgen /home/crs/dictgen/
 COPY bin/* /usr/local/bin/
 COPY static /home/crs/static

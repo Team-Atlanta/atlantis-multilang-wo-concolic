@@ -6,8 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 CRS_YAML="${SCRIPT_DIR}/crs.yaml"
 
-REGISTRY="${REGISTRY:-ghcr.io/team-atlanta}"
-PLATFORM="${PLATFORM:-linux/amd64}"
+REGISTRY="${REGISTRY:-ghcr.io/team-atlanta/atlantis-multilang-wo-concolic}"
 
 IMAGES=(
     "multilang-clang"
@@ -50,9 +49,8 @@ COMMANDS:
     help            Show this help
 
 ENVIRONMENT:
-    REGISTRY        Registry prefix (default: ghcr.io/team-atlanta)
+    REGISTRY        Registry prefix (default: ghcr.io/team-atlanta/atlantis-multilang-wo-concolic)
     VERSION         Version tag to push alongside latest (default: oss-crs/crs.yaml version)
-    PLATFORM        Build platform for docker buildx bake (default: linux/amd64)
 
 IMAGES:
 $(printf '    - %s\n' "${IMAGES[@]}")
@@ -80,13 +78,11 @@ prepare_images() {
             USE_PREBUILT=false VERSION="${VERSION}" REGISTRY="${REGISTRY}" \
                 docker buildx bake \
                 -f oss-crs/docker-bake.hcl \
-                --set "*.platform=${PLATFORM}" \
                 prepare
         else
             VERSION="${VERSION}" REGISTRY="${REGISTRY}" \
                 docker buildx bake \
                 -f oss-crs/docker-bake.hcl \
-                --set "*.platform=${PLATFORM}" \
                 prepare
         fi
     )
@@ -154,7 +150,14 @@ main() {
             push_images
             ;;
         prepare-push)
-            prepare_images
+            case "${2:-}" in
+                --rebuild)
+                    prepare_images true
+                    ;;
+                *)
+                    prepare_images
+                    ;;
+            esac
             push_images
             ;;
         status)

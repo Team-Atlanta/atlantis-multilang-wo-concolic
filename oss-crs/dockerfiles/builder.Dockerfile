@@ -1,5 +1,5 @@
 # =============================================================================
-# CRS-multilang Builder Dockerfile (given_fuzzer variant)
+# CRS-multilang Builder Dockerfile (wo-concolic variant)
 # =============================================================================
 # BUILD phase: Sets up build tools, compilation happens at runtime via compile_crs.
 #

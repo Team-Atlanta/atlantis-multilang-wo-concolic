@@ -1,28 +1,26 @@
 ##############################################################################
 #                        CRS Compose Configuration                           #
+#        Example for atlantis-multilang-wo-concolic (bug-finding)            #
 ##############################################################################
 
 # --- General Settings -------------------------------------------------------
 run_env: local
-docker_registry: ghcr.io/my-org/                    # UPDATE
+docker_registry: local
 
 # --- Infrastructure ---------------------------------------------------------
-# The oss-crs-infra service is always required.
 oss_crs_infra:
   cpuset: "0-3"
   memory: "16G"
 
-# --- CRS (multilang) -------------------------------------------------------
-# Configure the CRS source and the resources allocated to it.
-multilang:
-  source:
-    local_path: "UPDATE"                             # local filesystem path pointing to this repo
-  cpuset:      "UPDATE"                              # e.g., "4-8"
-  memory:      "UPDATE"                              # e.g., "16G", "64G"
-  llm_budget:  "UPDATE"                              # e.g., 100, 200 (in USD, must be a number)
+# --- CRS (atlantis-multilang-wo-concolic) -----------------------------------
+atlantis-multilang-wo-concolic:
+  cpuset: "4-15"
+  memory: "32G"
+  llm_budget: 100
 
 # --- LLM Configuration -----------------------------------------------------
 llm_config:
-  litellm_config: "UPDATE"                           # local filesystem path to litellm config
-                                                     # e.g., <repo>/oss-crs/example-litellm-config.yaml
-                                                     # You might need to update the litellm config
+  litellm:
+    mode: internal
+    internal:
+      config_path: ./oss-crs/example-litellm-config.yaml

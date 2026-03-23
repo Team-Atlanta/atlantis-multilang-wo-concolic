@@ -2,7 +2,7 @@ name: atlantis-multilang-wo-concolic
 type:
   - bug-finding
 version: 1.0.0
-docker_registry: ghcr.io/team-atlanta
+docker_registry: ghcr.io/team-atlanta/atlantis-multilang-wo-concolic
 
 prepare_phase:
   hcl: oss-crs/docker-bake.hcl
@@ -61,19 +61,19 @@ supported_target:
     - delta
   language:
     - c
+    - c++
+    - jvm
   sanitizer:
     - address
+    - undefined
+    - memory
   architecture:
     - x86_64
 
 required_llms:
-  - o4-mini
-  - gpt-4o
-  - gpt-4o-mini
-  - gpt-4.1
-  - gpt-4.1-mini
-  - claude-sonnet-4-20250514
-  - claude-opus-4-20250514
-  - claude-3-7-sonnet-20250219
-  - claude-3-5-haiku-20241022
-  - gemini-2.5-pro
+  - gpt-5.4
+  - gpt-5.4-mini
+  - claude-sonnet-4-6
+  - claude-opus-4-6
+  - claude-haiku-4-5-20251001
+  - gemini-3.1-pro-preview
