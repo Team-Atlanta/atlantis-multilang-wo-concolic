@@ -13,13 +13,13 @@ from mlla.utils.llm import LLM, get_rate_limit_fallback_model_name
 
 # Real TOKEN_COSTS data for testing
 REAL_TOKEN_COSTS = {
-    "claude-sonnet-4-20250514": {
+    "claude-sonnet-4-6": {
         "max_input_tokens": 200000,
         "max_output_tokens": 64000,
         "input_cost_per_token": 0.000003,
         "output_cost_per_token": 0.000015,
     },
-    "claude-opus-4-20250514": {
+    "claude-opus-4-6": {
         "max_input_tokens": 200000,
         "max_output_tokens": 32000,
         "input_cost_per_token": 0.000015,
@@ -31,13 +31,13 @@ REAL_TOKEN_COSTS = {
         "input_cost_per_token": 0.00006,
         "output_cost_per_token": 0.00024,
     },
-    "gemini-2.5-pro": {
+    "gemini-3.1-pro-preview": {
         "max_input_tokens": 2000000,
         "max_output_tokens": 65535,
         "input_cost_per_token": 0.00000125,
         "output_cost_per_token": 0.000005,
     },
-    "gpt-4.1": {
+    "gpt-5.4": {
         "max_input_tokens": 128000,
         "max_output_tokens": 32768,
         "input_cost_per_token": 0.00001,
@@ -114,22 +114,22 @@ class TestRateLimitFallbackReal:
         """Test the fallback model name mapping."""
         # Test Claude Sonnet fallback to Opus
         assert (
-            get_rate_limit_fallback_model_name("claude-sonnet-4-20250514")
-            == "claude-opus-4-20250514"
+            get_rate_limit_fallback_model_name("claude-sonnet-4-6")
+            == "claude-opus-4-6"
         )
 
         # Test Claude Opus fallback to Sonnet
         assert (
-            get_rate_limit_fallback_model_name("claude-opus-4-20250514")
-            == "claude-sonnet-4-20250514"
+            get_rate_limit_fallback_model_name("claude-opus-4-6")
+            == "claude-sonnet-4-6"
         )
 
         # Test all other models fallback to o3
         assert get_rate_limit_fallback_model_name("o3") == "o3"
-        assert get_rate_limit_fallback_model_name("gemini-2.5-pro") == "o3"
-        assert get_rate_limit_fallback_model_name("gpt-4.1") == "o3"
+        assert get_rate_limit_fallback_model_name("gemini-3.1-pro-preview") == "o3"
+        assert get_rate_limit_fallback_model_name("gpt-5.4") == "o3"
         assert get_rate_limit_fallback_model_name("unknown-model") == "o3"
-        assert get_rate_limit_fallback_model_name("gpt-4o") == "o3"
+        assert get_rate_limit_fallback_model_name("gpt-5.4") == "o3"
         assert get_rate_limit_fallback_model_name("claude-haiku") == "o3"
 
     def test_retry_count_logic_opus_vs_others(self):
@@ -137,7 +137,7 @@ class TestRateLimitFallbackReal:
         # Test opus model retry count
         opus_config = create_real_global_context()
         opus_llm = LLM(
-            model="claude-opus-4-20250514",
+            model="claude-opus-4-6",
             config=opus_config,
             prepare_large_context_model=False,
         )
@@ -145,7 +145,7 @@ class TestRateLimitFallbackReal:
         # Test sonnet model retry count
         sonnet_config = create_real_global_context()
         sonnet_llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=sonnet_config,
             prepare_large_context_model=False,
         )
@@ -266,7 +266,7 @@ class TestRateLimitFallbackReal:
         # Test opus model retry count
         opus_config = create_real_global_context()
         opus_llm = LLM(
-            model="claude-opus-4-20250514",
+            model="claude-opus-4-6",
             config=opus_config,
             prepare_large_context_model=False,
         )
@@ -274,7 +274,7 @@ class TestRateLimitFallbackReal:
         # Test sonnet model retry count
         sonnet_config = create_real_global_context()
         sonnet_llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=sonnet_config,
             prepare_large_context_model=False,
         )
@@ -358,7 +358,7 @@ class TestRateLimitFallbackReal:
         """Test creating a real LLM instance with actual data structures."""
         # Create primary LLM with real structures
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             tools=[],
             temperature=0.5,
@@ -367,7 +367,7 @@ class TestRateLimitFallbackReal:
         )
 
         # Verify real LLM properties
-        assert llm.model_name == "claude-sonnet-4-20250514"
+        assert llm.model_name == "claude-sonnet-4-6"
         assert llm.agent_name == "test_agent"
         assert isinstance(llm.chat_model, ChatAnthropic)
         assert isinstance(llm.runnable_chat_model, ChatAnthropic)
@@ -379,7 +379,7 @@ class TestRateLimitFallbackReal:
         """Test fallback LLM creation with real data structures."""
         # Create primary LLM
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             tools=[],
             temperature=0.5,
@@ -388,10 +388,10 @@ class TestRateLimitFallbackReal:
         )
 
         # Create fallback LLM using real method
-        fallback_llm = llm._create_fallback_llm("claude-opus-4-20250514")
+        fallback_llm = llm._create_fallback_llm("claude-opus-4-6")
 
         # Verify fallback LLM has real structures
-        assert fallback_llm.model_name == "claude-opus-4-20250514"
+        assert fallback_llm.model_name == "claude-opus-4-6"
         assert fallback_llm.agent_name == "test_agent"
         assert isinstance(fallback_llm.chat_model, ChatAnthropic)
         assert isinstance(fallback_llm.runnable_chat_model, ChatAnthropic)
@@ -409,7 +409,7 @@ class TestRateLimitFallbackReal:
     def test_o_model_temperature_handling_real(self, real_config):
         """Test that o* models get temperature=1.0 with real structures."""
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             temperature=0.5,
             prepare_large_context_model=False,
@@ -428,7 +428,7 @@ class TestRateLimitFallbackReal:
         """Test rate limit fallback using real LLM structures but mocked HTTP calls."""
         # Create primary LLM with real structures
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             prepare_large_context_model=False,
         )
@@ -466,7 +466,7 @@ class TestRateLimitFallbackReal:
 
                 # Verify fallback was created with real model name
                 mock_create.assert_called_once_with(
-                    "claude-opus-4-20250514", prepare_large_context_model=True
+                    "claude-opus-4-6", prepare_large_context_model=True
                 )
 
                 # Verify we got the expected response
@@ -480,7 +480,7 @@ class TestRateLimitFallbackReal:
         """Test async rate limit fallback using real structures."""
         # Create primary LLM with real structures
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             prepare_large_context_model=False,
         )
@@ -519,7 +519,7 @@ class TestRateLimitFallbackReal:
 
                 # Verify fallback was created with real model name
                 mock_create.assert_called_once_with(
-                    "claude-opus-4-20250514", prepare_large_context_model=True
+                    "claude-opus-4-6", prepare_large_context_model=True
                 )
 
                 # Verify we got the expected response
@@ -534,7 +534,7 @@ class TestRateLimitFallbackReal:
         """Test chained fallback when multiple models fail using real structures."""
         # Create primary LLM
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             prepare_large_context_model=False,
         )
@@ -590,9 +590,9 @@ class TestRateLimitFallbackReal:
                 result = llm.invoke(messages)
 
                 # Verify first fallback was attempted
-                assert "claude-opus-4-20250514" in fallback_calls
+                assert "claude-opus-4-6" in fallback_calls
                 # Verify nested fallback was also created
-                assert "nested_claude-sonnet-4-20250514" in fallback_calls
+                assert "nested_claude-sonnet-4-6" in fallback_calls
 
                 # Verify final result comes from the nested fallback
                 assert len(result) >= 1
@@ -606,7 +606,7 @@ class TestRateLimitFallbackReal:
         """Test that non-rate-limit errors don't trigger fallback."""
         # Create primary LLM
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             prepare_large_context_model=False,
         )
@@ -636,26 +636,26 @@ class TestRateLimitFallbackReal:
         """Test context limit handling with real structures."""
         # Create LLM with large context model
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             prepare_large_context_model=True,
         )
 
         # Verify large context model was created with real structures
         assert llm.large_context_model is not None
-        assert llm.large_context_model.model_name == "gemini-2.5-pro"
+        assert llm.large_context_model.model_name == "gemini-3.1-pro-preview"
         assert isinstance(llm.large_context_model.chat_model, ChatOpenAI)
 
         # Verify fallback large context model
         if llm.large_context_model_fallback:
-            assert llm.large_context_model_fallback.model_name == "gpt-4.1"
+            assert llm.large_context_model_fallback.model_name == "gpt-5.4"
 
     @patch("mlla.utils.llm.TOKEN_COSTS", REAL_TOKEN_COSTS)
     def test_real_message_processing(self, real_config):
         """Test that real message processing works correctly."""
         # Create LLM with real structures
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             prepare_large_context_model=False,
         )
@@ -683,7 +683,7 @@ class TestRateLimitFallbackReal:
         """Test real tokenization with actual message structures."""
         # Create LLM with real structures
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             prepare_large_context_model=False,
         )
@@ -709,9 +709,9 @@ class TestRateLimitFallbackReal:
         """Test real context limit calculations."""
         # Test different model types
         models_to_test = [
-            ("claude-sonnet-4-20250514", ChatAnthropic),
+            ("claude-sonnet-4-6", ChatAnthropic),
             ("o3", ChatOpenAI),
-            ("gemini-2.5-pro", ChatOpenAI),
+            ("gemini-3.1-pro-preview", ChatOpenAI),
         ]
 
         for model_name, expected_type in models_to_test:
@@ -741,7 +741,7 @@ class TestRateLimitFallbackReal:
         """Test that fallback preserves all parameters with real structures."""
         # Create LLM with real structures
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             prepare_large_context_model=False,
         )

@@ -51,7 +51,7 @@ def main():
         description="Test ChatOpenAI with prompts from file"
     )
     parser.add_argument("--prompt", required=True, help="Path to .prompts file")
-    parser.add_argument("--model", default="gpt-4", help="OpenAI model to use")
+    parser.add_argument("--model", default="gpt-5.4", help="OpenAI model to use")
     parser.add_argument(
         "--trials", type=int, default=1, help="Number of times to call the LLM"
     )

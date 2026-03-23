@@ -418,7 +418,7 @@ def create_payload():
 
 def test_invoke_with_large_model_fallback(update_tokencost, config):
     llm = LLM(
-        model="claude-3-7-sonnet-20250219",
+        model="claude-sonnet-4-6",
         config=config,
     )
     fallback_llm = llm.large_context_model
@@ -455,7 +455,7 @@ def test_invoke_with_large_model_fallback(update_tokencost, config):
 @pytest.mark.asyncio
 async def test_ainvoke_with_large_model_fallback(update_tokencost, config):
     llm = LLM(
-        model="claude-3-7-sonnet-20250219",
+        model="claude-sonnet-4-6",
         config=config,
     )
     assert llm.large_context_model is not None
@@ -494,7 +494,7 @@ async def test_ainvoke_with_large_model_fallback(update_tokencost, config):
 
 def test_invoke_with_large_model_fallback_no_large_model(update_tokencost, config):
     llm = LLM(
-        model="claude-3-7-sonnet-20250219",
+        model="claude-sonnet-4-6",
         config=config,
         prepare_large_context_model=False,
     )
@@ -523,7 +523,7 @@ async def test_ainvoke_with_large_model_fallback_no_large_model(
     update_tokencost, config
 ):
     llm = LLM(
-        model="claude-3-7-sonnet-20250219",
+        model="claude-sonnet-4-6",
         config=config,
         prepare_large_context_model=False,
     )
@@ -550,12 +550,12 @@ async def test_ainvoke_with_large_model_fallback_no_large_model(
 @pytest.mark.parametrize(
     "model, max_tokens, context_limit",
     [
-        ("claude-3-7-sonnet-20250219", 64000, 135000),
-        ("claude-3-7-sonnet-20250219", 1, 198999),
-        ("claude-3-7-sonnet-20250219", 0, 135000),  # 0 output is not allowed
-        ("claude-3-7-sonnet-20250219", None, 135000),  # None output is not allowed
-        ("gemini-2.5-pro", 64000, 983576),
-        ("gemini-2.5-pro", 1, 1047575),
+        ("claude-sonnet-4-6", 64000, 135000),
+        ("claude-sonnet-4-6", 1, 198999),
+        ("claude-sonnet-4-6", 0, 135000),  # 0 output is not allowed
+        ("claude-sonnet-4-6", None, 135000),  # None output is not allowed
+        ("gemini-3.1-pro-preview", 64000, 983576),
+        ("gemini-3.1-pro-preview", 1, 1047575),
     ],
 )
 def test_get_context_limit(update_tokencost, config, model, max_tokens, context_limit):
@@ -574,7 +574,7 @@ def test_large_context_token_cost(request, update_tokencost, config, max_tokens)
         return
 
     llm = LLM(
-        model="claude-3-7-sonnet-20250219",
+        model="claude-sonnet-4-6",
         config=config,
         max_tokens=max_tokens,
         prepare_large_context_model=True,
@@ -594,9 +594,9 @@ def test_large_context_token_cost(request, update_tokencost, config, max_tokens)
 @pytest.mark.parametrize(
     "model_name",
     [
-        "claude-sonnet-4-20250514",
-        "o4-mini",
-        "gpt-4o-mini",
+        "claude-sonnet-4-6",
+        "gpt-5.4-mini",
+        "gpt-5.4-mini",
     ],
 )
 def test_large_context_model_output_format(update_tokencost, config, model_name):

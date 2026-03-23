@@ -6,8 +6,8 @@ from mlla.utils.bedrock_callback import (
     calculate_token_cost,
 )
 
-CLAUDE_MODEL = "claude-3-7-sonnet-20250219"
-GPT4O_MODEL = "gpt-4o"
+CLAUDE_MODEL = "claude-sonnet-4-6"
+GPT4O_MODEL = "gpt-5.4"
 
 
 def _create_token_usage(input_tokens, output_tokens, cache_read=0, cache_creation=0):

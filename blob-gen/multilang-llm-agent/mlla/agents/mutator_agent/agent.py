@@ -33,7 +33,7 @@ class MutatorAgent(BaseAgentTemplate):
 
         # Initialize LLM
         self.llm = llm or LLM(
-            model=os.getenv("BGA_MUTATOR_MODEL", "gpt-4o"),
+            model=os.getenv("BGA_MUTATOR_MODEL", "gpt-5.4"),
             config=gc,
             temperature=float(os.getenv("BGA_MUTATOR_TEMPERATURE", "0.4")),
             max_tokens=int(os.getenv("BGA_MUTATOR_MAX_TOKENS", "4096")),

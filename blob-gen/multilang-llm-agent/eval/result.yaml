@@ -21,7 +21,7 @@ llm_metrics:
     bga:
       completion_tokens: 46389
       execution_time: '0:04:12.041255'
-      model: claude-3-7-sonnet-20250219
+      model: claude-sonnet-4-6
       prompt_tokens: 125726
       successful_requests: 32
       temperature: 0.4
@@ -39,7 +39,7 @@ llm_metrics:
     payload_gen:
       completion_tokens: 1416
       execution_time: '0:00:24.627341'
-      model: gpt-4o
+      model: gpt-5.4
       prompt_tokens: 7274
       successful_requests: 2
       temperature: 0.4

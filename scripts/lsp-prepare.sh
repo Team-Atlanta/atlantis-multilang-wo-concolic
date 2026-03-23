@@ -5,3 +5,4 @@ if [ -f /work/compile_commands.json ]; then
   exit 0
 fi
 FUZZING_LANGUAGE=c bear --cdb /work/compile_commands.json /usr/local/bin/compile.orig
+libCRS submit-build-output /work/compile_commands.json lsp/compile_commands.json

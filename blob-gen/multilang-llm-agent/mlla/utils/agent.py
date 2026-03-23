@@ -46,7 +46,6 @@ class ExpectedException(Exception):
 class BaseAgentTemplate(ABC):
     builder: StateGraph
     gc: GlobalContext
-    # checkpointer: RedisSaver
     cur_state: StateSnapshot | None = None
     ret_file: Path
     prev_ret_file: Path | None
@@ -80,7 +79,6 @@ class BaseAgentTemplate(ABC):
         set_agent_instance_context(self.instance_id)
 
         self.file_system_tools = FileManagementToolkit(
-            # root_dir=str(gc.cp.cp_src_path),
             selected_tools=["list_directory", "file_search"],
         ).get_tools()
 
@@ -223,10 +221,6 @@ class BaseAgentTemplate(ABC):
             )
 
     def call_model_with_tools(self, state: dict, tools: list[PrioritizedTool] = []):
-        # logger.debug(
-        #     f"{state['cur_function']}, len(messages) : {len(state['messages'])}"
-        # )
-
         messages = state["messages"]
 
         # Validate that messages is not empty
@@ -240,11 +234,7 @@ class BaseAgentTemplate(ABC):
         if len(tools) == 0:
             tools = PrioritizedTool.from_tools(self.file_system_tools, 1)
 
-        # TODO: enable this after solving existing issues
-        # model = "atlanta-tool"
-        # TODO: gemini seems to be not working
-        # model = "gemini-2.0-flash-exp"
-        model = "gpt-4.1"
+        model = "gpt-5.4"
 
         if self.llm_with_tools:
             model_with_tools = self.llm_with_tools
@@ -265,7 +255,7 @@ class BaseAgentTemplate(ABC):
         return state
 
     def call_model_with_structured_output(
-        self, state: dict, output_format=None, model="gpt-4.1"
+        self, state: dict, output_format=None, model="gpt-5.4"
     ):
         messages = state["messages"]
 

@@ -94,7 +94,7 @@ class BackwardCallGraphAgent(BaseAgentTemplate):
         async def _call_llm(
             accumulated_diff: str, attempt: int
         ) -> Optional[DiffFilterOutput]:
-            llm = LLM(model="gpt-4.1-mini", config=self.gc)
+            llm = LLM(model="gpt-5.4-mini", config=self.gc)
             response = await llm.ainvoke(
                 [SystemMessage(DIFF_FILTER_SYSTEM), HumanMessage(accumulated_diff)]
             )

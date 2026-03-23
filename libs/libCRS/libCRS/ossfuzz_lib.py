@@ -3,9 +3,18 @@ import re
 import stat
 
 
-ALLOWED_FUZZ_TARGET_EXTENSIONS = ["", ".exe"]
+BLOCKED_FUZZ_TARGET_EXTENSIONS = frozenset({
+    ".zip", ".tar", ".gz", ".tgz", ".bz2", ".xz",  # archives / seed corpora
+    ".options", ".dict",                              # OSS-Fuzz fuzzer config
+    ".so", ".a", ".o", ".dylib", ".lib",              # libraries / objects
+    ".py", ".sh", ".js", ".rb", ".pl", ".java",       # scripts / source
+    ".h", ".c", ".cc", ".cpp", ".rs", ".go",          # source files
+    ".html", ".xml", ".json", ".yaml", ".yml",        # data files
+    ".txt", ".log", ".md", ".cfg", ".ini", ".csv",    # text / config
+    ".png", ".jpg", ".gif", ".svg", ".ico",           # images
+})
 FUZZ_TARGET_SEARCH_STRING = "LLVMFuzzerTestOneInput"
-VALID_TARGET_NAME_REGEX = re.compile(r"^[a-zA-Z0-9_-]+$")
+VALID_TARGET_NAME_REGEX = re.compile(r"^[a-zA-Z0-9._@-]+$")
 BLOCKLISTED_TARGET_NAME_REGEX = re.compile(r"^(jazzer_driver.*)$")
 
 
@@ -51,8 +60,7 @@ def is_fuzz_target_local(file_path):
         # jazzer-based targets).
         return False
 
-    if file_extension not in ALLOWED_FUZZ_TARGET_EXTENSIONS:
-        # Ignore files with disallowed extensions (to prevent opening e.g. .zips).
+    if file_extension in BLOCKED_FUZZ_TARGET_EXTENSIONS:
         return False
 
     if not is_executable(file_path):

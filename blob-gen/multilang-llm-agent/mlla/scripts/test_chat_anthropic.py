@@ -21,7 +21,7 @@ URL = (
 
 
 llm = ChatAnthropic(
-    model="claude-3-7-sonnet-20250219",
+    model="claude-sonnet-4-6",
     api_key=KEY,
     base_url=URL,
 )

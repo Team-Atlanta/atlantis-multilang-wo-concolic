@@ -117,17 +117,17 @@ Workflow Overview:
 
 |Variable|Default|Description|
 |---|---|---|
-|MCGA_MODEL|o4-mini|LLM model for code understanding|
+|MCGA_MODEL|gpt-5.4-mini|LLM model for code understanding|
 |MCGA_MAX_TIMEOUT|7200|Maximum analysis time (seconds)|
-|MCGA_SANITIZER_VALIDATOR_MODEL|o4-mini|LLM model for sanitizer validation|
+|MCGA_SANITIZER_VALIDATOR_MODEL|gpt-5.4-mini|LLM model for sanitizer validation|
 
 ### Example Configuration
 
 ```bash
 # MCGA Settings
-MCGA_MODEL=o4-mini
+MCGA_MODEL=gpt-5.4-mini
 MCGA_MAX_TIMEOUT=7200
-MCGA_SANITIZER_VALIDATOR_MODEL=o4-mini
+MCGA_SANITIZER_VALIDATOR_MODEL=gpt-5.4-mini
 ```
 
 ### State Structures

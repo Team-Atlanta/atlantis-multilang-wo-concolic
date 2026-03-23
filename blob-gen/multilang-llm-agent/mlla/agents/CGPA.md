@@ -161,12 +161,12 @@ Workflow Overview:
 
 |Variable|Default|Description|
 |---|---|---|
-|CGPA_MODEL|o4-mini|LLM model for candidate selection (if enabled)|
+|CGPA_MODEL|gpt-5.4-mini|LLM model for candidate selection (if enabled)|
 
 ### Example Configuration
 ```bash
 # CGPA Settings
-CGPA_MODEL=o4-mini
+CGPA_MODEL=gpt-5.4-mini
 ```
 
 ## State Structures

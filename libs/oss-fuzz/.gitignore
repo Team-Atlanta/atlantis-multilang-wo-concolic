@@ -11,4 +11,3 @@
 /.idea
 **/*.iml
 projects/**/Dockerfile.multilang
-infra/base-images/multilang-clang/manager.*

@@ -933,7 +933,7 @@ in the `verifyIPv6` method"""
 
     # config.max_concurrent_async_llm_calls = 5
     llm_sanitizer_validator = LLM(
-        model="gpt-4.1-mini",
+        model="gpt-5.4-mini",
         config=config,
         output_format=SanitizerValidationReport,
     )

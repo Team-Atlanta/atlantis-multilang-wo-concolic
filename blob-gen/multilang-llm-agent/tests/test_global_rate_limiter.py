@@ -26,25 +26,25 @@ class TestGlobalRateLimiter:
         """Test that all LLM instances share the same global rate limiters."""
         # Create multiple LLM instances with different models
         llm_openai_1 = LLM(
-            model="gpt-4o-mini",
+            model="gpt-5.4-mini",
             config=dummy_context,
             prepare_large_context_model=False,
         )
 
         llm_openai_2 = LLM(
-            model="gpt-4o",
+            model="gpt-5.4",
             config=dummy_context,
             prepare_large_context_model=False,
         )
 
         llm_claude = LLM(
-            model="claude-3-haiku-20240307",
+            model="claude-haiku-4-5-20251001",
             config=dummy_context,
             prepare_large_context_model=False,
         )
 
         llm_gemini = LLM(
-            model="gemini-1.5-flash",
+            model="gemini-3-flash-preview",
             config=dummy_context,
             prepare_large_context_model=False,
         )
@@ -97,13 +97,13 @@ class TestGlobalRateLimiter:
         """Test that rate limiting actually works by monitoring call timing."""
         # Create LLM instances
         llm1 = LLM(
-            model="gpt-4o-mini",
+            model="gpt-5.4-mini",
             config=dummy_context,
             prepare_large_context_model=False,
         )
 
         llm2 = LLM(
-            model="gpt-4o",
+            model="gpt-5.4",
             config=dummy_context,
             prepare_large_context_model=False,
         )
@@ -155,13 +155,13 @@ class TestGlobalRateLimiter:
         """Test that OpenAI and Claude rate limiters work independently."""
         # Create LLM instances for different model types
         llm_openai = LLM(
-            model="gpt-4o-mini",
+            model="gpt-5.4-mini",
             config=dummy_context,
             prepare_large_context_model=False,
         )
 
         llm_claude = LLM(
-            model="claude-3-haiku-20240307",
+            model="claude-haiku-4-5-20251001",
             config=dummy_context,
             prepare_large_context_model=False,
         )
@@ -211,7 +211,7 @@ class TestGlobalRateLimiter:
         llms = []
         for i in range(5):
             llm = LLM(
-                model="gpt-4o-mini",
+                model="gpt-5.4-mini",
                 config=dummy_context,
                 prepare_large_context_model=False,
             )
@@ -225,7 +225,7 @@ class TestGlobalRateLimiter:
     def test_summarize_model_uses_global_rate_limiter(self, dummy_context):
         """Test that the summarize model also uses the global rate limiter."""
         llm = LLM(
-            model="gpt-4o-mini",
+            model="gpt-5.4-mini",
             config=dummy_context,
             prepare_large_context_model=False,
         )

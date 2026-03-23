@@ -550,6 +550,6 @@ if __name__ == "__main__":
 
     print("-- Shrunked Source Code --")
     shrunked_source = shrink_context(
-        "gpt-4o", sys.argv[1], filtered_source, sys.argv[2]
+        "gpt-5.4", sys.argv[1], filtered_source, sys.argv[2]
     )
     print("\n".join(shrunked_source))

@@ -1,99 +1,95 @@
 #!/bin/bash
 sysctl -w fs.file-max=2097152
 ulimit -c 0
+set -e
+
+# =============================================================================
+# Download build outputs
+# =============================================================================
 get_cp
 
-MAIN_PID=""
+# =============================================================================
+# Register dirs
+# =============================================================================
 
-# Function to save results
-save_results() {
-    if [ "$CRS_SKIP_SAVE" != "True" ] && [ -d "/artifacts" ]; then
-        echo "=== Saving CRS results to /artifacts/ ==="
+# Automatically submit povs/seeds in these directories to oss-crs-infra
+libCRS register-submit-dir pov /povs 
+libCRS register-submit-dir seed /seeds
+#libCRS register-submit-dir bug-candidate /bug-candidates
 
-        # Create output directories
-        # mkdir -p /artifacts/workdir_result
-        mkdir -p /artifacts/crs-data/workdir_result
+# =============================================================================
+# Set env up for this CRS
+# =============================================================================
 
-        # Find and copy results from each harness workdir
-        for harness_dir in /crs-workdir/worker-*/HarnessRunner/*/; do
-            if [ -d "$harness_dir" ]; then
-                harness=$(basename "$harness_dir")
-                echo "Saving results for harness: $harness"
-
-                # Copy POVs (skip if CRS_POV_DIR set - already written directly)
-                if [ -z "$CRS_POV_DIR" ]; then
-                    if [ -d "$harness_dir/pov" ] && [ "$(ls -A "$harness_dir/pov" 2>/dev/null)" ]; then
-                        # mkdir -p /artifacts/povs/$harness
-                        # cp -r "$harness_dir/pov/"* /artifacts/povs/$harness/ 2>/dev/null || true
-                        mkdir -p /artifacts/povs
-                        cp -r "$harness_dir/pov/"* /artifacts/povs/ 2>/dev/null || true
-                    fi
-                fi
-
-                # Copy corpus (skip if CRS_CORPUS_DIR set - already written directly)
-                if [ -z "$CRS_CORPUS_DIR" ]; then
-                    if [ -d "$harness_dir/uniafl_corpus" ] && [ "$(ls -A "$harness_dir/uniafl_corpus" 2>/dev/null)" ]; then
-                        # mkdir -p /artifacts/corpus/$harness
-                        # cp -r "$harness_dir/uniafl_corpus/"* /artifacts/corpus/$harness/ 2>/dev/null || true
-                        mkdir -p /artifacts/corpus
-                        cp -r "$harness_dir/uniafl_corpus/"* /artifacts/corpus/ 2>/dev/null || true
-                    fi
-                fi
-
-                # Copy full workdir (logs, coverage, etc.)
-                # mkdir -p /artifacts/workdir_result/$harness
-                # cp -r "$harness_dir"/* /artifacts/workdir_result/$harness/ 2>/dev/null || true
-                mkdir -p /artifacts/crs-data/workdir_result
-                cp -r "$harness_dir"/* /artifacts/crs-data/workdir_result/ 2>/dev/null || true
-            fi
-        done
-
-        echo "=== Results saved ==="
-        ls -la /artifacts/
-    fi
+# Helper: check if a module is in CRS_INPUT_GENS (comma-separated)
+has_input_gen() {
+    echo ",$CRS_INPUT_GENS," | grep -q ",$1,"
 }
 
-# Cleanup function for signal handling
-cleanup() {
-    echo "=== Interrupted, saving results... ==="
+# Resolve services only when needed by active input generators
+NEEDS_REDIS=false
+NEEDS_JOERN=false
+NEEDS_LSP=false
 
-    # Kill main.py if still running
-    if [ -n "$MAIN_PID" ] && kill -0 $MAIN_PID 2>/dev/null; then
-        echo "Sending SIGTERM to main.py (PID: $MAIN_PID)..."
-        kill -TERM $MAIN_PID 2>/dev/null
+if has_input_gen mlla; then
+    NEEDS_REDIS=true
+    NEEDS_JOERN=true
+    NEEDS_LSP=true
+fi
+if has_input_gen testlang_input_gen; then
+    NEEDS_LSP=true
+fi
+if has_input_gen dict_input_gen; then
+    NEEDS_REDIS=true
+fi
 
-        # Wait up to 5 seconds for graceful shutdown
-        for i in 1 2 3 4 5; do
-            if ! kill -0 $MAIN_PID 2>/dev/null; then
-                break
-            fi
-            sleep 1
-        done
+if $NEEDS_REDIS; then
+    REDIS_DOMAIN=$(libCRS get-service-domain redis 2>/dev/null)
+    export CODE_INDEXER_REDIS_URL=redis://${REDIS_DOMAIN}:6379
+    export DICTGEN_REDIS_URL=redis://${REDIS_DOMAIN}:6379
+fi
+if $NEEDS_JOERN; then
+    JOERN_DOMAIN=$(libCRS get-service-domain joern 2>/dev/null)
+    export JOERN_URL=${JOERN_DOMAIN}:9909
+fi
+if $NEEDS_LSP; then
+    LSP_DOMAIN=$(libCRS get-service-domain lsp 2>/dev/null)
+    export LSP_SERVER_URL=${LSP_DOMAIN}:3303
+fi
 
-        # Force kill if still running
-        if kill -0 $MAIN_PID 2>/dev/null; then
-            echo "main.py didn't exit, sending SIGKILL..."
-            kill -KILL $MAIN_PID 2>/dev/null
-        fi
+# LLM vars are always set (harmless when unused)
+export LITELLM_URL=$OSS_CRS_LLM_API_URL
+export LITELLM_KEY=$OSS_CRS_LLM_API_KEY
 
-        wait $MAIN_PID 2>/dev/null
-    fi
+export CRS_TARGET=$OSS_CRS_TARGET
+echo "{\"target_harnesses\": [\"$OSS_CRS_TARGET_HARNESS\"]}" > /crs.config
 
-    save_results
-    exit 130
-}
+export CRS_POV_DIR="/povs"
+export CRS_CORPUS_DIR="/seeds"
+export SEED_SHARE_DIR="/seed_share_dir"
+#export CRS_DATA_DIR="/crs-data"
+#export BUG_CANDIDATE_DIR="/bug-candidates"
 
-# Trap signals - must be before main.py starts
-trap cleanup INT TERM
+export BGA_TEMPERATURE=1
+export BGA_GENERATOR_TEMPERATURE=1
+export BGA_MUTATOR_TEMPERATURE=1
+export PAYLOAD_GEN_TEMPERATURE=1
+export FAILURE_ANALYSIS_TEMPERATURE=1
+export ORCHESTRATOR_TEMPERATURE=1
 
-# Run main.py in background so 'wait' is interruptible by signals
-# This allows the trap to fire immediately when SIGTERM arrives
-main.py &
-MAIN_PID=$!
-wait $MAIN_PID
-EXIT_CODE=$?
+# Register shared dirs only for active input generators
+LOCAL_WORKDIR=/crs-workdir/worker-0/HarnessRunner/$OSS_CRS_TARGET_HARNESS/uniafl/workdir
+if has_input_gen mlla; then
+    libCRS register-shared-dir $LOCAL_WORKDIR/mlla mlla
+fi
+if has_input_gen testlang_input_gen; then
+    libCRS register-shared-dir $LOCAL_WORKDIR/harness-reverser harness-reverser
+fi
+if has_input_gen dict_input_gen; then
+    libCRS register-shared-dir $LOCAL_WORKDIR/dictgen dictgen
+fi
 
-# Save results on normal exit
-save_results
+LOCAL_HARNESS_DIR=/crs-workdir/worker-0/HarnessRunner/$OSS_CRS_TARGET_HARNESS
+libCRS register-shared-dir $LOCAL_HARNESS_DIR/uniafl_cov uniafl_cov
 
-exit $EXIT_CODE
+main.py

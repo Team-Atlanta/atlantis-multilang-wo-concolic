@@ -14,7 +14,6 @@ import re
 import tempfile
 import random
 import subprocess
-import time
 import os
 import json
 import difflib
@@ -34,9 +33,6 @@ from tools.context import ReverserContext
 
 from agents.code_parser import Code, CodeLocation, CodeTool, LanuageServerArgumentError
 
-# TODO: change old code
-from tools.resolve_preprocessor import preprocessor_pass, switch_case_constant_patch
-
 # From customgen
 from customgen import fetch_generators
 
@@ -50,16 +46,15 @@ EXTRA_HEADERS = "extra_headers"
 ANTHROPIC_BETA_HEADER_KEY = "anthropic-beta"
 ANTHROPIC_BETA_HEADER_VALUE_EXTENDED_CACHE_TTL = "extended-cache-ttl-2025-04-11"
 
-REASONING_MODEL = "claude-3-7-sonnet-20250219"
-CODING_MODEL = "claude-sonnet-4-20250514"
+REASONING_MODEL = "claude-sonnet-4-6"
+CODING_MODEL = "claude-sonnet-4-6"
 ALL_MODELS = [REASONING_MODEL, CODING_MODEL]
 # For sake of TPM, but no meaning for now.
 DEFAULT_MODEL = CODING_MODEL
 
 MAX_TOKENS = {
-    # OTPM for claude-3-7-sonnet-20250219 is 50000 during the contest
-    REASONING_MODEL: 32000,
-    CODING_MODEL: 32000,
+    REASONING_MODEL: 64000,
+    CODING_MODEL: 64000,
 }
 
 ROOT_DIR = Path(__file__).parent.parent
@@ -67,7 +62,7 @@ PROMPT_DIR = ROOT_DIR / 'prompts'
 JSON_SCHEMA_TAG_NAME = "JSON_schema"
 CUSTOM_TYPE_IDS_TAG_NAME = "custom_type_ids"
 
-CODE_MODEL = "gpt-4.1"
+CODE_MODEL = "gpt-5.4"
 CODE_COLLECT_TRIALS = 10
 
 MAX_TRIALS = 40
@@ -1312,10 +1307,6 @@ class ReverserAgent:
     def prepare_prompt(self, state):
         # TODO: support other langs
         harness_code = load_file(state["harness_path"])
-        # replace switch-case values with constants from IR
-        # harness_code = switch_case_constant_patch(harness_code)
-        # clang -E pass
-        # harness_code = preprocessor_pass('harness', harness_code)
         self.harness_code = Code(
             name="",
             body=harness_code,

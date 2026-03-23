@@ -54,9 +54,9 @@ def mock_llm_with_large_model(mock_config):
     ), patch(
         "mlla.utils.llm.TOKEN_COSTS",
         {
-            "gpt-4o-mini": {"max_input_tokens": 8192, "max_output_tokens": 4096},
-            "gpt-4.1": {"max_input_tokens": 128000, "max_output_tokens": 4096},
-            "gemini-2.5-flash": {
+            "gpt-5.4-mini": {"max_input_tokens": 8192, "max_output_tokens": 4096},
+            "gpt-5.4": {"max_input_tokens": 128000, "max_output_tokens": 4096},
+            "gemini-3-flash-preview": {
                 "max_input_tokens": 1000000,
                 "max_output_tokens": 8192,
             },
@@ -69,7 +69,7 @@ def mock_llm_with_large_model(mock_config):
         mock_chat_openai.return_value = mock_instance
 
         llm = LLM(
-            model="gpt-4o-mini",
+            model="gpt-5.4-mini",
             config=mock_config,
             prepare_large_context_model=True,
         )
@@ -90,7 +90,7 @@ def mock_llm_without_large_model(mock_config):
     """LLM with large context model disabled."""
     with patch("mlla.utils.llm.ChatOpenAI") as mock_chat_openai, patch(
         "mlla.utils.llm.TOKEN_COSTS",
-        {"gpt-4o-mini": {"max_input_tokens": 8192, "max_output_tokens": 4096}},
+        {"gpt-5.4-mini": {"max_input_tokens": 8192, "max_output_tokens": 4096}},
     ):
 
         # Configure the mock to have proper max_tokens attribute
@@ -99,7 +99,7 @@ def mock_llm_without_large_model(mock_config):
         mock_chat_openai.return_value = mock_instance
 
         llm = LLM(
-            model="gpt-4o-mini",
+            model="gpt-5.4-mini",
             config=mock_config,
             prepare_large_context_model=False,
         )

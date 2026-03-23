@@ -32,7 +32,7 @@ class TestLLMClass:
             max_bucket_size=2,
         )
         self.chat_model = ChatOpenAI(
-            model="gpt-4.1-nano",
+            model="gpt-5.4-nano",
             api_key=KEY,
             base_url=URL,
             rate_limiter=self.rate_limiter,

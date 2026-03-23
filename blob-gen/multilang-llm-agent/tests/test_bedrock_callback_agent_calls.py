@@ -80,14 +80,14 @@ class MockAgent(BaseAgentTemplate):
         run_id = f"run_{id(messages)}_{self.name}"
 
         self.gc.general_callback.on_llm_start(
-            serialized={"kwargs": {"model": "gpt-4.1-nano"}},
+            serialized={"kwargs": {"model": "gpt-5.4-nano"}},
             prompts=[msg.content for msg in messages if hasattr(msg, "content")],
             run_id=run_id,
             agent_name=self.module_name,
         )
 
         response = AIMessage(content=f"Response from {self.name}")
-        response.response_metadata = {"model_name": "gpt-4.1-nano"}
+        response.response_metadata = {"model_name": "gpt-5.4-nano"}
         response.usage_metadata = {
             "total_tokens": 100,
             "input_tokens": 50,
@@ -104,7 +104,7 @@ class MockAgent(BaseAgentTemplate):
                     "total_tokens": 100,
                     "input_token_details": input_token_details,
                 },
-                "model_name": "gpt-4.1-nano",
+                "model_name": "gpt-5.4-nano",
             },
         )
 
@@ -154,12 +154,12 @@ def _calculate_cache_savings(cache_read=0, cache_creation=0):
         },
     }
 
-    actual_cost = calculate_token_cost(token_usage, "gpt-4.1-nano")
+    actual_cost = calculate_token_cost(token_usage, "gpt-5.4-nano")
 
     return calculate_cache_savings(
         prompt_tokens=50,
         completion_tokens=50,
-        model_id="gpt-4.1-nano",
+        model_id="gpt-5.4-nano",
         actual_cost=actual_cost,
         token_usage=token_usage,
     )
@@ -221,17 +221,17 @@ def test_per_model_usage_tracking(global_context):
     agent1_usage = global_context.general_callback.get_agent_usage(agent1.module_name)
     agent2_usage = global_context.general_callback.get_agent_usage(agent2.module_name)
 
-    assert "gpt-4.1-nano" in agent1_usage["model_usage"]
-    assert agent1_usage["model_usage"]["gpt-4.1-nano"]["total_tokens"] == 100
-    assert agent1_usage["model_usage"]["gpt-4.1-nano"]["requests"] == 1
+    assert "gpt-5.4-nano" in agent1_usage["model_usage"]
+    assert agent1_usage["model_usage"]["gpt-5.4-nano"]["total_tokens"] == 100
+    assert agent1_usage["model_usage"]["gpt-5.4-nano"]["requests"] == 1
 
-    assert "gpt-4.1-nano" in agent2_usage["model_usage"]
-    assert agent2_usage["model_usage"]["gpt-4.1-nano"]["total_tokens"] == 200
-    assert agent2_usage["model_usage"]["gpt-4.1-nano"]["requests"] == 2
+    assert "gpt-5.4-nano" in agent2_usage["model_usage"]
+    assert agent2_usage["model_usage"]["gpt-5.4-nano"]["total_tokens"] == 200
+    assert agent2_usage["model_usage"]["gpt-5.4-nano"]["requests"] == 2
 
-    model_usage = global_context.general_callback.get_model_usage("gpt-4.1-nano")
-    assert model_usage["gpt-4.1-nano"].total_tokens == 300
-    assert model_usage["gpt-4.1-nano"].requests == 3
+    model_usage = global_context.general_callback.get_model_usage("gpt-5.4-nano")
+    assert model_usage["gpt-5.4-nano"].total_tokens == 300
+    assert model_usage["gpt-5.4-nano"].requests == 3
 
 
 def test_cache_read_savings(global_context):
@@ -401,9 +401,9 @@ def test_model_usage_query_specific_model(global_context):
     graph.invoke({"query": "Test query"})
 
     # Test getting usage for specific model
-    model_usage = global_context.general_callback.get_model_usage("gpt-4.1-nano")
-    assert "gpt-4.1-nano" in model_usage
-    assert model_usage["gpt-4.1-nano"].total_tokens == 100
+    model_usage = global_context.general_callback.get_model_usage("gpt-5.4-nano")
+    assert "gpt-5.4-nano" in model_usage
+    assert model_usage["gpt-5.4-nano"].total_tokens == 100
 
     # Test getting usage for non-existent model
     empty_usage = global_context.general_callback.get_model_usage("non-existent-model")

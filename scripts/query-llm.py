@@ -150,7 +150,7 @@ def construct_runnable(api_key: SecretStr, endpoint: str, model: str) -> Runnabl
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", type=str)
-    parser.add_argument("--model", type=str, default="gpt-4o")
+    parser.add_argument("--model", type=str, default="gpt-5.4")
     parser.add_argument("--output", type=str, default="llm-output")
     args = parser.parse_args()
 

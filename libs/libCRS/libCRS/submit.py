@@ -103,11 +103,6 @@ class SubmitDB:
         self.db.cursor().execute(q, tuple(map(str, data)))
         self.db.commit()
 
-    def __update_vd_status(self, uuid, status):
-        query = "update vd set status = ? where uuid = ?"
-        self.db.cursor().execute(query, (status, uuid))
-        self.db.commit()
-
     def __submitted_vd(
         self, harness: str, pov: Path, sanitizer_output: str, finder: str
     ) -> bool:

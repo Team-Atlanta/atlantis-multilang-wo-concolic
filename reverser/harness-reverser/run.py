@@ -25,7 +25,7 @@ class ConfigKey(Enum):
     MAX_BYTES_SIZE = "max_len"
 
 
-DEFAULT_MODEL = "claude-3-7-sonnet-20250219"
+DEFAULT_MODEL = "claude-sonnet-4-6"
 
 
 async def main():

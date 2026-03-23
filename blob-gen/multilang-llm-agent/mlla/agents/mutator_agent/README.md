@@ -110,7 +110,7 @@ mlla/agents/mutator_agent/
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `BGA_MUTATOR_MODEL` | `gpt-4o` | LLM model used for mutator generation |
+| `BGA_MUTATOR_MODEL` | `gpt-5.4` | LLM model used for mutator generation |
 | `BGA_MUTATOR_TEMPERATURE` | `0.4` | LLM generation temperature |
 | `BGA_MUTATOR_MAX_TOKENS` | `4096` | Maximum tokens for LLM responses |
 | `BGA_MUTATOR_MAX_ITERATION` | `1` | Maximum improvement attempts |
@@ -118,7 +118,7 @@ mlla/agents/mutator_agent/
 ### Example Configuration
 ```bash
 # Mutator Settings
-BGA_MUTATOR_MODEL=gpt-4o
+BGA_MUTATOR_MODEL=gpt-5.4
 BGA_MUTATOR_TEMPERATURE=0.4
 BGA_MUTATOR_MAX_TOKENS=4096
 BGA_MUTATOR_MAX_ITERATION=1
@@ -129,7 +129,7 @@ BGA_MUTATOR_MAX_ITERATION=1
 ### Basic Testing
 ```bash
 # Quick test with minimal iterations
-export BGA_MUTATOR_MODEL="gpt-4o-mini"
+export BGA_MUTATOR_MODEL="gpt-5.4-mini"
 export BGA_MUTATOR_MAX_ITERATION="1"
 # (Further testing requires integration with the Orchestrator Agent)
 ```

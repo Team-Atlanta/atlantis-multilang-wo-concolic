@@ -12,13 +12,13 @@ from mlla.utils.llm import LLM
 
 # Real TOKEN_COSTS data for testing
 REAL_TOKEN_COSTS = {
-    "claude-sonnet-4-20250514": {
+    "claude-sonnet-4-6": {
         "max_input_tokens": 200000,
         "max_output_tokens": 64000,
         "input_cost_per_token": 0.000003,
         "output_cost_per_token": 0.000015,
     },
-    "claude-opus-4-20250514": {
+    "claude-opus-4-6": {
         "max_input_tokens": 200000,
         "max_output_tokens": 32000,
         "input_cost_per_token": 0.000015,
@@ -30,13 +30,13 @@ REAL_TOKEN_COSTS = {
         "input_cost_per_token": 0.00006,
         "output_cost_per_token": 0.00024,
     },
-    "gemini-2.5-pro": {
+    "gemini-3.1-pro-preview": {
         "max_input_tokens": 2000000,
         "max_output_tokens": 65535,
         "input_cost_per_token": 0.00000125,
         "output_cost_per_token": 0.000005,
     },
-    "gpt-4.1": {
+    "gpt-5.4": {
         "max_input_tokens": 128000,
         "max_output_tokens": 32768,
         "input_cost_per_token": 0.00001,
@@ -115,7 +115,7 @@ class TestClaudeComplexFallbackReal:
         """
         # Setup
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             prepare_large_context_model=True,
         )
@@ -165,7 +165,7 @@ class TestClaudeComplexFallbackReal:
         # Verify execution flow
         expected_steps = [
             "sonnet_rate_limit",
-            "create_fallback_claude-opus-4-20250514",
+            "create_fallback_claude-opus-4-6",
             "opus_context_limit",
             "large_model_success",
         ]
@@ -188,7 +188,7 @@ class TestClaudeComplexFallbackReal:
         """
         # Setup
         llm = LLM(
-            model="claude-opus-4-20250514",
+            model="claude-opus-4-6",
             config=real_config,
             prepare_large_context_model=True,
         )
@@ -238,7 +238,7 @@ class TestClaudeComplexFallbackReal:
         # Verify execution flow
         expected_steps = [
             "opus_rate_limit",
-            "create_fallback_claude-sonnet-4-20250514",
+            "create_fallback_claude-sonnet-4-6",
             "sonnet_context_limit",
             "large_model_success",
         ]
@@ -268,7 +268,7 @@ class TestClaudeComplexFallbackReal:
         """
         # Setup
         llm = LLM(
-            model="claude-sonnet-4-20250514",
+            model="claude-sonnet-4-6",
             config=real_config,
             prepare_large_context_model=True,
         )
@@ -374,7 +374,7 @@ class TestClaudeComplexFallbackReal:
         # Verify execution flow includes all expected steps
         expected_steps = [
             "sonnet_rate_limit",
-            "create_fallback_claude-opus-4-20250514",
+            "create_fallback_claude-opus-4-6",
             "opus_context_limit",
             "tokenize_called",
             "summarization_performed",

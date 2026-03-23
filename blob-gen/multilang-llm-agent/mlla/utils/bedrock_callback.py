@@ -188,37 +188,17 @@ def calculate_claude_cache_costs(
     """Calculate cache costs specifically for Claude models using 1h cache pricing."""
     # Claude model pricing per million tokens (1h cache)
     CLAUDE_CACHE_PRICING = {
-        "claude-sonnet-4-20250514": {
+        "claude-sonnet-4-6": {
             "cache_hits": 0.30 / 1_000_000,  # $0.30 / MTok
             "cache_creation_1h": 6.0 / 1_000_000,  # $6 / MTok
         },
-        "claude-opus-4-20250514": {
+        "claude-opus-4-6": {
             "cache_hits": 1.50 / 1_000_000,  # $1.50 / MTok
             "cache_creation_1h": 30.0 / 1_000_000,  # $30 / MTok
         },
-        "claude-3-7-sonnet-20250219": {
-            "cache_hits": 0.30 / 1_000_000,  # $0.30 / MTok
-            "cache_creation_1h": 6.0 / 1_000_000,  # $6 / MTok
-        },
-        "claude-3-opus-20240229": {
-            "cache_hits": 1.50 / 1_000_000,  # $1.50 / MTok
-            "cache_creation_1h": 30.0 / 1_000_000,  # $30 / MTok
-        },
-        "claude-3-5-sonnet-20241022": {
-            "cache_hits": 0.30 / 1_000_000,  # $0.30 / MTok
-            "cache_creation_1h": 6.0 / 1_000_000,  # $6 / MTok
-        },
-        "claude-3-5-haiku-20241022": {
+        "claude-haiku-4-5-20251001": {
             "cache_hits": 0.08 / 1_000_000,  # $0.08 / MTok
             "cache_creation_1h": 1.6 / 1_000_000,  # $1.6 / MTok
-        },
-        "claude-3-sonnet-20240229": {
-            "cache_hits": 0.30 / 1_000_000,  # $0.30 / MTok
-            "cache_creation_1h": 6.0 / 1_000_000,  # $6 / MTok
-        },
-        "claude-3-haiku-20240307": {
-            "cache_hits": 0.03 / 1_000_000,  # $0.03 / MTok
-            "cache_creation_1h": 0.50 / 1_000_000,  # $0.50 / MTok
         },
     }
 

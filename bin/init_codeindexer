@@ -1,20 +1,14 @@
 #!/bin/bash
-mkdir -p /src/repo
-TARBALL_DIR=${TARBALL_DIR:-/tarballs}
-if [ "$TARBALL_DIR" != "/tarballs" ]; then
-    FILE=$TARBALL_DIR/DONE
-	while [ ! -e "$FILE" ]; do
-		echo "Waiting for $FILE to be created..."
-		sleep 5  # Adjust the sleep duration as needed
-	done
-fi
+set -e
 
-tar --use-compress-program=pigz -xf $TARBALL_DIR/project.tar.gz -C /src/
-rm -rf /src/repo
-mkdir -p /src/repo
-tar --use-compress-program=pigz -xf $TARBALL_DIR/repo.tar.gz -C /src/repo
-mkdir -p /src/.aixcc/
-cp $TARBALL_DIR/aixcc_conf.yaml /src/.aixcc/config.yaml
+libCRS download-build-output uniafl/project/ /src/
+libCRS download-build-output uniafl/src /src
+
+REDIS_DOMAIN=$(libCRS get-service-domain redis 2>/dev/null) || {
+    echo "Redis service not available, skipping code indexing."
+    exit 0
+}
+export CODE_INDEXER_REDIS_URL=redis://${REDIS_DOMAIN}:6379
 
 export CP_PROJ_PATH=/src
 export CP_SRC_PATH=/src/repo

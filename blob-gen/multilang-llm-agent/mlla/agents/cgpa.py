@@ -840,7 +840,7 @@ class CGParserAgent(BaseAgentTemplate):
                 2: "select_code_dict",
             },
             enable_usage_snapshot=False,
-            llm_with_tools=os.getenv("CGPA_MODEL", "o4-mini"),
+            llm_with_tools=os.getenv("CGPA_MODEL", "gpt-5.4-mini"),
         )
 
         self.builder.add_node("get_code_dict_from_fn", self.get_code_dict_from_fn)

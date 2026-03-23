@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+should_keep_init_codeindexer_alive() {
+    if [ "${INIT_CODEINDEXER_KEEPALIVE:-}" = "1" ] ; then
+        return 0
+    fi
+    if [ "${INIT_CODEINDEXER_KEEPALIVE:-}" = "0" ] ; then
+        return 1
+    fi
+    [ -n "${OSS_CRS_LOG_DIR:-}" ]
+}
+
+if [ "$RUN_TYPE" = "INIT_CODEINDEXER" ] ; then
+    init_codeindexer
+    if should_keep_init_codeindexer_alive ; then
+        exec tail -f /dev/null
+    fi
+elif [ "$RUN_TYPE" = "CREATE_CONFIG" ] ; then
+    create_conf
+else
+    run_crs
+fi

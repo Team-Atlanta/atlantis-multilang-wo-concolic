@@ -34,7 +34,7 @@ def patch_large_context_model_name(monkeypatch):
     monkeypatch.setattr(
         llm_utils,
         "get_large_context_model_name",
-        lambda model: ("gpt-4.1-nano", "gpt-4.1-mini"),
+        lambda model: ("gpt-5.4-nano", "gpt-5.4-mini"),
     )
 
 
@@ -57,7 +57,7 @@ def test_summarize_single_long_msg(setup_tokencost, config) -> None:
     """Test summarization with a single long message"""
     # Setup
     llm = LLM(
-        model="gpt-4o-mini",
+        model="gpt-5.4-mini",
         config=config,
         temperature=0.6,
         prepare_large_context_model=False,
@@ -83,7 +83,7 @@ def test_summarize_system_and_long_msg(setup_tokencost, config) -> None:
     """Test summarization with a system message and a long message"""
     # Setup
     llm = LLM(
-        model="gpt-4o-mini",
+        model="gpt-5.4-mini",
         config=config,
         temperature=0.6,
         prepare_large_context_model=False,
@@ -109,7 +109,7 @@ def test_summarize_with_multiple_message_parts(setup_tokencost, config) -> None:
     """Test summarization with single long message and multiple message parts"""
     # Setup
     llm = LLM(
-        model="gpt-4o-mini",
+        model="gpt-5.4-mini",
         config=config,
         temperature=0.6,
         prepare_large_context_model=False,
@@ -174,7 +174,7 @@ def test_summarize_with_tool_call(setup_tokencost, config) -> None:
     tools += create_ag_tools() + PrioritizedTool.from_tools(file_system_tools, 1)
 
     llm = LLM(
-        model="gpt-4o-mini",
+        model="gpt-5.4-mini",
         config=config,
         temperature=0.6,
         tools=tools,
@@ -225,7 +225,7 @@ def test_summarize_with_multiple_msgs(setup_tokencost, config) -> None:
     """Test summarization with multiple messages"""
     # Setup
     llm = LLM(
-        model="gpt-4o-mini",
+        model="gpt-5.4-mini",
         config=config,
         temperature=0.6,
         prepare_large_context_model=False,
@@ -250,7 +250,7 @@ def test_summarize_with_merging_nodes(setup_tokencost, config, graph_config) -> 
     # Setup
     def call_model(state: MessagesState):
         llm = LLM(
-            model="gpt-4o-mini",
+            model="gpt-5.4-mini",
             config=config,
             temperature=0.6,
             prepare_large_context_model=False,
@@ -370,12 +370,12 @@ def test_summarize_behavior_with_and_without_large_context_model(
 
     # Setup
     llm_check_context_limit = LLM(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-6",
         config=config,
         prepare_large_context_model=False,
     )
     llm = LLM(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-6",
         config=config,
     )
     # Use a prompt size that exceeds summarization threshold but may trigger context limit
@@ -424,7 +424,7 @@ def test_summarize_behavior_with_and_without_large_context_model(
 
 def test_summarize_large_context_model(setup_tokencost, config) -> None:
     llm = LLM(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-6",
         config=config,
     )
     long_prompt = LONG_PROMPT

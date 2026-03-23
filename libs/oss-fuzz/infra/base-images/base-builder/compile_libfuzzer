@@ -22,4 +22,13 @@ if [ "$FUZZING_LANGUAGE" = "go" ]; then
 fi
 
 cp /usr/local/lib/clang/*/lib/$ARCHITECTURE-unknown-linux-gnu/libclang_rt.fuzzer.a $LIB_FUZZING_ENGINE_DEPRECATED
+
+# Replace the static archive with a linker script that adds -lrt.
+# This is needed because projects that link libFuzzingEngine.a directly (e.g.,
+# OpenSSL via curl's --with-fuzzer-lib) don't get -lrt automatically, but our
+# patched libFuzzingEngine.a uses shm_open/shm_unlink which live in librt.
+# Projects using -fsanitize=fuzzer are unaffected (they don't read this file).
+mv $LIB_FUZZING_ENGINE_DEPRECATED ${LIB_FUZZING_ENGINE_DEPRECATED%.a}.real.a
+echo "INPUT ( libFuzzingEngine.real.a -lrt )" > $LIB_FUZZING_ENGINE_DEPRECATED
+
 echo " done."

@@ -48,7 +48,7 @@ def test_cache_with_direct_model():
     """Test cache with direct model (gpt4o) by making same request twice"""
     config = DummyContext(no_llm=False)
     config.is_dev = False  # Disable logs
-    llm = LLM(model="gpt-4o", config=config)
+    llm = LLM(model="gpt-5.4", config=config)
 
     # Generate random array for the example
     arr = get_random_array()
@@ -114,7 +114,7 @@ def test_cache_with_temperature():
     binary search? Please explain how it would find (or fail to find) the target."""
 
     # Test with zero temperature (should use cache)
-    llm1 = LLM(model="gpt-4o", config=config, temperature=0)
+    llm1 = LLM(model="gpt-5.4", config=config, temperature=0)
     messages = [HumanMessage(content=long_prompt)]
     response1 = llm1.invoke(messages)
 
@@ -125,7 +125,7 @@ def test_cache_with_temperature():
     ), "Cache not working - responses differ for same temperature"
 
     # Test with non-zero temperature (should not use cache)
-    llm2 = LLM(model="gpt-4o", config=config, temperature=0.6)
+    llm2 = LLM(model="gpt-5.4", config=config, temperature=0.6)
     messages = [HumanMessage(content=long_prompt)]
     response3 = llm2.invoke(messages)
     assert (

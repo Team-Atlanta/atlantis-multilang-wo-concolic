@@ -47,19 +47,19 @@ def mock_llm_with_large_model(mock_config):
     ), patch(
         "mlla.utils.llm.TOKEN_COSTS",
         {
-            "claude-3-5-sonnet-20241022": {
+            "claude-sonnet-4-6": {
                 "max_input_tokens": 200000,
                 "max_output_tokens": 8192,
             },
-            "gpt-4.1": {"max_input_tokens": 128000, "max_output_tokens": 4096},
-            "gemini-2.5-pro": {
+            "gpt-5.4": {"max_input_tokens": 128000, "max_output_tokens": 4096},
+            "gemini-3.1-pro-preview": {
                 "max_input_tokens": 1000000,
                 "max_output_tokens": 8192,
             },
         },
     ):
         llm = LLM(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-sonnet-4-6",
             config=mock_config,
             prepare_large_context_model=True,
         )
@@ -67,12 +67,12 @@ def mock_llm_with_large_model(mock_config):
         # Mock the large context model
         llm.large_context_model = Mock()
         llm.large_context_model.invoke = Mock()
-        llm.large_context_model.model_name = "gemini-2.5-pro"
+        llm.large_context_model.model_name = "gemini-3.1-pro-preview"
 
         # Mock the large context model fallback
         llm.large_context_model_fallback = Mock()
         llm.large_context_model_fallback.invoke = Mock()
-        llm.large_context_model_fallback.model_name = "gpt-4.1"
+        llm.large_context_model_fallback.model_name = "gpt-5.4"
 
         return llm
 

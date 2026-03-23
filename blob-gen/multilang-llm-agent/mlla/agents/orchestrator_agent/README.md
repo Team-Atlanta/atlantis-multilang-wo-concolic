@@ -104,7 +104,7 @@ This approach addresses the **complexity of modern vulnerability exploitation** 
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `ORCHESTRATOR_MODEL` | `gpt-4o` | LLM model used for orchestrator operations |
+| `ORCHESTRATOR_MODEL` | `gpt-5.4` | LLM model used for orchestrator operations |
 | `ORCHESTRATOR_TEMPERATURE` | `0.4` | LLM generation temperature |
 | `ORCHESTRATOR_MAX_TOKENS` | `4096` | Maximum tokens for LLM responses |
 | `ORCHESTRATOR_EVAL_NUM_TEST` | `1` | Number of test evaluations per context |
@@ -121,7 +121,7 @@ This approach addresses the **complexity of modern vulnerability exploitation** 
 ### Example Configuration
 ```bash
 # Orchestrator Core Settings
-ORCHESTRATOR_MODEL=claude-sonnet-4-20250514
+ORCHESTRATOR_MODEL=claude-sonnet-4-6
 ORCHESTRATOR_TEMPERATURE=0.4
 ORCHESTRATOR_MAX_TOKENS=4096
 ORCHESTRATOR_MAX_CONCURRENT_CG=10

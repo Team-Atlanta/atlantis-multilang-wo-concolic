@@ -4,7 +4,7 @@ EXPOSE 9909
 WORKDIR /tmp
 
 ENV JOERN_INSTALL_DIR=/joern
-ENV JOERN_VERSION=v4.0.258
+ENV JOERN_VERSION=v4.0.507
 
 RUN apt-get update && \
     apt-get install -y openjdk-21-jdk libssl1.1 curl && \

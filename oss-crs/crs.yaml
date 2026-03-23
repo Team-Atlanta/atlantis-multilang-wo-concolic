@@ -1,0 +1,79 @@
+name: atlantis-multilang-wo-concolic
+type:
+  - bug-finding
+version: 1.0.0
+docker_registry: ghcr.io/team-atlanta/atlantis-multilang-wo-concolic
+
+prepare_phase:
+  hcl: oss-crs/docker-bake.hcl
+
+target_build_phase:
+  - name: uniafl-build
+    dockerfile: oss-crs/dockerfiles/builder.Dockerfile
+    additional_env:
+      BUILD_TYPE: uniafl
+    outputs:
+      - uniafl/build
+      - uniafl/src
+      - uniafl/project
+  - name: coverage-build
+    dockerfile: oss-crs/dockerfiles/builder.Dockerfile
+    additional_env:
+      BUILD_TYPE: coverage
+    outputs:
+      - coverage/build
+  - name: lsp-build
+    dockerfile: oss-crs/dockerfiles/lsp_builder.Dockerfile
+    outputs:
+      - lsp/compile_commands.json
+  - name: create-config
+    dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
+    additional_env:
+      RUN_TYPE: CREATE_CONFIG
+    outputs:
+      - uniafl/config.yaml
+
+crs_run_phase:
+  multilang:
+    dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
+    additional_env:
+      # Input generators for fuzzing (comma-separated)
+      # Available options:
+      #   - given_fuzzer: Use provided seed corpus (default)
+      #   - testlang_input_gen: Test language-based input generation
+      #   - dict_input_gen: Dictionary-based input generation
+      #   - mlla: Multi-language LLM agent for input generation
+      CRS_INPUT_GENS: given_fuzzer,mlla,testlang_input_gen,dict_input_gen
+  redis:
+    dockerfile: oss-crs/dockerfiles/redis.Dockerfile
+  init_codeindexer:
+    dockerfile: oss-crs/dockerfiles/multilang.Dockerfile
+    additional_env:
+      RUN_TYPE: INIT_CODEINDEXER
+  joern:
+    dockerfile: oss-crs/dockerfiles/joern.Dockerfile
+  lsp:
+    dockerfile: oss-crs/dockerfiles/lsp.Dockerfile
+
+supported_target:
+  mode:
+    - full
+    - delta
+  language:
+    - c
+    - c++
+    - jvm
+  sanitizer:
+    - address
+    - undefined
+    - memory
+  architecture:
+    - x86_64
+
+required_llms:
+  - gpt-5.4
+  - gpt-5.4-mini
+  - claude-sonnet-4-6
+  - claude-opus-4-6
+  - claude-haiku-4-5-20251001
+  - gemini-3.1-pro-preview

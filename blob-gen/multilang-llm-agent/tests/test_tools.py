@@ -57,7 +57,7 @@ def test_java(cp_jenkins_path, config) -> None:
                 continue
             harnesses[harness.name] = harness
 
-        llm = LLM(model="gpt-4o", config=config, temperature=0.6, tools=tools)
+        llm = LLM(model="gpt-5.4", config=config, temperature=0.6, tools=tools)
         extension_list = state["extension_list"]
 
         filtered_files: List[Path] = []
