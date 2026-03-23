@@ -286,7 +286,7 @@ def test_llm_invoke_context_limit_error():
     # Patch the ChatOpenAI constructor and other dependencies
 
     # Create LLM instance
-    llm = LLM(model="gpt-4", config=mock_config)
+    llm = LLM(model="gpt-5.4", config=mock_config)
 
     # Replace the runnable_chat_model with our mock
     llm.runnable_chat_model = mock_runnable_chat_model
@@ -389,7 +389,7 @@ def test_llm_invoke_on_unresolvable_error():
     # Patch the ChatOpenAI constructor and other dependencies
 
     # Create LLM instance
-    llm = LLM(model="gpt-4", config=mock_config)
+    llm = LLM(model="gpt-5.4", config=mock_config)
 
     # Replace the runnable_chat_model with our mock
     llm.runnable_chat_model = mock_runnable_chat_model
@@ -449,7 +449,7 @@ def test_llm_invoke_on_server_error_continues_retrying(mock_sleep):
     mock_runnable_chat_model.max_tokens = 500
 
     # Create LLM instance
-    llm = LLM(model="gpt-4", config=mock_config)
+    llm = LLM(model="gpt-5.4", config=mock_config)
 
     # Replace the runnable_chat_model with our mock
     llm.runnable_chat_model = mock_runnable_chat_model
@@ -507,7 +507,7 @@ def test_llm_invoke_on_unknown_error(mock_sleep):
     mock_runnable_chat_model.max_tokens = 500
 
     # Create LLM instance
-    llm = LLM(model="gpt-4", config=mock_config)
+    llm = LLM(model="gpt-5.4", config=mock_config)
 
     # Replace the runnable_chat_model with our mock
     llm.runnable_chat_model = mock_runnable_chat_model
@@ -559,7 +559,7 @@ def test_llm_invoke_on_unknown_error_max_retries_exceeded(mock_sleep):
     mock_runnable_chat_model.max_tokens = 500
 
     # Create LLM instance
-    llm = LLM(model="gpt-4", config=mock_config)
+    llm = LLM(model="gpt-5.4", config=mock_config)
 
     # Replace the runnable_chat_model with our mock
     llm.runnable_chat_model = mock_runnable_chat_model
@@ -580,16 +580,16 @@ def test_llm_invoke_on_unknown_error_max_retries_exceeded(mock_sleep):
 @pytest.mark.parametrize(
     "model_name",
     [
-        "gpt-4o-mini",
-        "o4-mini",
-        "claude-3-7-sonnet-20250219",
-        "gpt-4.1-mini",
-        "gpt-4.1",
-        "claude-sonnet-4-20250514",
-        "gemini-2.5-pro",
-        "gemini-2.5-flash",
-        "o3-mini",
-        "claude-3-5-haiku-20241022",
+        "gpt-5.4-mini",
+        "gpt-5.4-mini",
+        "claude-sonnet-4-6",
+        "gpt-5.4-mini",
+        "gpt-5.4",
+        "claude-sonnet-4-6",
+        "gemini-3.1-pro-preview",
+        "gemini-3-flash-preview",
+        "gpt-5.4-mini",
+        "claude-haiku-4-5-20251001",
     ],
 )
 @pytest.mark.skip(reason="This test is too slow")
