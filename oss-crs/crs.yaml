@@ -1,7 +1,7 @@
 name: atlantis-multilang-wo-concolic
 type:
   - bug-finding
-version: 1.0.0
+version: 1.1.1
 docker_registry: ghcr.io/team-atlanta/atlantis-multilang-wo-concolic
 
 prepare_phase:

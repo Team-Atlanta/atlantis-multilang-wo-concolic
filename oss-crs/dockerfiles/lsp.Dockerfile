@@ -30,6 +30,6 @@ COPY bin/* /usr/local/bin/
 COPY ./lsp/main.py /main.py
 
 COPY --from=libcrs . /libCRS
-RUN /libCRS/install.sh
+RUN /libCRS/install.sh --cli
 
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/run_lsp"]

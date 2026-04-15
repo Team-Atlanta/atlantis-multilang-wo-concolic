@@ -18,7 +18,7 @@ FROM ${target_base_image}
 RUN apt update && apt install -y bear && rm -rf /var/lib/apt/lists/*
 
 COPY --from=libcrs . /libCRS
-RUN /libCRS/install.sh
+RUN /libCRS/install.sh --cli
 
 RUN cp /usr/local/bin/compile /usr/local/bin/compile.orig
 COPY ./scripts/lsp-prepare.sh /lsp-prepare.sh

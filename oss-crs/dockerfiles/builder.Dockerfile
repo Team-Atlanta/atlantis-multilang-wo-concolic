@@ -43,7 +43,7 @@ COPY --from=crs-tools-jvm /multilang-builder/jazzer_junit.jar /usr/local/bin/jaz
 
 # Install libCRS
 COPY --from=libcrs . /libCRS
-RUN /libCRS/install.sh
+RUN /libCRS/install.sh --cli
 
 COPY bin/compile_target /usr/local/bin/compile_target
 

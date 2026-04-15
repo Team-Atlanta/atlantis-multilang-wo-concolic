@@ -13,7 +13,7 @@
 FROM multilang-crs:latest
 
 COPY --from=libcrs . /libCRS
-RUN /libCRS/install.sh
+RUN /libCRS/install.sh --cli
 
 WORKDIR /home/crs
 

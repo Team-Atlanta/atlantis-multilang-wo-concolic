@@ -13,6 +13,6 @@
 FROM multilang-joern:latest
 
 COPY --from=libcrs . /libCRS
-RUN /libCRS/install.sh
+RUN /libCRS/install.sh --cli
 
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/run_joern"]
