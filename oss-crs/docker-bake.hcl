@@ -79,15 +79,15 @@ group "default" {
 }
 
 group "prepare" {
-  targets = ["multilang-clang", "multilang-builder", "multilang-builder-jvm", "multilang-c-archive", "multilang-jvm-archive", "multilang-crs", "multilang-joern"]
+  targets = ["multilang-clang", "multilang-builder", "multilang-builder-jvm", "multilang-c-archive", "multilang-jvm-archive", "multilang-crs", "multilang-joern", "atlantis-multilang-wo-concolic-deps"]
 }
 
 group "prepare-c" {
-  targets = ["multilang-clang", "multilang-builder", "multilang-c-archive", "multilang-crs"]
+  targets = ["multilang-clang", "multilang-builder", "multilang-c-archive", "multilang-crs", "atlantis-multilang-wo-concolic-deps"]
 }
 
 group "prepare-jvm" {
-  targets = ["multilang-builder-jvm", "multilang-jvm-archive"]
+  targets = ["multilang-builder-jvm", "multilang-jvm-archive", "atlantis-multilang-wo-concolic-deps"]
 }
 
 # Archive images for extracting build artifacts
@@ -151,6 +151,16 @@ target "multilang-joern" {
   tags       = tags("multilang-joern")
   labels     = oci_labels()
   cache-from = USE_PREBUILT ? ["type=registry,ref=${REGISTRY}/multilang-joern:${VERSION}"] : []
+}
+
+# Offline Python and language-server runtime copied into the target-dependent
+# LSP image during build-target.
+target "atlantis-multilang-wo-concolic-deps" {
+  context    = "."
+  dockerfile = "oss-crs/deps/deps.Dockerfile"
+  tags       = tags("atlantis-multilang-wo-concolic-deps")
+  labels     = oci_labels()
+  cache-from = USE_PREBUILT ? ["type=registry,ref=${REGISTRY}/atlantis-multilang-wo-concolic-deps:${VERSION}"] : []
 }
 
 # -----------------------------------------------------------------------------
