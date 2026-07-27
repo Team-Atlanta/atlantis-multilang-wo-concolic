@@ -13,7 +13,7 @@ RUN nix build /build/oss-crs/deps#default -o /out/runtime \
  && runtime=$(readlink -f /out/runtime) \
  && ln -s "$runtime/bin/python3" /rootfs/usr/local/bin/python3 \
  && ln -s "$runtime/bin/python3" /rootfs/usr/local/bin/lsp-python \
- && for command in git pigz socat sqlite3 uuidgen xxd; do \
+ && for command in bear git pigz socat sqlite3 uuidgen xxd; do \
       ln -s "$runtime/bin/$command" "/rootfs/usr/local/bin/$command"; \
     done \
  && ln -s "$runtime/share/atlantis-lsp/eclipse-jdtls" \

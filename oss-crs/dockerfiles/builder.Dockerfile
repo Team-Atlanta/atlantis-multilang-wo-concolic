@@ -23,10 +23,12 @@ FROM multilang-jvm-archive AS crs-tools-jvm
 # =============================================================================
 # Builder: parent_image + CRS tools
 # =============================================================================
+FROM oss-crs-deps:latest AS oss-crs-deps
 FROM ${target_base_image}
 
-# Install rsync for clean source snapshots between build variants
-RUN apt-get update -qq && apt-get install -y -qq rsync >/dev/null 2>&1 || true
+COPY --from=oss-crs-deps /nix/store /nix/store
+COPY --from=oss-crs-deps /usr/local/bin/libCRS /usr/local/bin/libCRS
+COPY --from=oss-crs-deps /usr/local/bin/rsync  /usr/local/bin/rsync
 
 COPY --from=crs-tools-c /multilang-builder/llvm-patched /opt/llvm-patched
 COPY --from=crs-tools-c /multilang-builder/libclang_rt.fuzzer.a /tmp/libclang_rt.fuzzer.a
@@ -40,10 +42,6 @@ COPY --from=crs-tools-jvm /multilang-builder/jazzer_agent_deploy.jar /usr/local/
 COPY --from=crs-tools-jvm /multilang-builder/jazzer_driver /usr/local/bin/jazzer_driver
 COPY --from=crs-tools-jvm /multilang-builder/jazzer_api_deploy.jar /usr/local/lib/jazzer_api_deploy.jar
 COPY --from=crs-tools-jvm /multilang-builder/jazzer_junit.jar /usr/local/bin/jazzer_junit.jar
-
-# Install libCRS
-COPY --from=libcrs . /libCRS
-RUN /libCRS/install.sh --cli
 
 COPY bin/compile_target /usr/local/bin/compile_target
 

@@ -106,6 +106,7 @@
         paths = [
           pythonEnv
           eclipseRuntime
+          pkgs.bear
           pkgs.git
           pkgs.pigz
           pkgs.socat

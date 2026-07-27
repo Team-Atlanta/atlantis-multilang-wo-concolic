@@ -14,12 +14,18 @@
 # =============================================================================
 
 ARG target_base_image
+FROM atlantis-multilang-wo-concolic-deps:latest AS multilang-deps
+FROM oss-crs-deps:latest AS oss-crs-deps
 FROM ${target_base_image}
-RUN apt update && apt install -y bear && rm -rf /var/lib/apt/lists/*
 
-COPY --from=libcrs . /libCRS
-RUN /libCRS/install.sh --cli
+COPY --from=oss-crs-deps /nix/store /nix/store
+COPY --from=oss-crs-deps /usr/local/bin/libCRS /usr/local/bin/libCRS
+COPY --from=oss-crs-deps /usr/local/bin/rsync  /usr/local/bin/rsync
+
+COPY --from=multilang-deps /nix/store /nix/store
+COPY --from=multilang-deps /usr/local/bin/bear /usr/local/bin/bear
 
 RUN cp /usr/local/bin/compile /usr/local/bin/compile.orig
+COPY ./lsp/bear.yml /work/bear.yml
 COPY ./scripts/lsp-prepare.sh /lsp-prepare.sh
 CMD ["/lsp-prepare.sh"]
