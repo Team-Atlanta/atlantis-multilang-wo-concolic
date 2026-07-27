@@ -10,10 +10,12 @@
 # =============================================================================
 
 # Docker will check local first, then pull from registry if not found
+FROM oss-crs-deps:latest AS oss-crs-deps
 FROM multilang-crs:latest
 
-COPY --from=libcrs . /libCRS
-RUN /libCRS/install.sh --cli
+COPY --from=oss-crs-deps /nix/store /nix/store
+COPY --from=oss-crs-deps /usr/local/bin/libCRS /usr/local/bin/libCRS
+COPY --from=oss-crs-deps /usr/local/bin/rsync  /usr/local/bin/rsync
 
 WORKDIR /home/crs
 
