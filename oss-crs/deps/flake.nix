@@ -3,10 +3,18 @@
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-  outputs = { nixpkgs, ... }:
+  # bear only: unstable's bear 4.0.4 needs GLIBC_2.34, too new for Ubuntu
+  # 20.04 targets (2.31). 20.03 ships bear 2.4.2, built against glibc 2.30.
+  inputs.nixpkgs-bear = {
+    url = "github:NixOS/nixpkgs/20.03";
+    flake = false;
+  };
+
+  outputs = { nixpkgs, nixpkgs-bear, ... }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      pkgsBear = import nixpkgs-bear { inherit system; };
       python = pkgs.python3;
       py = python.pkgs;
 
@@ -99,6 +107,16 @@
           "$runtime/static/vscode-java/extension/jre/17.0.8.1-linux-x86_64"
       '';
 
+      # libear.so is LD_PRELOAD-ed into target build processes; Nix's RUNPATH
+      # would pull its own glibc in alongside the system one. Strip it so the
+      # .so binds to the target's libc (it needs nothing above GLIBC_2.4).
+      bearPortable = pkgsBear.bear.overrideAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ pkgsBear.patchelf ];
+        postFixup = (old.postFixup or "") + ''
+          patchelf --remove-rpath "$out/lib/bear/libear.so"
+        '';
+      });
+
       pythonEnv = python.withPackages (_: [ libCRS multilspy ]);
     in {
       packages.${system}.default = pkgs.buildEnv {
@@ -106,7 +124,7 @@
         paths = [
           pythonEnv
           eclipseRuntime
-          pkgs.bear
+          bearPortable
           pkgs.git
           pkgs.pigz
           pkgs.socat

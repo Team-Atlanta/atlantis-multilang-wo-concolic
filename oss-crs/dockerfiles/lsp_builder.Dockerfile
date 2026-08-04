@@ -26,6 +26,5 @@ COPY --from=multilang-deps /nix/store /nix/store
 COPY --from=multilang-deps /usr/local/bin/bear /usr/local/bin/bear
 
 RUN cp /usr/local/bin/compile /usr/local/bin/compile.orig
-COPY ./lsp/bear.yml /work/bear.yml
 COPY ./scripts/lsp-prepare.sh /lsp-prepare.sh
 CMD ["/lsp-prepare.sh"]
