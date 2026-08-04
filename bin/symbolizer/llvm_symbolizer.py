@@ -33,7 +33,8 @@ class LlvmSymbolizerResult:
     def __init__(
         self, function_name: str, src_file: str, line_number: int, error: bool
     ):
-        if function_name[-1] == ")":
+        # function_name is "" on the error path; guard before indexing.
+        if function_name and function_name[-1] == ")":
             function_name = remove_args(function_name)
         self.function_name = function_name
         self.src_file = src_file
@@ -115,9 +116,12 @@ class LLVMSymbolizer:
         line = self.llvm_symbolizer_process.stdout.readline()
         while True:
             _ = self.llvm_symbolizer_process.stdout.readline()
-            if _ == "\n":
+            # "" is EOF (symbolizer exited); without it readline() spins.
+            if _ == "" or _ == "\n":
                 break
-            line = _.split("(inlined by)")[1].strip()
+            # Marker is absent when the frame wasn't inlined.
+            parts = _.split("(inlined by)")
+            line = parts[1].strip() if len(parts) > 1 else _.strip()
 
         try:
             t = line.split(" at ")
