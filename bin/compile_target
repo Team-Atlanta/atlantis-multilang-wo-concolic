@@ -13,7 +13,11 @@ compile_uniafl_build() {
     libCRS submit-build-output $OSS_CRS_TARGET_PROJ_DIR uniafl/project
     libCRS submit-build-output $OUT uniafl/build
     # Create $SRC/repo as symlink or copy depending on whether REPODIR is under SRC
-    if [[ "$REPODIR" == "$SRC"/* ]]; then
+    if [[ "$REPODIR" == "$SRC" ]]; then
+	mkdir -p "$SRC/repo"
+	rsync -a --exclude=repo/ "$REPODIR" "$SRC/repo"
+        log "  Copied $REPODIR to $SRC/repo"
+    elif [[ "$REPODIR" == "$SRC"/* ]]; then
         # REPODIR is a subdirectory of SRC, create a relative symlink
         RELPATH="${REPODIR#$SRC/}"
         ln -sfn "$RELPATH" "$SRC/repo"
