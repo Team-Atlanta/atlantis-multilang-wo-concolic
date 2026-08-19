@@ -97,7 +97,7 @@ RUN ninja install llvm-cov
 FROM multilang-base AS tracer-jazzer-builder
 
 RUN apt-get update && apt-get install -y apt-transport-https curl gnupg && \
-curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > /usr/share/keyrings/bazel-archive-keyring.gpg && \
+curl -fsSL https://releases.bazel.build/bazel-release.pub.gpg | gpg --dearmor > /usr/share/keyrings/bazel-archive-keyring.gpg && \
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
 
 RUN apt-get update && apt-get install -y maven bazel-7.3.0
