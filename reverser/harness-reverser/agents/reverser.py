@@ -45,6 +45,15 @@ from fuzzdb import FuzzDB, CovInfo
 EXTRA_HEADERS = "extra_headers"
 ANTHROPIC_BETA_HEADER_KEY = "anthropic-beta"
 ANTHROPIC_BETA_HEADER_VALUE_EXTENDED_CACHE_TTL = "extended-cache-ttl-2025-04-11"
+# Anthropic rejects a request with HTTP 400 when cache_control breakpoints mix
+# ttl='1h' and ttl='5m' (or the default, which is ttl='5m') out of the
+# required `tools` -> `system` -> `messages` order, e.g.:
+#   "a ttl='1h' cache_control block must not come after a ttl='5m'
+#    cache_control block. Note that blocks are processed in the following
+#    order: `tools`, `system`, `messages`."
+# Match on the stable, ttl-value-agnostic part of that message so both
+# directions of the mismatch (1h-after-5m and 5m-after-1h) are caught.
+ANTHROPIC_CACHE_TTL_ORDER_ERROR_SUBSTR = "cache_control block must not come after a ttl="
 
 REASONING_MODEL = "claude-sonnet-4-6"
 CODING_MODEL = "claude-sonnet-4-6"
@@ -451,6 +460,15 @@ class ReverserAgent:
             self.uniafl_conf = None
 
         self.crash_logs: Dict[str, str] = {}
+
+        # Anthropic `cache_control` ttl to use for explicit breakpoints we set
+        # ourselves (see `cache_anthropic_msg`). Starts at "1h" (requires the
+        # `extended-cache-ttl` beta header, set below). If we ever hit a
+        # ttl-ordering 400 from Anthropic (see ANTHROPIC_CACHE_TTL_ORDER_ERROR_SUBSTR
+        # in `invoke_llm_with_context`), we permanently downgrade to the
+        # default/bare ttl (5m) for the rest of this agent's run so we never
+        # mix ttl='1h' and ttl='5m' breakpoints in the same request again.
+        self.cache_control_ttl: Optional[str] = "1h"
 
         # setup LLM and tools
         self.majority = majority
@@ -1162,7 +1180,6 @@ class ReverserAgent:
     async def invoke_llm_with_context(self, state: ReverseOneState):
         messages = state['messages'].copy()
         llm = None
-        cache_control_contents = []
         rate_limit_count = 0
         for retry_count in range(20):
             try:
@@ -1181,7 +1198,23 @@ class ReverserAgent:
                     logger.info("Retrying after 5 seconds")
                     await asyncio.sleep(5)
 
-                    if ANTHROPIC_BETA_HEADER_KEY in e_str:
+                    if ANTHROPIC_CACHE_TTL_ORDER_ERROR_SUBSTR in e_str:
+                        # Anthropic rejected the request because cache_control
+                        # breakpoints across tools/system/messages don't all
+                        # share the same ttl (e.g. some blocks are ttl='1h'
+                        # while others default to ttl='5m'). Permanently
+                        # downgrade this agent to the default ttl (drop the
+                        # `ttl` key everywhere, falling back to Anthropic's
+                        # 5-minute cache) so every explicit breakpoint we set
+                        # from now on stays consistent, then retry once with
+                        # the current messages normalized the same way.
+                        logger.info("Detected cache_control ttl-ordering error; "
+                                    "normalizing all cache_control breakpoints to the default ttl and retrying")
+                        self.cache_control_ttl = None
+                        self.normalize_cache_control_ttls(messages, self.cache_control_ttl)
+                        responses = await llm.ainvoke(messages)
+                        llm_output: ReverserLLMOutput = responses[-1]
+                    elif ANTHROPIC_BETA_HEADER_KEY in e_str:
                         if not isinstance(llm.chat_model, ChatAnthropic):
                             logger.error("LLM chat model is not an instance of anthropic.ChatAnthropic")
                             raise
@@ -1192,6 +1225,7 @@ class ReverserAgent:
                             raise
 
                         llm.chat_model.model_kwargs.get(EXTRA_HEADERS, {}).pop(ANTHROPIC_BETA_HEADER_KEY, None)
+                        cache_control_contents = []
                         try:
                             responses = await llm.ainvoke(messages)
                             llm_output: ReverserLLMOutput = responses[-1]
@@ -1296,13 +1330,36 @@ class ReverserAgent:
 
     def cache_anthropic_msg(self, msg: BaseMessage):
         if isinstance(msg, BaseMessage) and isinstance(msg.content, str):
+            cache_control = {"type": "ephemeral"}
+            if self.cache_control_ttl:
+                cache_control["ttl"] = self.cache_control_ttl
             msg.content = [
                 {
                     "text": msg.content,
                     "type": "text",
-                    "cache_control": {"type": "ephemeral", "ttl": "1h"},
+                    "cache_control": cache_control,
                 }
             ]
+
+    def normalize_cache_control_ttls(self, messages: List[BaseMessage], ttl: Optional[str]):
+        """Rewrite every existing `cache_control` block's ttl to `ttl` (or drop
+        the `ttl` key entirely, falling back to Anthropic's default 5-minute
+        cache, when `ttl` is falsy). Used to recover from Anthropic's
+        cache_control ttl-ordering 400 error by making all breakpoints
+        consistent again."""
+        for msg in messages:
+            if not (isinstance(msg, BaseMessage) and isinstance(msg.content, list)):
+                continue
+            for content in msg.content:
+                if not (isinstance(content, dict) and "cache_control" in content):
+                    continue
+                cache_control = content.get("cache_control")
+                if not isinstance(cache_control, dict):
+                    continue
+                if ttl:
+                    cache_control["ttl"] = ttl
+                else:
+                    cache_control.pop("ttl", None)
 
     def prepare_prompt(self, state):
         # TODO: support other langs

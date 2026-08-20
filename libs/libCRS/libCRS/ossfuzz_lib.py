@@ -72,8 +72,13 @@ def is_fuzz_target_local(file_path):
     if os.path.exists(file_path) and not stat.S_ISREG(os.stat(file_path).st_mode):
         return False
 
-    with open(file_path, "rb") as file_handle:
-        return file_handle.read().find(FUZZ_TARGET_SEARCH_STRING.encode()) != -1
+    content = open(file_path, "rb").read()
+    if FUZZ_TARGET_SEARCH_STRING.encode() in content:
+        return True
+    # JVM/Jazzer fuzz targets are bash scripts containing --target_class=
+    if b"--target_class=" in content:
+        return True
+    return False
 
 
 def get_harness_names(fuzz_dir):
